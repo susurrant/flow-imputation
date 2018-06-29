@@ -1,0 +1,54 @@
+sudo: false  # Use container-based infrastructure
+language: python
+matrix:
+  include:
+    # Wish I could use Python 3.5 but cvxpy fails to install due to the
+    # multiprocess package. No idea why!
+    - python: 2.7
+      env: KERAS_BACKEND=tensorflow
+    - python: 3.5
+      env: KERAS_BACKEND=tensorflow
+before_install:
+  # Commands below copied from: http://conda.pydata.org/docs/travis.html
+  # We do this conditionally because it saves us some downloading if the
+  # version is the same.
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+      wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh;
+    else
+      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  # reset the shell's lookup table for program name to path mappings
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  # Useful for debugging any issues with conda
+  - conda info -a
+addons:
+  apt:
+    packages:
+    # install pandoc for use with pypandoc for converting the README
+    # from markdown to RST
+    - pandoc
+    # Even though I'm installing cvxopt via conda, still seem to need these:
+    - liblapack-dev
+    - libatlas-base-dev
+install:
+  - >
+      conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
+      numpy=1.13 scipy nose pandas matplotlib cvxopt tensorflow scikit-learn
+  - conda install -c conda-forge tensorflow
+  - source activate test-environment
+  - conda install -c cvxgrp scs=1.2.6
+  - pip install pypandoc
+  - pip install -r requirements.txt
+  - pip install .
+  - pip install coveralls
+  - export PACKAGE_DIR=`pwd`
+script:
+  - cd $PACKAGE_DIR
+  - nosetests test --with-coverage --cover-package=fancyimpute
+after_success:
+  - coveralls
+
