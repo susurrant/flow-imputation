@@ -8,6 +8,7 @@ __pycache__/
 
 map/
 data/
+!R-GCN/data/
 
 # Distribution / packaging
 .Python
