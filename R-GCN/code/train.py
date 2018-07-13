@@ -42,7 +42,6 @@ train_triplets = io.read_triplets_as_list(train_path, entities_path, relations_p
 valid_triplets = io.read_triplets_as_list(valid_path, entities_path, relations_path)
 test_triplets = io.read_triplets_as_list(test_path, entities_path, relations_path)
 
-
 train_triplets = np.array(train_triplets)
 valid_triplets = np.array(valid_triplets)
 test_triplets = np.array(test_triplets)
@@ -185,7 +184,6 @@ def sample_edge_neighborhood(triplets, sample_size):
 
     return edges
 
-
 if 'NegativeSampleRate' in general_settings:
     ns = auxilliaries.NegativeSampler(int(general_settings['NegativeSampleRate']), general_settings['EntityCount'])
     ns.set_known_positives(train_triplets)
@@ -236,9 +234,8 @@ if 'NegativeSampleRate' in general_settings:
 
 
 '''
-Initialize for training:
+5. Initialize for training:
 '''
-
 # Hack for validation evaluation:
 model.preprocess(train_triplets)
 model.register_for_test(train_triplets)
@@ -250,19 +247,19 @@ optimizer_input = model.get_train_input_variables()
 loss = model.get_loss(mode='train') + model.get_regularization()
 print(optimizer_input)
 
-'''
-Clean this shit up:
-'''
 
+'''
+6. Clean this shit up:
+'''
 for add_op in model.get_additional_ops():
     opp.additional_ops.append(add_op)
 
 optimizer_parameters = opp.get_parametrization()
 
-'''
-Train with Converge:
-'''
 
+'''
+7. Train with Converge:
+'''
 model.session = tf.Session()
 print('build tensorflow...')
 optimizer = build_tensorflow(loss, optimizer_weights, optimizer_parameters, optimizer_input)
