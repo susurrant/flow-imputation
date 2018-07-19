@@ -38,7 +38,6 @@ if settings['Evaluation']['Metric'] == 'Accuracy':
     test_path = dataset + '/test_accuracy.txt'
 
 train_triplets = io.read_triplets_as_list(train_path, entities_path, relations_path)
-
 valid_triplets = io.read_triplets_as_list(valid_path, entities_path, relations_path)
 test_triplets = io.read_triplets_as_list(test_path, entities_path, relations_path)
 

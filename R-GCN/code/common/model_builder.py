@@ -39,6 +39,7 @@ def build_encoder(encoder_settings, triples):
                                          next_component=embedding)
 
         return full_encoder
+
     elif encoder_settings['Name'] == "variational_embedding":
         input_shape = [int(encoder_settings['EntityCount']),
                        int(encoder_settings['CodeDimension'])]
