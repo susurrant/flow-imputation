@@ -26,7 +26,6 @@ class MessageGraph():
 
         self.edge_count = tf.shape(self.sender_indices)[0]
 
-
     def get_sender_indices(self):
         return self.sender_indices
 
@@ -158,9 +157,10 @@ class Representation(Model):
         self.entity_count = settings['EntityCount']
         self.relation_count = settings['RelationCount']
         self.edge_count = self.triples.shape[0]*2
-
+        print('Representation-__init__')
+        print(self.entity_count, self.relation_count, self.edge_count)
+        
         #self.process(self.triples)
-
         #self.graph = None#MessageGraph(triples, self.entity_count, self.relation_count)
 
 

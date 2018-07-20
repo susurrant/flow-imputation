@@ -8,7 +8,7 @@ __pycache__/
 
 map/
 data/
-R-GCN/models/
+R-GCN/code/models/
 !R-GCN/data/
 
 # Distribution / packaging

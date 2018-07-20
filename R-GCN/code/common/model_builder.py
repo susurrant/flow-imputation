@@ -130,12 +130,17 @@ def build_encoder(encoder_settings, triples):
                           int(encoder_settings['InternalEncoderDimension'])]
         projection_shape = [int(encoder_settings['InternalEncoderDimension']),
                             int(encoder_settings['CodeDimension'])]
-
         relation_shape = [int(encoder_settings['EntityCount']),
                           int(encoder_settings['CodeDimension'])]
-
         layers = int(encoder_settings['NumberOfLayers'])
-
+        
+        print('build_encoder-gcn_basis')
+        print('input shape:', input_shape)
+        print('internal shape:', internal_shape)
+        print('projection shape:', projection_shape)
+        print('relation shape:', relation_shape)
+        print('layers:', layers)
+        
         # Initial embedding:
         if encoder_settings['UseInputTransform'] == "Yes":
             encoding = AffineTransform(input_shape,
