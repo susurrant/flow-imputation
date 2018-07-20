@@ -1,7 +1,3 @@
-'''
-Modified by Xin Yao (https://github.com/susurrant)
-1. 11th Jul. 2018: add comments on function hierarchy
-'''
 
 import numpy as np
 import math
@@ -237,13 +233,13 @@ class Scorer():
     def extend_triple_dict(self, dictionary, triplets, object_list=True):
         for triplet in triplets:
             if object_list:
-                key = (triplet[0], triplet[1])
-                value = triplet[2]
+                key = (triplet[0], triplet[1]) # key: (sub, rel), val: obj
+                value = triplet[2]              
             else:
-                key = (triplet[2],triplet[1])
+                key = (triplet[2],triplet[1])  # key: (obj, rel), val: sub
                 value = triplet[0]
         
-            if key not in dictionary:
+            if key not in dictionary:         # self.known_object_triples / self.known_subject_triples
                 dictionary[key] = [value]
             elif value not in dictionary[key]:
                 dictionary[key].append(value)
@@ -282,7 +278,7 @@ class Scorer():
             self.in_degree[obj] += 1
             self.out_degree[sub] += 1
 
-    def register_model(self, model):  #--- model_builder.build_decoder
+    def register_model(self, model):  #model_builder.build_decoder: BilinearDiag object inheriting from Model
         self.model = model
 
     def finalize_frequency_computation(self, triples):

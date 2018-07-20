@@ -6,8 +6,8 @@ class RelationEmbedding(Model):
     shape=None
 
     def __init__(self, shape, settings, next_component=None):
-        Model.__init__(self, next_component, settings)
-        self.shape = shape
+        Model.__init__(self, next_component, settings) # next_component = BasisGcn
+        self.shape = shape   # relation_shape = [int(encoder_settings['EntityCount']), int(encoder_settings['CodeDimension'])]
 
     def parse_settings(self):
         self.embedding_width = int(self.settings['CodeDimension'])

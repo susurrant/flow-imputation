@@ -12,6 +12,7 @@ class BasisGcn(MessageGcn):
 
         self.n_coefficients = int(self.settings['NumberOfBasisFunctions'])
 
+    #self.shape = internal_shape = [int(encoder_settings['InternalEncoderDimension']), int(encoder_settings['InternalEncoderDimension'])]
     def local_initialize_train(self):
         vertex_feature_dimension = self.entity_count if self.onehot_input else self.shape[0]
         type_matrix_shape = (self.relation_count, self.n_coefficients)
@@ -19,7 +20,7 @@ class BasisGcn(MessageGcn):
         self_matrix_shape = (vertex_feature_dimension, self.shape[1])
 
         glorot_var_combined = glorot_variance([vertex_matrix_shape[0], vertex_matrix_shape[2]])
-        self.W_forward = make_tf_variable(0, glorot_var_combined, vertex_matrix_shape)
+        self.W_forward = make_tf_variable(0, glorot_var_combined, vertex_matrix_shape)  # mean, variance, shape
         self.W_backward = make_tf_variable(0, glorot_var_combined, vertex_matrix_shape)
         self.W_self = make_tf_variable(0, glorot_var_combined, self_matrix_shape)
 
@@ -93,3 +94,8 @@ class BasisGcn(MessageGcn):
         regularization += tf.reduce_mean(tf.square(self.W_self))
 
         return 0.0 * regularization
+    
+    def print(self):
+        print('layer type:', type(self), 'gcn_id:', self.gcn_id)
+        if self.next_component:
+            self.next_component.print()

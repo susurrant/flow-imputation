@@ -12,11 +12,12 @@ class MessageGcn(Model):
     use_nonlinearity = True
     vertex_embedding_function = {'train': None, 'test': None}
 
-    def __init__(self, shape, settings, next_component=None, onehot_input=False, use_nonlinearity=True):
+    def __init__(self, shape, settings, next_component=None, onehot_input=False, use_nonlinearity=True, gcn_id=-1):
         self.onehot_input = onehot_input
         self.use_nonlinearity = use_nonlinearity
-        self.shape = shape
-        Model.__init__(self, next_component, settings)
+        self.shape = shape  #internal_shape = [int(encoder_settings['InternalEncoderDimension']), int(encoder_settings['InternalEncoderDimension'])]
+        self.gcn_id = gcn_id
+        Model.__init__(self, next_component, settings) # next_component = AffineTransform  or  BasisGcn
 
     def needs_graph(self):
         return True

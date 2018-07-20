@@ -15,8 +15,10 @@ class Model:
     saver=None
 
     def __init__(self, next_component, settings):
-        self.next_component = next_component
-        self.settings = settings
+        self.next_component = next_component # for encoder: next_component -> Representation(triples, encoder_settings)
+                                             # for decoder: next_component -> encoder (RelationEmbedding object, see train file)
+        self.settings = settings             # for encoder: encoder_settings
+                                             # for decoder: decoder_settings
 
         self.entity_count = int(self.settings['EntityCount'])
         self.relation_count = int(self.settings['RelationCount'])
@@ -175,7 +177,7 @@ class Model:
             local_result = local_function(*args)
         else:
             local_result = base
-
+        
         if self.next_component is not None:
             function = getattr(self.next_component, name)
             return function(*args) + local_result

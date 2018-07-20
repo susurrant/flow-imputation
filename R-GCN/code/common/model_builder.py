@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-：
+
 from encoders.relation_embedding import RelationEmbedding
 from encoders.affine_transform import AffineTransform
 from decoders.bilinear_diag import BilinearDiag
@@ -133,19 +135,21 @@ def build_encoder(encoder_settings, triples):
         relation_shape = [int(encoder_settings['EntityCount']),
                           int(encoder_settings['CodeDimension'])]
         layers = int(encoder_settings['NumberOfLayers'])
-        
-        print('build_encoder-gcn_basis')
-        print('input shape:', input_shape)
-        print('internal shape:', internal_shape)
-        print('projection shape:', projection_shape)
-        print('relation shape:', relation_shape)
-        print('layers:', layers)
+        print('---------------------------------------------------------------')
+        print('common/model_builder.build_encoder: gcn_basis')
+        print('  input shape:', input_shape)
+        print('  internal shape:', internal_shape)
+        print('  projection shape:', projection_shape)
+        print('  relation shape:', relation_shape)
+        print('  layers:', layers)
+        print('---------------------------------------------------------------')
         
         # Initial embedding:
         if encoder_settings['UseInputTransform'] == "Yes":
+            # AffineTransform object inheriting from Model
             encoding = AffineTransform(input_shape,
                                        encoder_settings,
-                                       next_component=graph,
+                                       next_component=graph, #graph_representations.Representation
                                        onehot_input=True,
                                        use_bias=True,
                                        use_nonlinearity=True)
@@ -171,7 +175,12 @@ def build_encoder(encoder_settings, triples):
 
         # Hidden layers:
         encoding = apply_basis_gcn(encoder_settings, encoding, internal_shape, layers)
-
+        
+        print('---------------------------------------------------------------')
+        print('common/model_builder.build_encoder: gcn_basis')
+        encoding.print()
+        print('---------------------------------------------------------------')
+        
         # Output transform if chosen:
         if encoder_settings['UseOutputTransform'] == "Yes":
             encoding = AffineTransform(projection_shape,
@@ -185,11 +194,11 @@ def build_encoder(encoder_settings, triples):
         full_encoder = RelationEmbedding(relation_shape,
                                          encoder_settings,
                                          next_component=encoding)
-
+        
         return full_encoder
 
     elif encoder_settings['Name'] == "variational_gcn_basis":
-        graph = Representation(triples, encoder_settings)
+        #graph = Representation(triples, encoder_settings)  # edit error?
 
         # Define graph representation:
         graph = Representation(triples, encoder_settings)
@@ -277,7 +286,7 @@ def build_encoder(encoder_settings, triples):
 
 def apply_basis_gcn(encoder_settings, encoding, internal_shape, layers):
     for layer in range(layers):
-        use_nonlinearity = layer < layers - 1
+        use_nonlinearity = layer < layers - 1  # True if current layer is not the last layer
 
         if layer == 0 \
                 and encoder_settings['UseInputTransform'] == "No" \
@@ -296,13 +305,14 @@ def apply_basis_gcn(encoder_settings, encoding, internal_shape, layers):
         elif 'Concatenation' in encoder_settings and encoder_settings['Concatenation'] == "Yes":
             model = ConcatGcn
         else:
-            model = BasisGcn
+            model = BasisGcn  #encoders.message_gcns.gcn_basis.BasisGcn
 
         new_encoding = model(internal_shape,
                              encoder_settings,
-                             next_component=encoding,
+                             next_component=encoding,  # AffineTransform object
                              onehot_input=onehot_input,
-                             use_nonlinearity=use_nonlinearity)
+                             use_nonlinearity=use_nonlinearity,
+                             gcn_id = layer)
 
         if encoder_settings['SkipConnections'] == 'Residual' and onehot_input == False:
             encoding = ResidualLayer(internal_shape, next_component=new_encoding, next_component_2=encoding)
@@ -311,7 +321,7 @@ def apply_basis_gcn(encoder_settings, encoding, internal_shape, layers):
         else:
             encoding = new_encoding
 
-    return encoding
+    return encoding  #嵌套的BasisGcn，最里层的next_component为 AffineTransform object
 
 
 def build_decoder(encoder, decoder_settings):

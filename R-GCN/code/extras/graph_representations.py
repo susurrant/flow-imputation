@@ -153,12 +153,16 @@ class Representation(Model):
     X = None
 
     def __init__(self, triples, settings, bipartite=False):
-        self.triples = np.array(triples)
+        self.triples = np.array(triples)  # train_triples
         self.entity_count = settings['EntityCount']
         self.relation_count = settings['RelationCount']
         self.edge_count = self.triples.shape[0]*2
-        print('Representation-__init__')
-        print(self.entity_count, self.relation_count, self.edge_count)
+        print('---------------------------------------------------------------')
+        print('func: extras/graph_representations.Representation.__init__')
+        print('  entity_count:', self.entity_count)
+        print('  relation_count:', self.relation_count)
+        print('  edge_count:', self.edge_count)
+        print('---------------------------------------------------------------')
         
         #self.process(self.triples)
         #self.graph = None#MessageGraph(triples, self.entity_count, self.relation_count)
