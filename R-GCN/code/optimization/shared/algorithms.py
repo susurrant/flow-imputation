@@ -82,7 +82,6 @@ class ModelSaver(IOptimizer):
 class TrainLossReporter(IOptimizer):
     evaluate_every_n = 1
     cummulative_loss = 0
-    loss = []
 
     def valid(self):
         return True
@@ -112,10 +111,7 @@ class TrainLossReporter(IOptimizer):
                   + str(end_iteration)
                   + ": "
                   + str(average_loss))
-            self.loss.append(average_loss)
 
-        if self.iteration == 7999:
-            print(self.loss)
         return value_of_next
 
             
@@ -125,7 +121,6 @@ class EarlyStopper(IOptimizer):
     
     previous_validation_score = None
     burnin = 0
-    score = []
     
     def valid(self):
         if self.criteria is None:
@@ -148,13 +143,11 @@ class EarlyStopper(IOptimizer):
         if self.iteration % self.evaluate_every_n == 0:
             if self.criteria == 'score_validation_data':
                 validation_score = self.scoring_function(self.validation_data)
-                self.score.append(validation_score)
                 print("Tested validation score at iteration "+str(self.iteration)+". Result: "+str(validation_score))
                 if self.previous_validation_score is not None:
                     if not self.comparator(validation_score, self.previous_validation_score):
                         if self.iteration > self.burnin:
                             print("Stopping criterion reached.")
-                            print(self.score)
                             return 'stop'
                         else:
                             print("Ignoring criterion while in burn-in phase.")

@@ -31,7 +31,7 @@ class MessageGcn(Model):
             index_vector = self.get_graph().get_sender_indices()
         else:
             index_vector = self.get_graph().get_receiver_indices()
-
+        
         if self.onehot_input:
             return index_vector
         else:
@@ -43,6 +43,7 @@ class MessageGcn(Model):
             return vertex_codes
 
     def get_all_codes(self, mode='train'):
+        #print('-------GCN_ID:', self.gcn_id, ', MessageGcn.get_all_codes', self.onehot_input)
         collected_messages = self.compute_vertex_embeddings(mode=mode)
 
         return collected_messages, None, collected_messages

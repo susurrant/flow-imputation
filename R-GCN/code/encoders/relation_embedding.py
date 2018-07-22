@@ -22,4 +22,11 @@ class RelationEmbedding(Model):
 
     def get_all_codes(self, mode='train'):
         codes = self.next_component.get_all_codes(mode=mode)
+        print('---------------------------------------------------------------')
+        print('RelationEmbedding -> get_all_codes')
+        print('  codes[0]', codes[0].get_shape())
+        print('  self.W_relation', self.W_relation.get_shape())
+        print('  codes[2]', codes[2].get_shape())
+        print('---------------------------------------------------------------')
+        #print('-------RelationEmbedding.get_all_codes', codes[0], self.W_relation, codes[2])
         return codes[0], self.W_relation, codes[2]

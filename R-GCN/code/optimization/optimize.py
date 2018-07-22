@@ -205,7 +205,7 @@ def __from_component(component_name, backend='theano'):
     
 def __construct_optimizer(settings, backend='theano'):
     optimizer = BaseOptimizer()
-    for component, parameters in settings:
+    for component, parameters in settings:  # recursive construction
         optimizer = __from_component(component, backend=backend)(optimizer, parameters)
 
     #TODO: Better error handling

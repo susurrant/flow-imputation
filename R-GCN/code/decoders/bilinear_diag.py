@@ -19,15 +19,29 @@ class BilinearDiag(Model):
         e1s = tf.nn.embedding_lookup(subject_codes, self.X[:, 0])
         rs = tf.nn.embedding_lookup(relation_codes, self.X[:, 1])
         e2s = tf.nn.embedding_lookup(object_codes, self.X[:, 2])
-
+        print('---------------------------------------------------------------')
+        print('BilinearDiag -> compute_codes')
+        print('  X size', self.X[:, 0].get_shape(), self.X[:, 1].get_shape(), self.X[:, 2].get_shape())
+        print('  e1s', e1s.get_shape())
+        print('  rs', rs.get_shape())
+        print('  e2s', e2s.get_shape())
+        print('---------------------------------------------------------------')
+        
         self.encoder_cache[mode] = (e1s, rs, e2s)
         return self.encoder_cache[mode]
 
 
     def get_loss(self, mode='train'):
         e1s, rs, e2s = self.compute_codes(mode=mode)
-
         energies = tf.reduce_sum(e1s * rs * e2s, 1)
+        print('---------------------------------------------------------------')
+        print('BilinearDiag -> get_loss')
+        print('  e1s', e1s.get_shape())
+        print('  rs', rs.get_shape())
+        print('  e2s', e2s.get_shape())
+        print('  e1s * rs * e2s', (e1s * rs * e2s).get_shape())
+        print('  energies', energies.get_shape())
+        print('---------------------------------------------------------------')
 
         weight = int(self.settings['NegativeSampleRate'])
         weight = 1

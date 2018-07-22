@@ -97,9 +97,7 @@ class MessageGraph():
             mtr_indices = tf.to_int64(tf.transpose(tf.stack([self.message_types, self.receiver_indices, message_indices])))
             mtr_shape = tf.to_int64(tf.stack([self.label_count*2, self.vertex_count, self.edge_count]))
 
-            tensor = tf.sparse_softmax(tf.SparseTensor(indices=mtr_indices,
-                                   values=mtr_values,
-                                                       dense_shape=mtr_shape))
+            tensor = tf.sparse_softmax(tf.SparseTensor(indices=mtr_indices, values=mtr_values, dense_shape=mtr_shape))
 
             tensor = tf.sparse_reduce_sum_sparse(tensor, 0)
 
@@ -125,9 +123,7 @@ class MessageGraph():
             mtr_indices = tf.to_int64(tf.transpose(tf.stack([self.sender_indices, message_indices])))
             mtr_shape = tf.to_int64(tf.stack([self.vertex_count, self.edge_count]))
 
-            tensor = tf.sparse_softmax(tf.SparseTensor(indices=mtr_indices,
-                                   values=mtr_values,
-                                                       dense_shape=mtr_shape))
+            tensor = tf.sparse_softmax(tf.SparseTensor(indices=mtr_indices, values=mtr_values, dense_shape=mtr_shape))
 
             return tensor
         elif normalization[0] == "local":
