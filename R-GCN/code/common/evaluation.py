@@ -305,7 +305,6 @@ class Scorer():
         for k in counts:
             self.avg_freq[k] /= float(counts[k])
 
-
     def get_degrees(self, vertex):
         return self.in_degree[vertex], self.out_degree[vertex]
 
