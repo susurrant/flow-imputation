@@ -49,7 +49,7 @@ def output_dict(grid_num, path):
 
 
 if __name__ == '__main__':
-    threshold = 200
+    threshold = 60
     path = './R-GCN/data/SI_' + str(threshold) + '/'
     data_file = './data/sj_051317.csv'
     if not os.path.exists(path):
