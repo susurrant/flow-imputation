@@ -1,6 +1,7 @@
 
 import numpy as np
 import random
+import os
 
 def read_data(filename, grid_num, threshold):
     im = np.zeros((grid_num, grid_num), dtype=np.uint16)
@@ -48,10 +49,13 @@ def output_dict(grid_num, path):
 
 
 if __name__ == '__main__':
-    path = './R-GCN/data/SI/'
+    threshold = 200
+    path = './R-GCN/data/SI_' + str(threshold) + '/'
     data_file = './data/sj_051317.csv'
+    if not os.path.exists(path):
+        os.mkdir(path)
+
     grid_num = 900
-    threshold = 100
     p = (0.8, 0.1, 0.1)
     si = read_data(data_file, grid_num, threshold)
     output_data(si, p, path)
