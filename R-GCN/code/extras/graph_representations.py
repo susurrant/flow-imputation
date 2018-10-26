@@ -20,7 +20,7 @@ class MessageGraph():
 
     def process(self, triplets):
         triplets = tf.transpose(triplets)
-        self.sender_indices = triplets[0]       # Read vertex features. Here triples[0] includes just sequential number.
+        self.sender_indices = triplets[0]
         self.receiver_indices = triplets[2]
         self.message_types = triplets[1]
 
