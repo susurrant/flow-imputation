@@ -41,6 +41,8 @@ class BasisGcn(MessageGcn):
         backward_type_scaling, forward_type_scaling = self.compute_coefficients()
         receiver_terms, sender_terms = self.compute_basis_functions(receiver_features, sender_features)
 
+        # I think the sender_terms can be multiplied by a (weighted) adjacency matrix.
+        # Could you help me to add the matrix to this code?
         forward_messages = tf.reduce_sum(sender_terms * tf.expand_dims(forward_type_scaling,-1), 1)
         backward_messages = tf.reduce_sum(receiver_terms * tf.expand_dims(backward_type_scaling, -1), 1)
 
