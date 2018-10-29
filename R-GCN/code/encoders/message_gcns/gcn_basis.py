@@ -6,7 +6,7 @@ from encoders.message_gcns.message_gcn import MessageGcn
 
 
 class BasisGcn(MessageGcn):
-
+    # __init__ call MessageGcn.__init__
     def parse_settings(self):
         self.dropout_keep_probability = float(self.settings['DropoutKeepProbability'])
 
@@ -45,6 +45,9 @@ class BasisGcn(MessageGcn):
         # Could you help me to add the matrix to this code?
         forward_messages = tf.reduce_sum(sender_terms * tf.expand_dims(forward_type_scaling,-1), 1)
         backward_messages = tf.reduce_sum(receiver_terms * tf.expand_dims(backward_type_scaling, -1), 1)
+        print('--------------------------45613416546461313-----------------------')
+        print(forward_messages.get_shape())
+        print(backward_messages.get_shape())
 
         return forward_messages, backward_messages
 

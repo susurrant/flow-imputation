@@ -23,10 +23,10 @@
 
 [Optimizer]
 	MaxGradientNorm=1
-	ReportTrainLossEvery=100
+	ReportTrainLossEvery=300
 
 	[EarlyStopping]
-		CheckEvery=100
+		CheckEvery=500
 		BurninPhaseDuration=6000
 
 	[Algorithm]
@@ -37,7 +37,7 @@
 	NegativeSampleRate=10
 	GraphSplitSize=0.5
 	ExperimentName=models/GcnBlock
-	#GraphBatchSize=30000
+	#GraphBatchSize=3000
 
 [Evaluation]
 	Metric=MRR
