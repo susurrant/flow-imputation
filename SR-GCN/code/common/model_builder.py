@@ -4,6 +4,7 @@ from encoders.relation_embedding import RelationEmbedding
 from encoders.affine_transform import AffineTransform
 from decoders.bilinear_diag import BilinearDiag
 from extras.graph_representations import Representation
+from extras.spatial_representations import SpatialRepresentation
 
 from decoders.nonlinear_transform import NonlinearTransform
 from decoders.complex import Complex
