@@ -129,6 +129,8 @@ def build_encoder(encoder_settings, triples):
         # Define shapes:
         input_shape = [int(encoder_settings['EntityCount']),
                        int(encoder_settings['InternalEncoderDimension'])]
+        feature_shape = [int(encoder_settings['EntityCount']),
+                         int(encoder_settings['InternalEncoderDimension'])] # modified
         internal_shape = [int(encoder_settings['InternalEncoderDimension']),
                           int(encoder_settings['InternalEncoderDimension'])]
         projection_shape = [int(encoder_settings['InternalEncoderDimension']),
@@ -144,13 +146,20 @@ def build_encoder(encoder_settings, triples):
         print('  relation shape:', relation_shape)
         print('  layers:', layers)
         print('---------------------------------------------------------------')
-        
+
+        encoding = SpatialRepresentation(feature_shape,
+                                         encoder_settings,
+                                         next_component=graph,  # graph_representations.Representation
+                                         onehot_input=True,  # set to False. disable onehot
+                                         use_bias=True,
+                                         use_nonlinearity=True)
+
         # Initial embedding:
         if encoder_settings['UseInputTransform'] == "Yes":
             # AffineTransform object inheriting from Model
             encoding = AffineTransform(input_shape,
                                        encoder_settings,
-                                       next_component=graph, # graph_representations.Representation
+                                       next_component=encoding, # graph_representations.Representation
                                        onehot_input=True,   # set to False. disable onehot
                                        use_bias=True,
                                        use_nonlinearity=True)
