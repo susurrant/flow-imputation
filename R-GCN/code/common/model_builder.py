@@ -150,7 +150,7 @@ def build_encoder(encoder_settings, triples):
             encoding = AffineTransform(input_shape,
                                        encoder_settings,
                                        next_component=graph, # graph_representations.Representation
-                                       onehot_input=True,   # set to False. disable onehot
+                                       onehot_input=False,   # set to False. disable onehot
                                        use_bias=True,
                                        use_nonlinearity=True)
         elif encoder_settings['RandomInput'] == 'Yes':
