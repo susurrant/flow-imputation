@@ -150,7 +150,7 @@ def build_encoder(encoder_settings, triples):
             encoding = AffineTransform(input_shape,
                                        encoder_settings,
                                        next_component=graph, # graph_representations.Representation
-                                       onehot_input=False,   # set to False. disable onehot
+                                       onehot_input=True,   # set to False. disable onehot
                                        use_bias=True,
                                        use_nonlinearity=True)
         elif encoder_settings['RandomInput'] == 'Yes':
@@ -198,8 +198,6 @@ def build_encoder(encoder_settings, triples):
         return full_encoder
 
     elif encoder_settings['Name'] == "variational_gcn_basis":
-        #graph = Representation(triples, encoder_settings)  # edit error?
-
         # Define graph representation:
         graph = Representation(triples, encoder_settings)
 

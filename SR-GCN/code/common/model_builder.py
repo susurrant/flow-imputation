@@ -26,7 +26,7 @@ from extras.dropover import DropoverLayer
 from extras.variational_encoding import VariationalEncoding
 
 
-def build_encoder(encoder_settings, triples):
+def build_encoder(encoder_settings, triples, features):
     if encoder_settings['Name'] == "embedding":
         input_shape = [int(encoder_settings['EntityCount']),
                        int(encoder_settings['CodeDimension'])]
@@ -127,10 +127,10 @@ def build_encoder(encoder_settings, triples):
         graph = Representation(triples, encoder_settings)
 
         # Define shapes:
-        input_shape = [int(encoder_settings['EntityCount']),
+        input_shape = [int(encoder_settings['FeatureDimension']),
                        int(encoder_settings['InternalEncoderDimension'])]
         feature_shape = [int(encoder_settings['EntityCount']),
-                         int(encoder_settings['InternalEncoderDimension'])] # modified
+                         int(encoder_settings['FeatureDimension'])] # modified
         internal_shape = [int(encoder_settings['InternalEncoderDimension']),
                           int(encoder_settings['InternalEncoderDimension'])]
         projection_shape = [int(encoder_settings['InternalEncoderDimension']),
@@ -149,8 +149,9 @@ def build_encoder(encoder_settings, triples):
 
         encoding = SpatialRepresentation(feature_shape,
                                          encoder_settings,
+                                         features,
                                          next_component=graph,  # graph_representations.Representation
-                                         onehot_input=True,  # set to False. disable onehot
+                                         onehot_input=False,  # set to False. disable onehot
                                          use_bias=True,
                                          use_nonlinearity=True)
 
@@ -159,8 +160,8 @@ def build_encoder(encoder_settings, triples):
             # AffineTransform object inheriting from Model
             encoding = AffineTransform(input_shape,
                                        encoder_settings,
-                                       next_component=encoding, # graph_representations.Representation
-                                       onehot_input=True,   # set to False. disable onehot
+                                       next_component=encoding, # SpatialRepresentation
+                                       onehot_input=False,   # set to False. disable onehot
                                        use_bias=True,
                                        use_nonlinearity=True)
         elif encoder_settings['RandomInput'] == 'Yes':

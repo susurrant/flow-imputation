@@ -1,31 +1,39 @@
 import numpy as np
-import matplotlib.pyplot as plt
+import csv
 
+def process():
+    flows = {}
+    grids = {}
+    with open('data/unicom_OD.csv', 'r') as f:
+        line = f.readline()
+        line = f.readline()
+        while line:
+            d = line.strip().split(',')
+            if d[0] in ['20170109', '20170110', '20170111', '20170112', '20170113']:
+                if (d[2], d[3]) not in flows:
+                    flows[(d[2], d[3])] = 0
+                flows[(d[2], d[3])] += int(d[4])
+                if d[2] not in grids:
+                    grids[d[2]] = 0
+                if d[3] not in grids:
+                    grids[d[3]] = 0
+            line = f.readline()
 
-def count(filename, gridnum):
-    im = np.zeros((gridnum,gridnum), dtype=np.float64)
-    with open(filename, 'r') as f:
-        f.readline()
-        line1 = f.readline().strip()
-        while line1:
-            sl1 = line1.split(',')
-            line2 = f.readline().strip()
-            sl2 = line2.split(',')
-            if int(sl1[1]) == 1 and int(sl2[1]) == 1:
-                im[int(sl1[-1]), int(sl2[-1])] += 1
-            line1 = f.readline().strip()
+    md = {}
+    for g, v in flows.items():
+        if v not in md:
+            md[v] = 0
+        md[v] += 1
+        if v > 100:
+            grids[g[0]] = 1
+            grids[g[1]] = 1
+    #print(md)
 
-    x = im.flatten()
-    d = {}
-    for v in x:
-        if v < 50:
-            continue
-        if v not in d:
-            d[v] = 0
-        d[v] += 1
-    return d
+    with open('data/unicom_grid.csv', 'w', newline='') as f:
+        sheet = csv.writer(f)
+        sheet.writerow(['grid', 'tag'])
+        for grid, tag in grids.items():
+            sheet.writerow([grid, tag])
 
 if __name__ == '__main__':
-    datafile = './data/sj_051317.csv'
-    d = count(datafile, 900)
-    print(d)
+    process()

@@ -17,7 +17,7 @@ class AffineTransform(Model):
     def __init__(self, shape, settings, next_component=None, use_nonlinearity=False, onehot_input=False, use_bias=True):
         #next_component -> spatial_representations.Representation(triples, encoder_settings), encoder_settings
         Model.__init__(self, next_component, settings)
-        self.shape = shape  # input_shape = [int(encoder_settings['EntityCount']), int(encoder_settings['InternalEncoderDimension'])]
+        self.shape = shape  # input_shape = [int(encoder_settings['FeatureDimension']), int(encoder_settings['InternalEncoderDimension'])]
         self.use_nonlinearity = use_nonlinearity
         self.use_bias = use_bias
         self.onehot_input = onehot_input
