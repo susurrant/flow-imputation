@@ -79,7 +79,7 @@ def classification(filename, class_num, threshold):
         for g, m in flows.items():
             x = np.where(m <= nk)[0]
             i = x.min() if x.size > 0 else len(nk) - 1
-            sheet.writerow([g[0], g[1], m, i])
+            sheet.writerow([g[0], g[1], m, 0])
 
 
 def count(filename):
@@ -142,6 +142,6 @@ def gen_data(data_file, r, output_path):
 
 if __name__ == '__main__':
     #unicom_data()
-    #classification('data/unicom_500.csv', 3, 50)
+    #classification('data/unicom_500.csv', 3, 100)
     #count('data/unicom_500.csv')
-    gen_data('data/unicom_500_c3_t50_.csv', [0.6, 0.2, 0.2], 'R-GCN/data/unicom/')
+    gen_data('data/unicom_500_c3_t100_.csv', [0.6, 0.2, 0.2], 'R-GCN/data/unicom/')
