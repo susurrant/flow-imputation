@@ -165,6 +165,6 @@ def gen_data(data_file, r, output_path):
 if __name__ == '__main__':
     #unicom_data()
     #taxi_data()
-    #classification('data/taxi_1km.csv', 3, 50)
+    #classification('data/taxi_1km.csv', 3, 100)
     #count('data/unicom_500.csv')
-    gen_data('data/taxi_1km_c3_t50.csv', [0.6, 0.2, 0.2], 'R-GCN/data/taxi/')
+    gen_data('data/taxi_1km_c3_t100.csv', [0.6, 0.2, 0.2], 'R-GCN/data/taxi/')
