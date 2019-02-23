@@ -6,14 +6,14 @@
 	RegularizationParameter=0.01
 
 [Shared]
-	CodeDimension=500
+	CodeDimension=100
 
 [Optimizer]
 	MaxGradientNorm=1
 	ReportTrainLossEvery=100
 
 	[EarlyStopping]
-		CheckEvery=2000
+		CheckEvery=500
 		BurninPhaseDuration=6000
 
 	[Algorithm]
@@ -24,7 +24,7 @@
 	NegativeSampleRate=10
 	GraphSplitSize=0.5
 	ExperimentName=models/Distmult
-	GraphBatchSize=30000
+	#GraphBatchSize=30000
 
 [Evaluation]
 	Metric=MRR
