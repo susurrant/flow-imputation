@@ -130,7 +130,7 @@ def gen_data(data_file, r, output_path):
 
     # 生成数据字典
     with open(output_path + 'entities.dict', 'w') as f:
-        grids = set(data[:, 0])
+        grids = set(data[:, 0]) | set(data[:, 1])
         for i, gid in enumerate(grids):
             f.write(str(i)+'\t'+ str(gid) + '\n')
 
