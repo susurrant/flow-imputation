@@ -45,6 +45,29 @@ def unicom_data():
             sheet.writerow([g[0], g[1], m])
 
 
+# 出租车数据处理
+def taxi_data():
+    flows = {}
+    with open('data/taxi_sj_1km_051317.csv', 'r') as f:
+        f.readline()
+        line = f.readline().strip()
+        while line:
+            d1 = line.split(',')
+            d2 = f.readline().strip().split(',')
+            if d1[1] == '1' and d2[1] == '1':
+                k = (d1[-1], d2[-1])
+                if k not in flows:
+                    flows[k] = 0
+                flows[k] += 1
+            line = f.readline().strip()
+
+    with open('data/taxi_1km.csv', 'w', newline='') as rf:
+        sheet = csv.writer(rf)
+        sheet.writerow(['o', 'd', 'm'])
+        for g, m in flows.items():
+            sheet.writerow([g[0], g[1], m])
+
+
 # 自然间断点
 def fisher_jenks(d, cNum):
     X = np.array(d).reshape((-1, 1))
@@ -79,7 +102,7 @@ def classification(filename, class_num, threshold):
         for g, m in flows.items():
             x = np.where(m <= nk)[0]
             i = x.min() if x.size > 0 else len(nk) - 1
-            sheet.writerow([g[0], g[1], m, i])
+            sheet.writerow([g[0], g[1], m, 0])
 
 
 def count(filename):
@@ -103,7 +126,6 @@ def count(filename):
     n, bins, patches = plt.hist(data, 50, facecolor='g', alpha=0.75)
     plt.grid(True)
     plt.show()
-
 
 
 def gen_data(data_file, r, output_path):
@@ -142,6 +164,7 @@ def gen_data(data_file, r, output_path):
 
 if __name__ == '__main__':
     #unicom_data()
-    classification('data/unicom_1km.csv', 3, 50)
+    #taxi_data()
+    #classification('data/taxi_1km.csv', 3, 50)
     #count('data/unicom_500.csv')
-    gen_data('data/unicom_1km_c3_t50.csv', [0.6, 0.2, 0.2], 'R-GCN/data/unicom/')
+    gen_data('data/taxi_1km_c3_t50.csv', [0.6, 0.2, 0.2], 'R-GCN/data/taxi/')
