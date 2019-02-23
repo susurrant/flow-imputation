@@ -10,12 +10,12 @@ import random
 # 联通数据处理
 def unicom_data():
     grid_map = {}
-    with open('data/250_is_500.csv', 'r') as f:
+    with open('data/250_is_1km.csv', 'r') as f:
         f.readline()
         line = f.readline()
         while line:
             d = line.strip().split(',')
-            grid_map[d[1]] = d[2] # map 250 to 500
+            grid_map[d[1]] = d[2] # map 250 to 500/1km
             line = f.readline()
 
     flows_250 = {}
@@ -30,18 +30,18 @@ def unicom_data():
                 flows_250[(d[2], d[3])] += int(d[4])
             line = f.readline()
 
-    flows_500 = {}
+    flows_sta = {}
     for g, m in flows_250.items():
         if g[0] in grid_map and g[1] in grid_map:
             k = (grid_map[g[0]], grid_map[g[1]])
-            if k not in flows_500:
-                flows_500[k] = 0
-            flows_500[k] += m
+            if k not in flows_sta:
+                flows_sta[k] = 0
+            flows_sta[k] += m
 
-    with open('data/unicom_500.csv', 'w', newline='') as rf:
+    with open('data/unicom_1km.csv', 'w', newline='') as rf:
         sheet = csv.writer(rf)
         sheet.writerow(['o', 'd', 'm'])
-        for g, m in flows_500.items():
+        for g, m in flows_sta.items():
             sheet.writerow([g[0], g[1], m])
 
 
@@ -73,7 +73,7 @@ def classification(filename, class_num, threshold):
     nk, nl = fisher_jenks(data, class_num)
     print(nk, nl)
 
-    with open(filename[:-4]+'_c'+str(class_num)+'_t'+str(threshold)+'_'+filename[-4:], 'w', newline='') as rf:
+    with open(filename[:-4]+'_c'+str(class_num)+'_t'+str(threshold)+filename[-4:], 'w', newline='') as rf:
         sheet = csv.writer(rf)
         sheet.writerow(['o', 'd', 'm', 'c'])
         for g, m in flows.items():
@@ -142,6 +142,6 @@ def gen_data(data_file, r, output_path):
 
 if __name__ == '__main__':
     #unicom_data()
-    #classification('data/unicom_500.csv', 3, 100)
+    #classification('data/unicom_1km.csv', 3, 50)
     #count('data/unicom_500.csv')
-    gen_data('data/unicom_500_c3_t100_.csv', [0.6, 0.2, 0.2], 'R-GCN/data/unicom/')
+    gen_data('data/unicom_1km_c3_t50.csv', [0.6, 0.2, 0.2], 'R-GCN/data/unicom/')
