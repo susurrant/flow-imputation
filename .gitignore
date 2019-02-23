@@ -10,6 +10,8 @@ map/
 data/
 R-GCN/code/models/
 SR-GCN/data/code/models/
+!R-GCN/data/
+!SR-GCN/data/
 
 # Distribution / packaging
 .Python
