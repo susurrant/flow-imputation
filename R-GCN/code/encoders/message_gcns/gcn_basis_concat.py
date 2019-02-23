@@ -88,3 +88,6 @@ class ConcatGcn(MessageGcn):
         regularization += tf.reduce_mean(tf.square(self.W_self))
 
         return 0.0 * regularization
+
+    def print(self):
+        pass
