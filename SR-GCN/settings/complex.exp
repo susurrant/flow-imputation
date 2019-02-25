@@ -13,7 +13,7 @@
 	ReportTrainLossEvery=100
 
 	[EarlyStopping]
-		CheckEvery=2000
+		CheckEvery=500
 		BurninPhaseDuration=6000
 
 	[Algorithm]
@@ -24,7 +24,7 @@
 	NegativeSampleRate=10
 	GraphSplitSize=0.5
 	ExperimentName=models/Distmult
-	GraphBatchSize=30000
+	GraphBatchSize=500
 
 [Evaluation]
 	Metric=MRR

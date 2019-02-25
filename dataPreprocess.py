@@ -102,36 +102,13 @@ def classification(filename, class_num, threshold):
         for g, m in flows.items():
             x = np.where(m <= nk)[0]
             i = x.min() if x.size > 0 else len(nk) - 1
-            sheet.writerow([g[0], g[1], m, 0])
-
-
-def count(filename):
-    data = []
-    with open(filename, 'r') as f:
-        f.readline()
-        line = f.readline()
-        while line:
-            d = line.strip().split(',')
-            if d[0] == d[1] or int(d[-1]) < 50:
-                line = f.readline()
-                continue
-            data.append(int(d[-1]))
-            if int(d[-1]) == 19376:
-                print(d)
-            line = f.readline()
-
-    data = np.array(data)
-    print(data.shape)
-    print(np.max(data), np.min(data))
-    n, bins, patches = plt.hist(data, 50, facecolor='g', alpha=0.75)
-    plt.grid(True)
-    plt.show()
+            sheet.writerow([g[0], g[1], m, i])
 
 
 def gen_data(data_file, r, output_path):
     data = np.loadtxt(data_file, dtype=np.uint16, delimiter=',', skiprows=1)
 
-    # 生成训练、测试、验证数据
+    # 生成训练、测试、验证数据集
     t = set(range(data.shape[0]))
     train_set = set(random.sample(range(data.shape[0]), int(r[0] * data.shape[0])))
     s = t - train_set
@@ -151,20 +128,51 @@ def gen_data(data_file, r, output_path):
             f.write(str(data[i, 0]) + '\t' + str(data[i, 3]) + '\t' + str(data[i, 1]) + '\r\n')
 
     # 生成数据字典
-    with open(output_path + 'entities.dict', 'w') as f:
+    with open(output_path + 'entities.dict', 'w', newline='') as f:
         grids = set(data[:, 0]) | set(data[:, 1])
         for i, gid in enumerate(grids):
-            f.write(str(i)+'\t'+ str(gid) + '\n')
+            f.write(str(i)+'\t'+ str(gid) + '\r\n')
 
-    with open(output_path + 'relations.dict', 'w') as f:
+    with open(output_path + 'relations.dict', 'w', newline='') as f:
         relations = set(data[:, 3])
         for i, r in enumerate(relations):
-            f.write(str(i) + '\t' + str(r) + '\n')
+            f.write(str(i) + '\t' + str(r) + '\r\n')
+
+
+# 生成节点特征
+def gen_features(entity_file, flow_file, colnum, output_file, normalizaed=False):
+    features = [] # [row, col, attract, pull]
+    node_list = []
+    with open(entity_file, 'r') as f:
+        line = f.readline().strip()
+        while line:
+            s = line.split('\t')
+            features.append([int(s[1])//colnum, int(s[1])%colnum, 0, 0])
+            node_list.append(s[1])
+            line = f.readline().strip()
+
+    with open(flow_file, 'r') as f:
+        f.readline()
+        line = f.readline().strip()
+        while line:
+            s = line.split(',')
+            features[node_list.index(s[0])][3] += int(s[2])
+            features[node_list.index(s[1])][2] += int(s[2])
+            line = f.readline().strip()
+
+    features = np.array(features, dtype=np.float)
+
+    if normalizaed:
+        features /= np.max(features, axis=0)
+
+    np.savetxt(output_file, features, fmt='%.3f', delimiter='\t')
+
 
 
 if __name__ == '__main__':
     #unicom_data()
     #taxi_data()
-    classification('data/taxi_1km.csv', 3, 50)
+    #classification('data/taxi_1km.csv', 3, 50)
     #count('data/unicom_500.csv')
-    gen_data('data/taxi_1km_c3_t50.csv', [0.6, 0.2, 0.2], 'R-GCN/data/taxi/')
+    #gen_data('data/taxi_1km_c3_t50.csv', [0.6, 0.2, 0.2], 'R-GCN/data/taxi_c3/')
+    gen_features('SR-GCN/data/taxi/entities.dict', 'data/taxi_1km_c1_t50.csv', 25, 'SR-GCN/data/taxi/features.txt', normalizaed=True)

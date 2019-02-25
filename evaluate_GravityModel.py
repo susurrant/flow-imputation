@@ -65,7 +65,7 @@ def evaluate(n, colnum, filtered=True):
     train = read_data(path+'train.txt')
     test = read_data(path+'test.txt')
     valid = read_data(path+'valid.txt')
-    flow, attract = read_interaction('data/taxi_1km_c3_t50.csv')
+    flow, attract = read_interaction('data/taxi_1km_c1_t50.csv')
 
     beta, K = gravity_model(train, flow, attract, colnum)
     print('beta:', beta, 'K:', K)
@@ -120,6 +120,67 @@ def evaluate(n, colnum, filtered=True):
     return hits/len(ranks), mrr
 
 
+
+def evaluate_weird(n, colnum, filtered=True):
+    path = 'R-GCN/data/taxi/'
+    train = read_data(path+'train.txt')
+    test = read_data(path+'test.txt')
+    valid = read_data(path+'valid.txt')
+    flow, attract = read_interaction('data/taxi_1km_c1_t50.csv')
+
+    beta, K = gravity_model(train, flow, attract, colnum)
+    print('beta:', beta, 'K:', K)
+
+    ranks = []
+    for t in test:
+        if t[1] in attract and t[0] in attract:
+            dif_pred = K*attract[t[0]]*attract[t[1]]/grid_dis(t[0], t[1], colnum)**beta
+        else:
+            continue
+
+        # remove head
+        dif_f = []
+        for g in attract:
+            if g == t[1]:
+                continue
+            if filtered:
+                if (g, t[1]) not in train and (g, t[1]) not in valid and (t[0], g) not in test:
+                    dif_f.append(K*attract[t[1]]*attract[g]/grid_dis(g, t[1], colnum)**beta)
+            else:
+                dif_f.append(K*attract[t[1]]*attract[g]/grid_dis(g, t[1], colnum)**beta)
+
+        if len(dif_f) >= n:
+            ranks.append(np.sum(np.array(dif_f) < dif_pred))
+        else:
+            print(t, len(dif_f))
+
+        # remove tail
+        dif_f = []
+        for g in attract:
+            if g == t[0]:
+                continue
+            if filtered:
+                if (t[0], g) not in train and (t[0], g) not in valid and (t[0], g) not in test:
+                    dif_f.append(K*attract[t[0]]*attract[g]/grid_dis(g, t[0], colnum)**beta)
+            else:
+                dif_f.append(K*attract[t[0]]*attract[g]/grid_dis(g, t[0], colnum)**beta)
+        if len(dif_f) >= n:
+            ranks.append(np.sum(np.array(dif_f) < dif_pred))
+        else:
+            print(t, len(dif_f))
+    print(ranks)
+
+    # hits at n
+    hits = 0.0
+    for rank in ranks:
+        if rank <= n:
+            hits += 1
+
+    # MRR(Mean Reciprocal Rank)
+    mrr = np.mean(1/(np.array(ranks)+1))
+
+    return hits/len(ranks), mrr
+
 if __name__ == '__main__':
-    print(evaluate(1, colnum=25, filtered=True))
-    print(evaluate(1, colnum=25, filtered=False))
+    print(evaluate(10, colnum=25, filtered=True))
+    print(evaluate(10, colnum=25, filtered=False))
