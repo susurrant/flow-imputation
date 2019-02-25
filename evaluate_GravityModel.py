@@ -60,7 +60,8 @@ def gravity_model(idx, flow, attract, colnum):
     return beta, K
 
 
-def evaluate(n, colnum, filtered=True):
+# 越靠近真值，排序越靠前
+def evaluate_approach(n, colnum, filtered=True):
     path = 'R-GCN/data/taxi/'
     train = read_data(path+'train.txt')
     test = read_data(path+'test.txt')
@@ -120,8 +121,8 @@ def evaluate(n, colnum, filtered=True):
     return hits/len(ranks), mrr
 
 
-
-def evaluate_weird(n, colnum, filtered=True):
+# 越大排序越靠前
+def evaluate_sort(n, colnum, filtered=True):
     path = 'R-GCN/data/taxi/'
     train = read_data(path+'train.txt')
     test = read_data(path+'test.txt')
@@ -148,9 +149,10 @@ def evaluate_weird(n, colnum, filtered=True):
                     dif_f.append(K*attract[t[1]]*attract[g]/grid_dis(g, t[1], colnum)**beta)
             else:
                 dif_f.append(K*attract[t[1]]*attract[g]/grid_dis(g, t[1], colnum)**beta)
-
+        #print('a', dif_pred)
+        #print('b', dif_f)
         if len(dif_f) >= n:
-            ranks.append(np.sum(np.array(dif_f) < dif_pred))
+            ranks.append(np.sum(np.array(dif_f) > dif_pred))
         else:
             print(t, len(dif_f))
 
@@ -165,9 +167,11 @@ def evaluate_weird(n, colnum, filtered=True):
             else:
                 dif_f.append(K*attract[t[0]]*attract[g]/grid_dis(g, t[0], colnum)**beta)
         if len(dif_f) >= n:
-            ranks.append(np.sum(np.array(dif_f) < dif_pred))
+            ranks.append(np.sum(np.array(dif_f) > dif_pred))
         else:
             print(t, len(dif_f))
+        #print('c', dif_f)
+        #print(ranks)
     print(ranks)
 
     # hits at n
@@ -181,6 +185,7 @@ def evaluate_weird(n, colnum, filtered=True):
 
     return hits/len(ranks), mrr
 
+
 if __name__ == '__main__':
-    print(evaluate(10, colnum=25, filtered=True))
-    print(evaluate(10, colnum=25, filtered=False))
+    print(evaluate_sort(10, colnum=25, filtered=True))
+    print(evaluate_approach(10, colnum=25, filtered=True))

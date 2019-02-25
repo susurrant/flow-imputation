@@ -127,10 +127,10 @@ def build_encoder(encoder_settings, triples, features):
         graph = Representation(triples, encoder_settings)
 
         # Define shapes:
-        input_shape = [int(encoder_settings['FeatureDimension']),
-                       int(encoder_settings['InternalEncoderDimension'])]
         feature_shape = [int(encoder_settings['EntityCount']),
-                         int(encoder_settings['FeatureDimension'])] # modified
+                         int(encoder_settings['FeatureCount'])]
+        input_shape = [int(encoder_settings['FeatureCount']),
+                       int(encoder_settings['InternalEncoderDimension'])]
         internal_shape = [int(encoder_settings['InternalEncoderDimension']),
                           int(encoder_settings['InternalEncoderDimension'])]
         projection_shape = [int(encoder_settings['InternalEncoderDimension']),

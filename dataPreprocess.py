@@ -140,7 +140,7 @@ def gen_data(data_file, r, output_path):
 
 
 # 生成节点特征
-def gen_features(entity_file, flow_file, colnum, output_file, normalizaed=False):
+def gen_features(entity_file, flow_file, output_file, colnum, normalizaed=False):
     features = [] # [row, col, attract, pull]
     node_list = []
     with open(entity_file, 'r') as f:
@@ -168,11 +168,10 @@ def gen_features(entity_file, flow_file, colnum, output_file, normalizaed=False)
     np.savetxt(output_file, features, fmt='%.3f', delimiter='\t')
 
 
-
 if __name__ == '__main__':
     #unicom_data()
     #taxi_data()
     #classification('data/taxi_1km.csv', 3, 50)
     #count('data/unicom_500.csv')
     #gen_data('data/taxi_1km_c3_t50.csv', [0.6, 0.2, 0.2], 'R-GCN/data/taxi_c3/')
-    gen_features('SR-GCN/data/taxi/entities.dict', 'data/taxi_1km_c1_t50.csv', 25, 'SR-GCN/data/taxi/features.txt', normalizaed=True)
+    gen_features('SR-GCN/data/taxi/entities.dict', 'data/taxi_1km_c1_t50.csv', 'SR-GCN/data/taxi/features.txt', colnum=25, normalizaed=True)

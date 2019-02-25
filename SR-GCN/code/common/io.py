@@ -38,5 +38,15 @@ def read_triplets_as_list(filename, entity_dict, relation_dict):
 
     return l
 
+def read_features_as_list(filename):
+    features = []
+    with open(filename, 'r') as f:
+        line = f.readline().strip()
+        while line:
+            features.append(list(map(float, line.split('\t'))))
+            line = f.readline().strip()
+    return features
+
 
 #print(read_triplets_as_list('data/FB15k/freebase_mtr100_mte100-train.txt', 'data/FB15k/entities.dict', 'data/FB15k/relations.dict'))
+#print(read_features_as_list('../../data/taxi/features.txt'))

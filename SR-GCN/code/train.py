@@ -32,6 +32,7 @@ if __name__ == '__main__':
     train_path = dataset + '/train.txt'
     valid_path = dataset + '/valid.txt'
     test_path = dataset + '/test.txt'
+    feature_path = dataset + '/features.txt'
 
     #Extend paths for accuracy evaluation:
     if settings['Evaluation']['Metric'] == 'Accuracy':
@@ -41,10 +42,12 @@ if __name__ == '__main__':
     train_triplets = io.read_triplets_as_list(train_path, entities_path, relations_path)
     valid_triplets = io.read_triplets_as_list(valid_path, entities_path, relations_path)
     test_triplets = io.read_triplets_as_list(test_path, entities_path, relations_path)
+    features = io.read_features_as_list(feature_path)
 
     train_triplets = np.array(train_triplets)
     valid_triplets = np.array(valid_triplets)
     test_triplets = np.array(test_triplets)
+    features = np.array(features)
 
     entities = io.read_dictionary(entities_path)
     relations = io.read_dictionary(relations_path)
@@ -62,6 +65,7 @@ if __name__ == '__main__':
 
     general_settings.put('EntityCount', len(entities))
     general_settings.put('RelationCount', len(relations))
+    general_settings.put('FeatureCount', len(features[0]))
     general_settings.put('EdgeCount', len(train_triplets))
 
     encoder_settings.merge(shared_settings)
@@ -76,7 +80,7 @@ if __name__ == '__main__':
     '''
     3. Construct the encoder-decoder pair:
     '''
-    encoder = model_builder.build_encoder(encoder_settings, train_triplets)
+    encoder = model_builder.build_encoder(encoder_settings, train_triplets, features)
     model = model_builder.build_decoder(encoder, decoder_settings)
     print(encoder.needs_graph())
 
