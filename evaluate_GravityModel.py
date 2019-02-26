@@ -187,5 +187,9 @@ def evaluate_sort(n, colnum, filtered=True):
 
 
 if __name__ == '__main__':
-    print(evaluate_sort(10, colnum=25, filtered=True))
-    print(evaluate_approach(10, colnum=25, filtered=True))
+    n = 1
+    print(evaluate_sort(n, colnum=25, filtered=True))
+    print(evaluate_sort(n, colnum=25, filtered=False))
+
+    print(evaluate_approach(n, colnum=25, filtered=True))
+    print(evaluate_approach(n, colnum=25, filtered=False))
