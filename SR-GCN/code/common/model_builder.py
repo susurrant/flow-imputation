@@ -150,10 +150,7 @@ def build_encoder(encoder_settings, triples, features):
         encoding = SpatialRepresentation(feature_shape,
                                          encoder_settings,
                                          features,
-                                         next_component=graph,  # graph_representations.Representation
-                                         onehot_input=False,  # set to False. disable onehot
-                                         use_bias=True,
-                                         use_nonlinearity=True)
+                                         next_component=graph)  # graph_representations.Representation
 
         # Initial embedding:
         if encoder_settings['UseInputTransform'] == "Yes":
