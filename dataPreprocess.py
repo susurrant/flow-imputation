@@ -171,6 +171,6 @@ def gen_features(entity_file, flow_file, output_file, colnum, normalizaed=False)
 if __name__ == '__main__':
     #unicom_data()
     #taxi_data()
-    classification('data/unicom_1km.csv', 1, 200)
-    gen_data('data/unicom_1km_c1_t200.csv', [0.6, 0.2, 0.2], 'R-GCN/data/unicom/')
+    classification('data/unicom_1km.csv', 1, 100)
+    gen_data('data/unicom_1km_c1_t100.csv', [0.6, 0.2, 0.2], 'R-GCN/data/unicom/')
     #gen_features('SR-GCN/data/taxi/entities.dict', 'data/taxi_1km_c1_t50.csv', 'SR-GCN/data/taxi/features.txt', colnum=25, normalizaed=True)
