@@ -315,7 +315,6 @@ class Scorer():
             print("Evaluating accuracies...")
 
         score_vector = self.model.score(triples)
-        print(score_vector, score_vector.shape)
         positives = score_vector[::2]
         negatives = score_vector[1::2]
 
