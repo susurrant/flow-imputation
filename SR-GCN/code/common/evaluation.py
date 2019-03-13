@@ -146,6 +146,11 @@ class MrrScore():
         self.vertex_freq = [None]*len(dataset)*2
         self.relation_freq = [None]*len(dataset)*2
 
+    # 对
+    # gold_idx: sub / obj idx
+    # filter_idx: (obj, rel) / (sub, rel), known in the test set
+    # in_ and out_degree: obj / sub degrees
+
     def append_line(self, evaluations, gold_idx, filter_idxs, in_degree, out_degree, vertex_freq, relation_freq):
         score_gold = evaluations[gold_idx]
         self.predicted_probabilities[self.pointer] = score_gold
@@ -352,6 +357,7 @@ class Scorer():
             i = 1
 
         # --- model.score_all_subjects -> decoders.bilinear_dial.BilinearDiag -- affine_transform.get_all_codes
+        # 对由所有sub  和  test triple的(obj, rel) 组成的triples计算energies，计算test triple(包含实际的sub)的rank
         pred_s = self.model.score_all_subjects(triples)
         for evaluations, triplet in zip(pred_s, triples):
             if verbose:
