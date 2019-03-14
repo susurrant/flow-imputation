@@ -79,8 +79,8 @@ class Model:
             self.score_all_objects_graph = self.predict_all_object_scores()
 
         if self.needs_graph():
-            d = {self.get_test_input_variables()[0]: self.test_graph,
-                 self.get_test_input_variables()[1]: triplets}
+            d = {self.get_test_input_variables()[0]: self.test_graph,  # train_triplets
+                 self.get_test_input_variables()[1]: triplets}         # test_triplets
         else:
             d = {self.get_test_input_variables()[0]: triplets}
 

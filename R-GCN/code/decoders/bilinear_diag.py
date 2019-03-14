@@ -16,6 +16,8 @@ class BilinearDiag(Model):
             return self.encoder_cache[mode]
 
         subject_codes, relation_codes, object_codes = self.next_component.get_all_codes(mode=mode)
+        print('compute_codes')
+        print(self.X)
         e1s = tf.nn.embedding_lookup(subject_codes, self.X[:, 0])
         rs = tf.nn.embedding_lookup(relation_codes, self.X[:, 1])
         e2s = tf.nn.embedding_lookup(object_codes, self.X[:, 2])

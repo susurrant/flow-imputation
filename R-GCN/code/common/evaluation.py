@@ -353,6 +353,8 @@ class Scorer():
 
         # --- model.score_all_subjects -> decoders.bilinear_dial.BilinearDiag -- affine_transform.get_all_codes
         pred_s = self.model.score_all_subjects(triples)
+        print('evaluate mrr')
+        print(pred_s)
         for evaluations, triplet in zip(pred_s, triples):
             if verbose:
                 print("Computing ranks: " + str(i) + " of " + str(len(triples)), end='\r')
