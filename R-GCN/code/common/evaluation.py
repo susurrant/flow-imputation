@@ -368,6 +368,7 @@ class Scorer():
 
             known_subject_idxs = self.known_subject_triples[(triplet[2], triplet[1])]
             gold_idx = triplet[0]
+            print(gold_idx)
             score.append_line(evaluations, gold_idx, known_subject_idxs, degrees[0], degrees[1], avg_freq, rel_freq)
 
         if verbose:
