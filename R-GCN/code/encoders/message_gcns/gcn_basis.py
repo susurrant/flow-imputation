@@ -45,9 +45,6 @@ class BasisGcn(MessageGcn):
         # Could you help me to add the matrix to this code?
         forward_messages = tf.reduce_sum(sender_terms * tf.expand_dims(forward_type_scaling,-1), 1)
         backward_messages = tf.reduce_sum(receiver_terms * tf.expand_dims(backward_type_scaling, -1), 1)
-        print('--------------------------45613416546461313-----------------------')
-        print(forward_messages.get_shape())
-        print(backward_messages.get_shape())
 
         return forward_messages, backward_messages
 

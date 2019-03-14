@@ -69,7 +69,7 @@ class Model:
             d = {self.get_test_input_variables()[0]: triplets}
 
         print('score all sub')
-        print('d')
+        print(d)
 
         return self.session.run(self.score_all_subjects_graph, feed_dict=d)
 
