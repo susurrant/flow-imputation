@@ -351,9 +351,10 @@ class Scorer():
             print("Evaluating subjects...")
             i = 1
 
+        print('evaluate mrr')
+        print(self.model.score(triples))
         # --- model.score_all_subjects -> decoders.bilinear_dial.BilinearDiag -- affine_transform.get_all_codes
         pred_s = self.model.score_all_subjects(triples)
-        print('evaluate mrr')
         print(triples)
         print(pred_s)
         for evaluations, triplet in zip(pred_s, triples):
