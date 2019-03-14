@@ -68,6 +68,9 @@ class Model:
         else:
             d = {self.get_test_input_variables()[0]: triplets}
 
+        print('score all sub')
+        print('d')
+
         return self.session.run(self.score_all_subjects_graph, feed_dict=d)
 
     def score_all_objects(self, triplets):
