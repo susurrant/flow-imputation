@@ -69,6 +69,7 @@ class Model:
             d = {self.get_test_input_variables()[0]: triplets}
 
         print('score all sub')
+        print(self.get_test_input_variables())
         print(d)
 
         return self.session.run(self.score_all_subjects_graph, feed_dict=d)
@@ -89,7 +90,7 @@ class Model:
     '''
 
     def register_for_test(self, triplets):
-        self.test_graph = triplets
+        self.test_graph = triplets     # train_triplets
 
     def preprocess(self, triplets):
         self.train_triplets = triplets
