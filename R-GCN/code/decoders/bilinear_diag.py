@@ -35,8 +35,8 @@ class BilinearDiag(Model):
         return tf.reduce_mean(tf.nn.weighted_cross_entropy_with_logits(self.Y, energies, weight))
 
     def local_initialize_train(self):
-        self.Y = tf.placeholder(tf.float32, shape=[None])
-        self.X = tf.placeholder(tf.int32, shape=[None, 3])
+        self.Y = tf.placeholder(tf.float32, shape=[None], name='bilinear diag Y')
+        self.X = tf.placeholder(tf.int32, shape=[None, 3], name='bilinear diag X')
 
     def local_get_train_input_variables(self):
         return [self.X, self.Y]

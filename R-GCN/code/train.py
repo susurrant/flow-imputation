@@ -241,6 +241,9 @@ if __name__ == '__main__':
     model.initialize_train()
 
     optimizer_weights = model.get_weights()
+    # [<tf.Tensor 'graph_edges:0' shape=(?, 3) dtype=int32>,
+    # <tf.Tensor 'Placeholder_1:0' shape=(?, 3) dtype=int32>,
+    # <tf.Tensor 'Placeholder:0' shape=(?,) dtype=float32>]
     optimizer_input = model.get_train_input_variables()
     loss = model.get_loss(mode='train') + model.get_regularization()
     #print(optimizer_input)
