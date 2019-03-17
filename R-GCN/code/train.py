@@ -244,7 +244,8 @@ if __name__ == '__main__':
     optimizer_input = model.get_train_input_variables()
     loss = model.get_loss(mode='train') + model.get_regularization()
     #print(optimizer_input)
-
+    print('optimizer weights', optimizer_weights)
+    print('optimizer input', optimizer_input)
 
     '''
     6. Clean this shit up:
@@ -253,7 +254,7 @@ if __name__ == '__main__':
         opp.additional_ops.append(add_op)
 
     optimizer_parameters = opp.get_parametrization()
-    print(optimizer_parameters)
+    print(opp.get_additional_ops())
 
     '''
     7. Train with Converge:
