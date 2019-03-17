@@ -83,8 +83,8 @@ class TensorflowOptimizer(Optimizer):
 
     def update_from_batch(self, processed_batch):        
         feed_dict = dict(zip(self.placeholders, processed_batch))
-        print('update from batch')
-        print(feed_dict)
+        #print('update from batch')
+        #print(feed_dict)
         adds = self.stack.get_additional_ops()
         upd = self.session.run([self.update_function, self.loss_function, adds],
                                        feed_dict=feed_dict)
