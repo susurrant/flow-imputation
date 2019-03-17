@@ -32,6 +32,8 @@ class BilinearDiag(Model):
 
         weight = int(self.settings['NegativeSampleRate'])
         weight = 1
+        print('---get loss---get loss---get loss---get loss---get loss---get loss---')
+        print(self.Y)
         return tf.reduce_mean(tf.nn.weighted_cross_entropy_with_logits(self.Y, energies, weight))
 
     def local_initialize_train(self):
