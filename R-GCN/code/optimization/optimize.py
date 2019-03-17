@@ -33,8 +33,8 @@ class Optimizer():
             self.stack.set_iteration(i)
 
             processed_batch = self.stack.process_data(next_batch) # algorithms.py: SampleTransformer
-            for k, v in processed_batch.items():
-                print(k, v)
+            for ppp in processed_batch.items():
+                print(ppp)
             train_loss = self.update_from_batch(processed_batch)
             
             if self.stack.postprocess(train_loss) == 'stop':
