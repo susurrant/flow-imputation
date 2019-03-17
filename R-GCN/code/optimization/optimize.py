@@ -17,6 +17,7 @@ class Optimizer():
         self.stack = stack
 
     def fit(self, training_data, validation_data=None):
+        print('---------------------------fit--------------------')
         self.stack.set_training_data(training_data)
         if validation_data is not None:
             self.stack.set_validation_data(validation_data)
@@ -27,9 +28,12 @@ class Optimizer():
         next_batch = self.stack.next_batch()
         while next_batch is not None:
             i+=1
+            print(i)
+            print(next_batch)
             self.stack.set_iteration(i)
 
             processed_batch = self.stack.process_data(next_batch)
+            print(next_batch)
             train_loss = self.update_from_batch(processed_batch)
             
             if self.stack.postprocess(train_loss) == 'stop':

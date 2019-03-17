@@ -47,8 +47,6 @@ class BilinearDiag(Model):
     def predict(self):
         e1s, rs, e2s = self.compute_codes(mode='test')
         energies = tf.reduce_sum(e1s * rs * e2s, 1)
-        print('---get loss---get loss---get loss---get loss---get loss---get loss---')
-        print(self.Y)
         return tf.nn.sigmoid(energies)
 
     def predict_all_subject_scores(self):

@@ -253,7 +253,7 @@ if __name__ == '__main__':
         opp.additional_ops.append(add_op)
 
     optimizer_parameters = opp.get_parametrization()
-
+    print(optimizer_parameters)
 
     '''
     7. Train with Converge:
