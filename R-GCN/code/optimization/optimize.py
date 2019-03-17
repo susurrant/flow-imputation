@@ -27,13 +27,13 @@ class Optimizer():
         next_batch = self.stack.next_batch()
         while next_batch is not None:
             i+=1
-            print('optimize.fit', i)
-            print('next batch')
-            print(next_batch)                       # train triplets
+            #print('optimize.fit', i)
+            #print('next batch')
+            #print(next_batch)                       # train triplets
             self.stack.set_iteration(i)
 
             processed_batch = self.stack.process_data(next_batch) # algorithms.py: SampleTransformer
-            print(processed_batch)
+            #print(processed_batch)
             train_loss = self.update_from_batch(processed_batch)
             
             if self.stack.postprocess(train_loss) == 'stop':
@@ -83,9 +83,7 @@ class TensorflowOptimizer(Optimizer):
         self.session.run(init_op)
 
     def update_from_batch(self, processed_batch):        
-        feed_dict = dict(zip(self.placeholders, processed_batch)) # 第一项： (sub, rel, obj) 第二项: 1 or 0
-        #print('update from batch')
-        #print(feed_dict)
+        feed_dict = dict(zip(self.placeholders, processed_batch))
         adds = self.stack.get_additional_ops()
         upd = self.session.run([self.update_function, self.loss_function, adds],
                                        feed_dict=feed_dict)
