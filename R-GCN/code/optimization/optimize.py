@@ -34,7 +34,7 @@ class Optimizer():
 
             processed_batch = self.stack.process_data(next_batch) # algorithms.py: SampleTransformer
             for ppp in processed_batch:
-                print(ppp)
+                print(len(ppp), ppp)
             train_loss = self.update_from_batch(processed_batch)
             
             if self.stack.postprocess(train_loss) == 'stop':
