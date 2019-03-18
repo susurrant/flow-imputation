@@ -233,7 +233,7 @@ if __name__ == '__main__':
         opp.set_sample_transform_function(t_func)
 
 
-        a, b, c = t_func(train_triplets[10:21])
+        a, b, c = t_func(train_triplets)
         print(a)
         print(b)
         print(c)
