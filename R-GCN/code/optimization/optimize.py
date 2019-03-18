@@ -27,14 +27,14 @@ class Optimizer():
         next_batch = self.stack.next_batch()
         while next_batch is not None:
             i+=1
-            print('optimize.fit', i)
+            #print('optimize.fit', i)
             #print('next batch')
             #print(next_batch)                       # train triplets
             self.stack.set_iteration(i)
 
             processed_batch = self.stack.process_data(next_batch) # algorithms.py: SampleTransformer
-            for ppp in processed_batch:
-                print(len(ppp), ppp)
+            #for ppp in processed_batch:
+            #    print(len(ppp), ppp)
             train_loss = self.update_from_batch(processed_batch)
             
             if self.stack.postprocess(train_loss) == 'stop':
