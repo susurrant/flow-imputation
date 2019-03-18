@@ -144,7 +144,6 @@ if __name__ == '__main__':
 
 
     def sample_edge_neighborhood(triplets, sample_size):
-
         edges = np.zeros((sample_size), dtype=np.int32)
 
         #initialize
@@ -159,7 +158,7 @@ if __name__ == '__main__':
                 weights = np.ones_like(weights)
                 weights[np.where(sample_counts == 0)] = 0
 
-            probabilities = (weights) / np.sum(weights)
+            probabilities = weights / np.sum(weights)
             chosen_vertex = np.random.choice(np.arange(degrees.shape[0]), p=probabilities)
             chosen_adj_list = adj_list[chosen_vertex]
             seen[chosen_vertex] = True
@@ -206,7 +205,7 @@ if __name__ == '__main__':
                     exit()
                     '''
 
-                    #graph_batch_ids = sample_TIES(arr, 1000) #sample_edge_neighborhood(arr, graph_batch_size)
+                    #graph_batch_ids = sample_TIES(arr, 1000)
                     graph_batch_ids = sample_edge_neighborhood(arr, graph_batch_size)
                 else:
                     graph_batch_size = arr.shape[0]
