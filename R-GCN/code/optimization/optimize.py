@@ -24,12 +24,12 @@ class Optimizer():
         self.initialize_for_fitting()
 
         i = 0
-        next_batch = self.stack.next_batch()
+        next_batch = self.stack.next_batch()    # abstract.py: BaseOptimizer: always returns the whole train triplets
         while next_batch is not None:
             i+=1
-            print('optimize.fit', i, len(next_batch))
+            #print('optimize.fit', i, len(next_batch))
             #print('next batch')
-            #print(next_batch)                       # train triplets
+            #print(next_batch)
             self.stack.set_iteration(i)
 
             processed_batch = self.stack.process_data(next_batch) # algorithms.py: SampleTransformer

@@ -262,6 +262,6 @@ if __name__ == '__main__':
     optimizer = build_tensorflow(loss, optimizer_weights, optimizer_parameters, optimizer_input)
     optimizer.set_session(model.session)
     print('fit...')
-    optimizer.fit(train_triplets, validation_data=valid_triplets)
+    optimizer.fit(train_triplets, validation_data=valid_triplets)  # 同时输入交互强度
     #scorer.dump_all_scores(valid_triplets, 'dumps/subjects.valid', 'dumps/objects.valid')
     #scorer.dump_all_scores(test_triplets, 'dumps/subjects.test', 'dumps/objects.test')

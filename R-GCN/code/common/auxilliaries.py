@@ -30,7 +30,7 @@ class NegativeSampler():
                 else:
                     new_indexes[index+size_of_batch,0] = values[index]
 
-        return new_indexes, new_labels
+        return new_indexes, new_labels   # new labels: 改成交互强度
 
     def set_known_positives(self, triplets):
         self.objs = {}
