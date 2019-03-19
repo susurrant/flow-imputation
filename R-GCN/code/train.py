@@ -192,28 +192,17 @@ if __name__ == '__main__':
             else:
                 if 'GraphBatchSize' in general_settings:
                     graph_batch_size = int(general_settings['GraphBatchSize'])
-
-                    '''
-                    n = np.zeros(100)
-                    for i in range(100):
-                        if i % 20 == 0:
-                            print(i)
-                        n[i] = sample_TIES(arr, 1000).shape[0]
-
-                    print(n.mean())
-                    print(n.std())
-                    exit()
-                    '''
-
-                    #graph_batch_ids = sample_TIES(arr, 1000)
                     graph_batch_ids = sample_edge_neighborhood(arr, graph_batch_size)
                 else:
                     graph_batch_size = arr.shape[0]
                     print(graph_batch_size)
                     graph_batch_ids = np.arange(graph_batch_size)
                     print(graph_batch_ids)
-
+                print('-----------------train triplets-------------------')
+                print(train_triplets)
                 graph_batch = np.array(train_triplets)[graph_batch_ids]
+                print('-----------------ids-------------------')
+                print(graph_batch_ids)
                 print(graph_batch)
 
                 # Apply dropouts:
