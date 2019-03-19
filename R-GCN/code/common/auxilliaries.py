@@ -13,8 +13,6 @@ class NegativeSampler():
     def transform(self, triplets):
         size_of_batch = len(triplets)
         number_to_generate = size_of_batch*self.negative_sample_rate
-        print('------------transform-------------')
-        print(size_of_batch, self.negative_sample_rate, number_to_generate)
         
         new_labels = np.zeros((size_of_batch * (self.negative_sample_rate + 1))).astype(np.float32)
         new_indexes = np.tile(triplets, (self.negative_sample_rate + 1,1)).astype(np.int32)

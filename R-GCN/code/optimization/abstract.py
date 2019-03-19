@@ -60,10 +60,6 @@ class IOptimizer():
         if self.next_component is not None:
             self.next_component.set_training_data(training_data)
 
-    '''
-    TF:
-    '''
-
     def get_additional_ops(self):
         return self.next_component.get_additional_ops()
     

@@ -27,7 +27,7 @@ class Optimizer():
         next_batch = self.stack.next_batch()
         while next_batch is not None:
             i+=1
-            #print('optimize.fit', i)
+            print('optimize.fit', i, len(next_batch))
             #print('next batch')
             #print(next_batch)                       # train triplets
             self.stack.set_iteration(i)
