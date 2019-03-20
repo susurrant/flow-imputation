@@ -1,6 +1,4 @@
 import numpy as np
-from scipy.sparse import coo_matrix
-import math
 import tensorflow as tf
 from model import Model
 
@@ -34,36 +32,6 @@ class MessageGraph():
 
     def get_receiver_indices(self):
         return self.receiver_indices
-
-    '''
-    def compute_normalized_values(self, receiver_indices, message_types):
-        if self.normalization[0] == "global":
-            mrs = receiver_indices
-        else:
-            mrs = [tuple(x) for x in np.vstack((receiver_indices, message_types)).transpose()]
-
-        counts = {}
-        for mr in mrs:
-            if mr in counts:
-                counts[mr] += 1.0
-            else:
-                counts[mr] = 1.0
-
-        return np.array([1.0 / counts[mr] for mr in mrs]).astype(np.float32)
-
-    def compute_sparse_mtr(self):
-        if self.normalization[0] != "none":
-            mtr_values = self.compute_normalized_mtr(self.receiver_indices, self.message_types)
-        else:
-            mtr_values = np.ones_like(self.message_types).astype(np.int32)
-
-        message_indices = np.arange(self.edge_count).astype(np.int32)
-
-        mtr_indices = np.vstack((self.receiver_indices, message_indices)).transpose()
-        mtr_shape = [self.vertex_count, self.edge_count]
-
-        return mtr_indices, mtr_values, mtr_shape
-    '''
 
     def forward_incidence_matrix(self, normalization):
         if normalization[0] == "none":
@@ -178,40 +146,3 @@ class Representation(Model):
 
     def local_get_test_input_variables(self):
         return [self.X]
-
-    '''
-    def compute_normalized_values(self, receiver_indices, message_types):
-        if self.normalization == "global":
-            mrs = receiver_indices
-        else:
-            mrs = [tuple(x) for x in np.vstack((receiver_indices, message_types)).transpose()]
-
-        counts = {}
-        for mr in mrs:
-            if mr in counts:
-                counts[mr] += 1.0
-            else:
-                counts[mr] = 1.0
-
-        return np.array([1.0 / counts[mr] for mr in mrs]).astype(np.float32)
-
-    def compute_sparse_mtr(self):
-        if self.normalization != "none":
-            mtr_values = self.compute_normalized_values(self.receiver_indices, self.message_types)
-        else:
-            mtr_values = np.ones_like(self.message_types).astype(np.int32)
-
-        message_indices = np.arange(self.edge_count).astype(np.int32)
-
-        mtr_indices = np.vstack((self.receiver_indices, message_indices)).transpose()
-        mtr_shape = [self.entity_count, self.edge_count]
-
-        return mtr_indices, mtr_values, mtr_shape
-
-    def process(self, triplets):
-        triplets = triplets.transpose()
-        self.sender_indices = np.hstack((triplets[0], triplets[2])).astype(np.int32)
-        self.receiver_indices = np.hstack((triplets[2], triplets[0])).astype(np.int32)
-        self.message_types = np.hstack(
-            (triplets[1], triplets[1] + self.relation_count)).astype(np.int32)
-    '''

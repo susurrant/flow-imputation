@@ -30,7 +30,7 @@ class BilinearDiag(Model):
 
         weight = int(self.settings['NegativeSampleRate'])
         weight = 1
-        return tf.reduce_mean(tf.nn.weighted_cross_entropy_with_logits(self.Y, energies, weight))
+        return tf.reduce_mean(tf.losses.absolute_difference(self.Y, energies, weight))  # 损失函数修改
 
     def local_initialize_train(self):
         self.Y = tf.placeholder(tf.float32, shape=[None])
@@ -42,22 +42,26 @@ class BilinearDiag(Model):
     def local_get_test_input_variables(self):
         return [self.X]
 
+    #--------------------------以下函数去掉激活函数--------------------
     def predict(self):
         e1s, rs, e2s = self.compute_codes(mode='test')
         energies = tf.reduce_sum(e1s * rs * e2s, 1) # sum by row
-        return tf.nn.sigmoid(energies)
+        #return tf.nn.sigmoid(energies)
+        return energies
 
     def predict_all_subject_scores(self):
         e1s, rs, e2s = self.compute_codes(mode='test')
         all_subject_codes = self.next_component.get_all_subject_codes(mode='test')
         all_energies = tf.transpose(tf.matmul(all_subject_codes, tf.transpose(rs * e2s)))
-        return tf.nn.sigmoid(all_energies)
+        #return tf.nn.sigmoid(all_energies)
+        return all_energies
 
     def predict_all_object_scores(self):
         e1s, rs, e2s = self.compute_codes(mode='test')
         all_object_codes = self.next_component.get_all_object_codes(mode='test')
         all_energies = tf.matmul(e1s * rs, tf.transpose(all_object_codes))
-        return tf.nn.sigmoid(all_energies)
+        #return tf.nn.sigmoid(all_energies)
+        return all_energies
 
     def local_get_regularization(self):
         e1s, rs, e2s = self.compute_codes(mode='train')

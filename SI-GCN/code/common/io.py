@@ -34,8 +34,7 @@ def read_triplets_as_list(filename, entity_dict, relation_dict):
         relation = relation_dict[triplet[1]]
         entity_2 = entity_dict[triplet[2]]
 
-        l.append([entity_1, relation, entity_2])
-
+        l.append([entity_1, relation, entity_2, triplet[3]])  # type - int
     return l
 
 def read_features_as_list(filename):
@@ -46,7 +45,3 @@ def read_features_as_list(filename):
             features.append(list(map(float, line.split('\t'))))
             line = f.readline().strip()
     return features
-
-
-#print(read_triplets_as_list('data/FB15k/freebase_mtr100_mte100-train.txt', 'data/FB15k/entities.dict', 'data/FB15k/relations.dict'))
-#print(read_features_as_list('../../data/taxi/features.txt'))

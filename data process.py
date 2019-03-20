@@ -5,11 +5,10 @@ import csv
 import pysal as ps
 import random
 
-
 # 出租车数据处理
-def taxi_data(file_name):
+def taxi_data(data_file, out_file):
     flows = {}
-    with open(file_name, 'r') as f:
+    with open(data_file, 'r') as f:
         f.readline()
         line = f.readline().strip()
         while line:
@@ -22,9 +21,9 @@ def taxi_data(file_name):
                 flows[k] += 1
             line = f.readline().strip()
 
-    with open('data/taxi_1km.txt', 'w', newline='') as rf:
+    with open(out_file, 'w', newline='') as rf:
         sheet = csv.writer(rf, delimiter='\t')
-        sheet.writerow(['o', 'd', 'm'])
+        sheet.writerow(['ogid', 'dgid', 'm'])
         for g, m in flows.items():
             sheet.writerow([g[0], g[1], m])
 
@@ -67,35 +66,52 @@ def classification(filename, class_num, threshold):
 
 
 def gen_data(data_file, r, output_path):
-    data = np.loadtxt(data_file, dtype=np.uint16, delimiter='\t', skiprows=1)
+    p_data = np.loadtxt(data_file, dtype=np.uint16, delimiter='\t', skiprows=1)
+    p_dict = set(map(tuple, p_data[:,[0,2]]))
+    grids = list(set(p_data[:, 0]) | set(p_data[:, 2]))
 
     # 生成训练、测试、验证数据集
-    t = set(range(data.shape[0]))
-    train_set = set(random.sample(range(data.shape[0]), int(r[0] * data.shape[0])))
+    # positive triplets
+    t = set(range(p_data.shape[0]))
+    train_set = set(random.sample(range(p_data.shape[0]), int(r[0] * p_data.shape[0])))
+    train_data = p_data[list(train_set)]
     s = t - train_set
-    test_set = set(random.sample(s, int(r[1] * data.shape[0])))
-    valid_set = s - test_set
+    test_set = set(random.sample(s, int(r[1] * p_data.shape[0])))
+    test_data = p_data[list(test_set)]
+    valid_data = p_data[list(s - test_set)]
 
-    with open(output_path + 'train.txt', 'w', newline='') as f:
-        for i in train_set:
-            f.write(str(data[i, 0]) + '\t' + str(data[i, 3]) + '\t' + str(data[i, 1]) + '\r\n')
+    # negative triplets
+    n_data = []
+    n_dict = set()
+    for i in range(len(grids)):  # can be optimized using set operations
+        for j in range(len(grids)):
+            if j != i:
+                n_dict.add((grids[i], grids[j]))
+    n_dict -= p_dict
+    for g in n_dict:
+        n_data.append([g[0], 0, g[1], 0])  #只考虑一种关系，第二项值为0
 
-    with open(output_path + 'test.txt', 'w', newline='') as f:
-        for i in test_set:
-            f.write(str(data[i, 0]) + '\t' + str(data[i, 3]) + '\t' + str(data[i, 1]) + '\r\n')
+    n_data = np.array(n_data)
+    t = set(range(n_data.shape[0]))
+    train_set = set(random.sample(range(n_data.shape[0]), int(r[0] * n_data.shape[0])))
+    train_data = np.row_stack((train_data, n_data[list(train_set)]))
+    s = t - train_set
+    test_set = set(random.sample(s, int(r[1] * n_data.shape[0])))
+    test_data = np.row_stack((test_data, n_data[list(test_set)]))
+    valid_data = np.row_stack((valid_data, n_data[list(s - test_set)]))
 
-    with open(output_path + 'valid.txt', 'w', newline='') as f:
-        for i in valid_set:
-            f.write(str(data[i, 0]) + '\t' + str(data[i, 3]) + '\t' + str(data[i, 1]) + '\r\n')
+    np.random.shuffle(train_data)
+    np.savetxt(output_path + 'train.txt', train_data, fmt='%d', delimiter='\t')
+    np.savetxt(output_path + 'test.txt', test_data, fmt='%d', delimiter='\t')
+    np.savetxt(output_path + 'valid.txt', valid_data, fmt='%d', delimiter='\t')
 
     # 生成数据字典
     with open(output_path + 'entities.dict', 'w', newline='') as f:
-        grids = set(data[:, 0]) | set(data[:, 1])
         for i, gid in enumerate(grids):
             f.write(str(i)+'\t'+ str(gid) + '\r\n')
 
     with open(output_path + 'relations.dict', 'w', newline='') as f:
-        relations = set(data[:, 3])
+        relations = set(p_data[:, 1])
         for i, r in enumerate(relations):
             f.write(str(i) + '\t' + str(r) + '\r\n')
 
@@ -108,7 +124,7 @@ def gen_features(entity_file, flow_file, output_file, colnum, normalizaed=False)
         line = f.readline().strip()
         while line:
             s = line.split('\t')
-            features.append([int(s[1])//colnum, int(s[1])%colnum, 0, 0])
+            features.append([(int(s[1])-1)//colnum, (int(s[1])-1)%colnum, 0, 0])
             node_list.append(s[1])
             line = f.readline().strip()
 
@@ -117,8 +133,8 @@ def gen_features(entity_file, flow_file, output_file, colnum, normalizaed=False)
         line = f.readline().strip()
         while line:
             s = line.split('\t')
-            features[node_list.index(s[0])][3] += int(s[2])
-            features[node_list.index(s[1])][2] += int(s[2])
+            features[node_list.index(s[0])][3] += int(s[-1])
+            features[node_list.index(s[2])][2] += int(s[-1])
             line = f.readline().strip()
 
     features = np.array(features, dtype=np.float)
@@ -130,9 +146,9 @@ def gen_features(entity_file, flow_file, output_file, colnum, normalizaed=False)
 
 
 if __name__ == '__main__':
-    taxi_data('data/taxi_sj_1km_051317.csv')
-    classification('data/taxi_1km.txt', 1, 0)
+    #taxi_data('data/taxi_sj_1km_051317.csv', 'data/taxi_1km.txt')
+    #classification('data/taxi_1km.txt', 1, 0)
     c_file = 'data/taxi_1km_c1_t0.txt'
     path = 'SI-GCN/data/taxi/'
-    gen_data(c_file, [0.6, 0.2, 0.2], path)
+    #gen_data(c_file, [0.6, 0.2, 0.2], path)
     gen_features(path+'entities.dict', c_file, path+'features.txt', colnum=25, normalizaed=True)

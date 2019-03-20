@@ -21,7 +21,6 @@ if __name__ == '__main__':
     settings = settings_reader.read(args.settings)
     #print(settings)
 
-
     '''
     1. Load datasets
     '''
@@ -190,7 +189,7 @@ if __name__ == '__main__':
         ns = auxilliaries.NegativeSampler(int(general_settings['NegativeSampleRate']), general_settings['EntityCount'])
         ns.set_known_positives(train_triplets)
 
-        def t_func(x): #horrible hack!!!
+        def t_func_old(x): #horrible hack!!!
             arr = np.array(x)
             if not encoder.needs_graph():
                 return ns.transform(arr)
@@ -217,6 +216,23 @@ if __name__ == '__main__':
                     return (graph_split, graph_split_ids, t[0], t[1])
                 else:
                     return (graph_split, t[0], t[1])
+
+        def t_func(x):
+            arr = np.array(x)
+            if not encoder.needs_graph():
+                return ns.transform(arr)
+            else:
+                graph_batch_size = int(general_settings['GraphBatchSize'])
+                graph_batch_ids = sample_edge_neighborhood(arr, graph_batch_size)
+                graph_batch = np.array(train_triplets)[graph_batch_ids]
+
+                # Apply dropouts:
+                graph_percentage = float(general_settings['GraphSplitSize'])
+                split_size = int(graph_percentage * graph_batch.shape[0])
+                graph_split_ids = np.random.choice(graph_batch_ids, size=split_size, replace=False)
+                graph_split = np.array(train_triplets)[graph_split_ids]
+
+                return (graph_split, graph_batch, graph_batch[:,3])
 
         opp.set_sample_transform_function(t_func)
 

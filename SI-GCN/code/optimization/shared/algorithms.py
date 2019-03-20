@@ -142,7 +142,7 @@ class EarlyStopper(IOptimizer):
         
         if self.iteration % self.evaluate_every_n == 0:
             if self.criteria == 'score_validation_data':
-                validation_score = self.scoring_function(self.validation_data)
+                validation_score = self.scoring_function(self.validation_data)  # refered to train.py: score_validation_data
                 print("Tested validation score at iteration "+str(self.iteration)+". Result: "+str(validation_score))
                 if self.previous_validation_score is not None:
                     if not self.comparator(validation_score, self.previous_validation_score):

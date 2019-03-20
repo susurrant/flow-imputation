@@ -97,8 +97,6 @@ class RelationFilter():
         for k in discarded_relations:
             self.d[k] = self.n_keep
 
-
-
     def filter(self, triplets):
         t2 = np.copy(triplets)
         for i, t in enumerate(triplets):
