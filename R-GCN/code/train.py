@@ -198,12 +198,12 @@ if __name__ == '__main__':
                     #print(graph_batch_size)
                     graph_batch_ids = np.arange(graph_batch_size)
                     #print(graph_batch_ids)
-                #print('-----------------train triplets-------------------')
-                #print(train_triplets)
                 graph_batch = np.array(train_triplets)[graph_batch_ids]
-                #print('-----------------ids-------------------')
-                #print(graph_batch_ids)
-                #print(graph_batch)
+                print('-----------------train triplets-------------------')
+                print(train_triplets)
+                print('-----------------ids-------------------')
+                print(graph_batch_ids)
+                print(graph_batch)
 
                 # Apply dropouts:
                 graph_percentage = float(general_settings['GraphSplitSize'])
@@ -221,12 +221,12 @@ if __name__ == '__main__':
         opp.set_sample_transform_function(t_func)
 
 
-        #a, b, c = t_func(train_triplets)
-        #print(a)
-        #print(b)
-        #print(c)
+        a, b, c = t_func(train_triplets)
+        print(a)
+        print(b)
+        print(c)
 
-    #sys.exit(0)
+    sys.exit(0)
     '''
     5. Initialize for training:
     '''
