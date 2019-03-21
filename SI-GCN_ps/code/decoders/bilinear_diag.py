@@ -30,7 +30,9 @@ class BilinearDiag(Model):
 
         weight = int(self.settings['NegativeSampleRate'])
         weight = 1
-        return tf.reduce_mean(tf.losses.absolute_difference(self.Y, energies, weight))  # 损失函数修改
+        loss = tf.reduce_mean(tf.losses.absolute_difference(self.Y, energies, weight))
+        print('loss:', loss)
+        return loss # 损失函数修改
 
     def local_initialize_train(self):
         self.Y = tf.placeholder(tf.float32, shape=[None])
