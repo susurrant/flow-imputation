@@ -125,7 +125,7 @@ def gen_features(entity_file, flow_file, output_file, colnum, normalizaed=False)
         line = f.readline().strip()
         while line:
             s = line.split('\t')
-            features.append([(int(s[1])-1)//colnum, (int(s[1])-1)%colnum, 0, 0])
+            features.append([(int(s[1])-1)//colnum, (int(s[1])-1)%colnum, 0]) # 0, 0
             node_list.append(s[1])
             line = f.readline().strip()
 
@@ -134,7 +134,7 @@ def gen_features(entity_file, flow_file, output_file, colnum, normalizaed=False)
         line = f.readline().strip()
         while line:
             s = line.split('\t')
-            features[node_list.index(s[0])][3] += int(s[-1])
+            features[node_list.index(s[0])][2] += int(s[-1]) # 3
             features[node_list.index(s[2])][2] += int(s[-1])
             line = f.readline().strip()
 
@@ -152,4 +152,4 @@ if __name__ == '__main__':
     c_file = 'data/taxi_1km_c1_t0.txt'
     path = 'SI-GCN/data/taxi/'
     gen_data(c_file, [0.6, 0.2, 0.2], path, negative_sampling=True)
-    gen_features(path+'entities.dict', c_file, path+'features.txt', colnum=25, normalizaed=False)
+    gen_features(path+'entities.dict', c_file, path+'features.txt', colnum=25, normalizaed=True)
