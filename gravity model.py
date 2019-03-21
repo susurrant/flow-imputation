@@ -4,16 +4,10 @@ import matplotlib.pyplot as plt
 
 
 def read_data(filename):
-    data = np.loadtxt(filename, dtype=np.uint16, delimiter='\t', skiprows=1)[:,[0,2,3]]
+    flows = np.loadtxt(filename, dtype=np.uint16, delimiter='\t')[:,[0,2,3]]
     attraction = {}
-    flows = {}
 
-    for f in data:
-        fid = (min(f[0],f[1]), max(f[0], f[1]))
-        if fid not in flows:
-            flows[fid] = 0
-        flows[fid] += f[2]
-
+    for f in flows:
         if f[0] not in attraction:
             attraction[f[0]] = 0
         attraction[f[0]] += f[2]
@@ -54,10 +48,10 @@ def grid_dis(i, j, colnum):
 def gravity_model(flows, attraction, colnum):
     Y = []
     X = []
-    for k, v in flows.items():
-        if v:
+    for k in flows:
+        if k[2]:
             #print(k)
-            Y.append(np.log(attraction[k[0]]*attraction[k[1]]/v))
+            Y.append(np.log(attraction[k[0]]*attraction[k[1]]/k[2]))
             X.append(np.log(grid_dis(k[0], k[1], colnum)))
 
     p = np.polyfit(X, Y, 1)
@@ -73,9 +67,9 @@ def gravity_model(flows, attraction, colnum):
 def evaluate(flows, attraction, beta, K, colnum):
     pred = []
     real = []
-    for k, v in flows.items():
+    for k in flows:
         pred.append(K * attraction[k[0]] * attraction[k[1]] / grid_dis(k[0], k[1], colnum) ** beta)
-        real.append(v)
+        real.append(k[2])
 
     print('real:', real[:20])
     print('pred:', pred[:20])
