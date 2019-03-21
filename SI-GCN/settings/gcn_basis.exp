@@ -40,4 +40,4 @@
 	GraphBatchSize=500
 
 [Evaluation]
-	Metric=MRR
+	Metric=Accuracy
