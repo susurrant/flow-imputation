@@ -16,7 +16,7 @@ class NegativeSampler():
         
         new_labels = np.zeros((size_of_batch * (self.negative_sample_rate + 1))).astype(np.float32)
         new_indexes = np.tile(triplets[:,:3], (self.negative_sample_rate + 1,1)).astype(np.int32)
-        new_labels[:size_of_batch] = triplets[:size_of_batch, 3]
+        new_labels[:size_of_batch] = triplets[:, 3]
 
         choices = np.random.binomial(1, 0.5, number_to_generate)
         values = np.random.randint(self.n_entities, size=number_to_generate)
