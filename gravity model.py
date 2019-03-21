@@ -72,7 +72,7 @@ def evaluate(flows, attraction, beta, K, colnum):
         real.append(k[2])
 
     print('real:', real[:20])
-    print('pred:', pred[:20])
+    print('pred:', list(map(int, pred[:20])))
 
     print('mean absolute error:', np.mean(np.abs(np.array(pred)-np.array(real))))
     print('sum absolute error:', np.sum(np.abs(np.array(pred) - np.array(real))))
