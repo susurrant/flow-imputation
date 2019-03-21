@@ -3,7 +3,7 @@
 	DropoutKeepProbability=0.8
 	InternalEncoderDimension=500
 	NumberOfBasisFunctions=5
-	NumberOfLayers=1
+	NumberOfLayers=3
 	UseInputTransform=Yes
 	UseOutputTransform=No
 	AddDiagonal=No
