@@ -105,7 +105,7 @@ if __name__ == '__main__':
 
         early_stopping = score_summary.results['Filtered'][lookup_string]
 
-        score_summary = scorer.compute_scores(test_triplets, verbose=False).get_summary()
+        score_summary = scorer.compute_scores(test_triplets, verbose=True).get_summary()
         score_summary.pretty_print()
 
         return early_stopping

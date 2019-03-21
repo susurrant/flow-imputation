@@ -23,7 +23,7 @@
 
 [Optimizer]
 	MaxGradientNorm=1
-	ReportTrainLossEvery=300
+	ReportTrainLossEvery=600
 
 	[EarlyStopping]
 		CheckEvery=500

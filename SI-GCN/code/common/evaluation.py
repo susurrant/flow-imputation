@@ -317,14 +317,13 @@ class Scorer:
         return self.in_degree[vertex], self.out_degree[vertex]
 
     def compute_accuracy_scores(self, triples, verbose=False):
-        score = AccuracyScore()
-
         if verbose:
-            print("Evaluating accuracies...")
+            print("Evaluating accuracy for test triplets...")
+
+        score = AccuracyScore()
 
         pred = self.model.score(triples[:,:3])
         real = triples[:,3]
-
         score.append_all(np.mean(np.abs(pred-real)))
 
         return score
