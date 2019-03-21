@@ -226,7 +226,7 @@ if __name__ == '__main__':
                 graph_split_ids = np.random.choice(graph_batch_ids, size=split_size, replace=False)
                 graph_split = np.array(train_triplets)[graph_split_ids]
 
-                return (graph_split, graph_batch, graph_batch[:,3])
+                return (graph_split[:,:3], graph_batch[:,:3], graph_batch[:,3])
 
         opp.set_sample_transform_function(t_func)
 
