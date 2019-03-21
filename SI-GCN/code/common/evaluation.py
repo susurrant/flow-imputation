@@ -322,7 +322,7 @@ class Scorer:
         if verbose:
             print("Evaluating accuracies...")
 
-        pred = self.model.score(triples)
+        pred = self.model.score(triples[:,:3])
         real = triples[:,3]
 
         score.append_all(np.mean(np.abs(pred-real)))
