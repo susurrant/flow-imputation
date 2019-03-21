@@ -3,7 +3,7 @@
 	DropoutKeepProbability=0.8
 	InternalEncoderDimension=500
 	NumberOfBasisFunctions=5
-	NumberOfLayers=3
+	NumberOfLayers=2
 	UseInputTransform=Yes
 	UseOutputTransform=No
 	AddDiagonal=No
@@ -31,7 +31,7 @@
 
 	[Algorithm]
 		Name=Adam
-		learning_rate=0.01
+		learning_rate=0.05
 
 [General]
 	NegativeSampleRate=10
