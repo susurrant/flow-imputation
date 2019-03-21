@@ -4,7 +4,7 @@ import numpy as np
 
 def read_dictionary(filename, id_lookup=True):
     d = {}
-    for line in open(filename, 'r+'):
+    for line in open(filename, 'r'):
         line = line.strip().split('\t')
 
         if id_lookup:
@@ -17,7 +17,7 @@ def read_dictionary(filename, id_lookup=True):
 # Triplet file I/O:
 
 def read_triplets(filename):
-    for line in open(filename, 'r+'):
+    for line in open(filename, 'r'):
         processed_line = line.strip().split('\t')
         yield processed_line
 
@@ -34,7 +34,7 @@ def read_triplets_as_list(filename, entity_dict, relation_dict):
         relation = relation_dict[triplet[1]]
         entity_2 = entity_dict[triplet[2]]
 
-        l.append([entity_1, relation, entity_2, triplet[3]])  # type - int
+        l.append([entity_1, relation, entity_2, int(triplet[3])])  # type - int
     return l
 
 def read_features_as_list(filename):

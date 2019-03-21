@@ -112,7 +112,6 @@ if __name__ == '__main__':
 
     opp.set_early_stopping_score_function(score_validation_data)
 
-
     adj_list = [[] for _ in entities]
     for i,triplet in enumerate(train_triplets):
         adj_list[triplet[0]].append([i, triplet[2]])
