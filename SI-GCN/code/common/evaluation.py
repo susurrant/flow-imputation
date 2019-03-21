@@ -327,7 +327,7 @@ class Scorer:
             print("Evaluating accuracy for test triplets...")
             print('real:', real[:20])
             print('pred:', pred[:20])
-
+            print('sum absolute error:', np.sum(np.abs(pred-real)))
         return score
 
     def compute_scores(self, triples, verbose=False):
