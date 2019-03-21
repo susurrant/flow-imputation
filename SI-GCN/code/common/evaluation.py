@@ -2,7 +2,7 @@
 import numpy as np
 import math
 
-class MrrSummary():
+class MrrSummary:
 
     calculate_hits_at = [1,3,10]
     results = {'Raw':{}, 'Filtered':{}}
@@ -128,7 +128,7 @@ class MrrSummary():
         r_file.close()
 
 
-class MrrScore():
+class MrrScore:
 
     raw_ranks = []
     filtered_ranks = []
@@ -181,7 +181,7 @@ class MrrScore():
         summary.pretty_print()
 
 
-class AccuracySummary():
+class AccuracySummary:
 
     results = {'Filtered':{}, 'Raw':{}}
 
@@ -204,6 +204,9 @@ class AccuracySummary():
 
 class AccuracyScore():
 
+    def __init__(self):
+        self.predictions = None
+
     def append_all(self, evaluations):
         self.predictions = evaluations
 
@@ -215,7 +218,7 @@ class AccuracyScore():
         return AccuracySummary(self.predictions)
 
         
-class Scorer():
+class Scorer:
 
     known_subject_triples = {}
     known_object_triples = {}
@@ -319,13 +322,10 @@ class Scorer():
         if verbose:
             print("Evaluating accuracies...")
 
-        score_vector = self.model.score(triples)
-        positives = score_vector[::2]
-        negatives = score_vector[1::2]
+        pred = self.model.score(triples)
+        real = triples[:,3]
 
-        evals = positives > negatives
-
-        score.append_all(evals)
+        score.append_all(np.mean(np.abs(pred-real)))
 
         return score
 
