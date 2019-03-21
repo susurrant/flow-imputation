@@ -37,7 +37,7 @@
 	NegativeSampleRate=10
 	GraphSplitSize=0.5
 	ExperimentName=models/GcnBlock
-	GraphBatchSize=40000
+	GraphBatchSize=1000
 
 [Evaluation]
 	Metric=Accuracy
