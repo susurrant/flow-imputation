@@ -81,7 +81,7 @@ def evaluate(flows, attraction, beta, K, colnum):
 
 if __name__ == '__main__':
     colnum = 25
-    path = 'SI-GCN_ps/data/taxi/'
+    path = 'SI-GCN/data/taxi/'
     tr_f, tr_a = read_data(path + 'train.txt')
     te_f, te_a = read_data(path + 'test.txt')
     v_f, v_a = read_data(path + 'valid.txt')

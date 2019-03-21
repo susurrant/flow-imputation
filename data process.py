@@ -150,6 +150,6 @@ if __name__ == '__main__':
     #taxi_data('data/taxi_sj_1km_051317.csv', 'data/taxi_1km.txt')
     #classification('data/taxi_1km.txt', 1, 0)
     c_file = 'data/taxi_1km_c1_t0.txt'
-    path = 'SI-GCN_ps/data/taxi/'
+    path = 'SI-GCN/data/taxi/'
     gen_data(c_file, [0.6, 0.2, 0.2], path, negative_sampling=False)
     gen_features(path+'entities.dict', c_file, path+'features.txt', colnum=25, normalizaed=True)
