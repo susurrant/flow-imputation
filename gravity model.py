@@ -74,8 +74,13 @@ def evaluate(flows, attraction, beta, K, colnum):
     print('real:', real[:20])
     print('pred:', list(map(int, pred[:20])))
 
-    print('mean absolute error:', np.mean(np.abs(np.array(pred)-np.array(real))))
-    print('sum absolute error:', np.sum(np.abs(np.array(pred) - np.array(real))))
+    pred = np.array(pred)
+    real = np.array(real)
+    print('mean absolute error:', np.mean(np.abs(pred - real)))
+    print('sum absolute error:', np.sum(np.abs(pred - real)))
+    #print('% MAE:', np.mean(np.abs(pred - real) / real))
+    r = np.column_stack((pred, real))
+    print('CPC:', 2*np.sum(np.min(r, axis=1))/np.sum(r))
 
 
 

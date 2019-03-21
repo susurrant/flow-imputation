@@ -328,6 +328,9 @@ class Scorer:
             print('real:', real[:20])
             print('pred:', list(map(int, pred[:20])))
             print('sum absolute error:', np.sum(np.abs(pred-real)))
+            print('% MAE:', np.mean(np.abs(pred - real) / real))
+            r = np.column_stack((pred, real))
+            print('CPC:', 2*np.sum(np.min(r, axis=1)) / np.sum(r))
         return score
 
     def compute_scores(self, triples, verbose=False):
