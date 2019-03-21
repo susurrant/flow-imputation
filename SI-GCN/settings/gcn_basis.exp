@@ -35,7 +35,7 @@
 
 [General]
 	NegativeSampleRate=10
-	GraphSplitSize=0.5
+	GraphSplitSize=0.8
 	ExperimentName=models/GcnBlock
 	GraphBatchSize=1000
 
