@@ -12,6 +12,7 @@ R-GCN/code/models/
 SI-GCN/data/code/models/
 !R-GCN/data/
 !SI-GCN/data/
+!SI-GCN_ps/data/
 
 # Distribution / packaging
 .Python
