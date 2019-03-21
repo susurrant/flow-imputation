@@ -227,8 +227,8 @@ if __name__ == '__main__':
                 graph_split = np.array(train_triplets)[graph_split_ids]
 
                 t = ns.transform(graph_batch)
-                print(t[0])
-                print(t[1])
+                #print(t[0])
+                #print(t[1])
 
                 return (graph_split[:,:3], t[0], t[1])
 
