@@ -72,8 +72,9 @@ def evaluate(flows, attraction, beta, K, colnum):
         p.append(K * attraction[f[0]] * attraction[f[1]] / grid_dis(f[0], f[1], colnum) ** beta)
         r.append(f[2])
 
-    print('r:', r[:20])
-    print('p:', list(map(int, p[:20])))
+    print('\nnum of test flows:', len(r))
+    print('real:', r[:20])
+    print('pred:', list(map(int, p[:20])))
 
     p = np.array(p)
     r = np.array(r)
@@ -92,14 +93,20 @@ def evaluate(flows, attraction, beta, K, colnum):
             ssi += min(r[i], p[i]) / (r[i] + p[i])
             c2 += 1
     print('MAPE:', round(mape * 100 / c1, 3))
+
     print('MSE:', round(np.mean(np.square(r - p)), 3))
     print('RMSE:', round(np.sqrt(np.mean(np.square(r - p))), 3))
+
     stack = np.column_stack((p, r))
     print('CPC:', round(2 * np.sum(np.min(stack, axis=1)) / np.sum(stack), 3))
+
     print('SSI:', round(ssi * 2 / (c2 ^ 2), 3))
+
     smc = stats.spearmanr(r, p)
     print('SMC: correlation =', round(smc[0], 3), ', p-value =', round(smc[1], 3))
 
+    llr = stats.linregress(r, p)
+    print('LLR: R =', round(llr[2], 3), ', p-value =', round(llr[3], 3))
     # p1 = plt.scatter(p, r, marker='.', color='green', s=10)
     # plt.show()
 
@@ -113,6 +120,6 @@ if __name__ == '__main__':
     attraction = merge_attraction(path + 'entities.dict', tr_a, te_a, v_a)
 
     beta, K = gravity_model(tr_f, attraction, colnum)
-    print(beta, K)
+    print('beta =', beta, ', K =', K)
 
     evaluate(te_f, attraction, beta, K, colnum)

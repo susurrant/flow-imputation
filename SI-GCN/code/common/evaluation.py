@@ -11,7 +11,8 @@ class AccuracySummary:
                         'RMSE': 0,# Root Mean Square Error
                         'CPC': 0, # Common Part of Commuters
                         'SSI': 0, # Sørensen similarity index
-                        'SMC': 0} # Spearman's rank correlation coefficient
+                        'SMC': 0, # Spearman's rank correlation coefficient
+                        'LLR': 0} # Linear least-squares regression correlation coefficient
         self.p = p
         self.r = r
         p = np.array(p)
@@ -33,13 +34,14 @@ class AccuracySummary:
         self.results['MAPE'] = mape*100/c1
         self.results['SSI'] = ssi*2/(c2^2)
 
-        self.results['SMC'] = stats.spearmanr(r, p)
-
         self.results['MSE'] = np.mean(np.square(r-p))
         self.results['RMSE'] = np.sqrt(self.results['MSE'])
 
         stack = np.column_stack((p, r))
         self.results['CPC'] = 2 * np.sum(np.min(stack, axis=1)) / np.sum(stack)
+
+        self.results['SMC'] = stats.spearmanr(r, p)
+        self.results['LLR'] = stats.linregress(r, p)
 
     def accuracy_string(self):
         return 'MSE'
@@ -50,6 +52,8 @@ class AccuracySummary:
         for item in self.results.items():
             if item[0] == 'SMC':
                 print('SMC: correlation =', round(item[1][0], 3), ', p-value =', round(item[1][1], 3))
+            elif item[0] == 'LLR':
+                print('LLR: R =', round(item[1][2], 3), ', p-value =', round(item[1][3], 3))
             else:
                 print(item[0], end='\t')
                 print(str(round(item[1],3)), end='\n')

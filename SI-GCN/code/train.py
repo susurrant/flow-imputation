@@ -1,5 +1,5 @@
 '''
-Modified by Xin Yao (https://github.com/susurrant)
+by Xin Yao (https://github.com/susurrant)
 '''
 
 import argparse
