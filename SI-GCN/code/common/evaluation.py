@@ -55,7 +55,7 @@ class AccuracySummary:
             elif item[0] == 'LLR':
                 print('LLR: R =', round(item[1][2], 3), ', p-value =', round(item[1][3], 3))
             else:
-                print(item[0], end='\t')
+                print(item[0], end=': ')
                 print(str(round(item[1],3)), end='\n')
 
 

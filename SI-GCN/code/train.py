@@ -76,7 +76,7 @@ if __name__ == '__main__':
     '''
     encoder = model_builder.build_encoder(encoder_settings, train_triplets, features)
     model = model_builder.build_decoder(encoder, decoder_settings)
-    print(encoder.needs_graph())
+    #print(encoder.needs_graph())
 
     '''
     4. Construct the optimizer with validation MRR as early stopping metric:
@@ -174,7 +174,7 @@ if __name__ == '__main__':
         ns = auxilliaries.NegativeSampler(int(general_settings['NegativeSampleRate']), general_settings['EntityCount'])
         ns.set_known_positives(train_triplets)
 
-        def t_func_old(x): #horrible hack!!!
+        def t_func_abadoned(x): #horrible hack!!!
             arr = np.array(x)
             if not encoder.needs_graph():
                 return ns.transform(arr)

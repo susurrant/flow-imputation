@@ -82,8 +82,7 @@ class TensorflowOptimizer(Optimizer):
         feed_dict = dict(zip(self.placeholders, processed_batch))
 
         adds = self.stack.get_additional_ops()
-        upd = self.session.run([self.update_function, self.loss_function, adds],
-                                       feed_dict=feed_dict)
+        upd = self.session.run([self.update_function, self.loss_function, adds], feed_dict=feed_dict)
 
         return upd[1]
 
@@ -114,43 +113,8 @@ class TheanoOptimizer(Optimizer):
     def update_from_batch(self, processed_batch):
         return self.__update__(*tuple(processed_batch))
 
-    '''
-    def fit(self, training_data, validation_data=None):
-        self.stack.set_training_data(training_data)
-                  
-        i = 0
-        train_loss = 0
-        next_batch = self.stack.next_batch()
-        while(next_batch is not None):
-            i+=1
-            
-            message = self.stack.get_message()
-            if message is not None:
-                print(message)
-
-            processed_batch = self.stack.process_data(next_batch)
-            train_loss += self.__update__(*tuple(processed_batch))
-            self.stack.postprocess()
-
-            
-            if i % 100 == 0:
-                print(i)
-                print(train_loss/100)
-                train_loss = 0
-
-            if i == 1:
-                print(train_loss)
-                
-            message = self.stack.get_message()
-            if message is not None:
-                print(message)
-            
-            next_batch = self.stack.next_batch()
-
-    '''
-    
 def __from_component(component_name, backend='theano'):
-    print(component_name)
+    print('\t', component_name)
     if component_name == "GradientDescent":
         if backend == 'theano':
             return theano_algorithms.GradientDescent
@@ -205,6 +169,7 @@ def __from_component(component_name, backend='theano'):
     
 def __construct_optimizer(settings, backend='theano'):
     optimizer = BaseOptimizer()
+    print('optimizer components:')
     for component, parameters in settings:  # recursive construction
         optimizer = __from_component(component, backend=backend)(optimizer, parameters)
 
@@ -233,42 +198,4 @@ def build_tensorflow(loss_function, parameters_to_optimize, settings, placeholde
     optimizer.set_placeholders(placeholders)
     
     return optimizer
-
-
-if __name__ == '__main__':
-    X = tf.placeholder(tf.float32, shape=(None,2))
-    Y = tf.placeholder(tf.float32, shape=(None))
-
-    n_hidden = 10
-    
-    W1 = tf.Variable(np.random.randn(2,n_hidden).astype(np.float32))
-    W2 = tf.Variable(np.random.randn(n_hidden,1).astype(np.float32))
-
-    b1 = tf.Variable(np.random.randn(n_hidden).astype(np.float32))
-    b2 = tf.Variable(np.random.randn(1).astype(np.float32))
-    
-    hidden = tf.tanh(tf.matmul(X, W1)+b1)
-    energy = tf.matmul(hidden, W2)+b2
-    output = tf.sigmoid(energy)
-
-    #loss = tf.reduce_mean(-Y * tf.log(output+1e-10) - (1- Y) * tf.log(1-output+1e-10))
-    loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(energy, Y))
-    
-    parameters = [#('Minibatches', {'batch_size':2, 'contiguous_sampling':False}),
-                  ('IterationCounter', {'max_iterations':5000}),
-                  ('GradientClipping', {'max_norm':1}),
-                  #('Adam', {'learning_rate':0.000001, 'historical_moment_weight':0.9, 'historical_gradient_weight':0.999}),                  
-                  ('GradientDescent', {'learning_rate':0.01})
-    ]
-    
-    opt = tfbuild(loss, parameters, [X,Y])
-    opt.predict = output
-
-    xor_toy_problem = [[1,0],[0,0],[0,1],[1,1]]
-
-    xor_toy_labels = [[1],[0],[1],[0]]
-    
-    print(opt.loss([xor_toy_problem, xor_toy_labels]))
-    opt.fit([xor_toy_problem, xor_toy_labels])
-    print(opt.loss([xor_toy_problem, xor_toy_labels]))
     
