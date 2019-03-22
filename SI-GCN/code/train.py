@@ -84,13 +84,7 @@ if __name__ == '__main__':
     opp = optimizer_parameter_parser.Parser(optimizer_settings)
     opp.set_save_function(model.save)
 
-    scorer = evaluation.Scorer(evaluation_settings)
-    scorer.register_data(train_triplets)
-    scorer.register_data(valid_triplets)
-    scorer.register_data(test_triplets)
-    scorer.register_degrees(train_triplets)
-    scorer.register_model(model)
-    scorer.finalize_frequency_computation(np.concatenate((train_triplets, valid_triplets, test_triplets), axis=0))
+    scorer = evaluation.Scorer(evaluation_settings, model)
 
     def score_validation_data(validation_data):
         score_summary = scorer.compute_scores(validation_data, verbose=False).get_summary()

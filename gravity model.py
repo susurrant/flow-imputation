@@ -65,23 +65,42 @@ def gravity_model(flows, attraction, colnum):
 
 
 def evaluate(flows, attraction, beta, K, colnum):
-    pred = []
-    real = []
-    for k in flows:
-        pred.append(K * attraction[k[0]] * attraction[k[1]] / grid_dis(k[0], k[1], colnum) ** beta)
-        real.append(k[2])
+    p = []
+    r = []
+    for f in flows:
+        p.append(K * attraction[f[0]] * attraction[f[1]] / grid_dis(f[0], f[1], colnum) ** beta)
+        r.append(f[2])
 
-    print('real:', real[:20])
-    print('pred:', list(map(int, pred[:20])))
+    print('r:', r[:20])
+    print('p:', list(map(int, p[:20])))
 
-    pred = np.array(pred)
-    real = np.array(real)
-    print('mean absolute error:', np.mean(np.abs(pred - real)))
-    print('sum absolute error:', np.sum(np.abs(pred - real)))
-    #print('% MAE:', np.mean(np.abs(pred - real) / real))
-    r = np.column_stack((pred, real))
-    print('CPC:', 2*np.sum(np.min(r, axis=1))/np.sum(r))
+    p = np.array(p)
+    r = np.array(r)
 
+    print('MAE\t', np.mean(np.abs(r - p)))
+
+    c1 = 0
+    mape = 0
+    c2 = 0
+    ssi = 0
+    for i in range(p.shape[0]):
+        if r[i]:
+            mape += np.abs((r[i] - p[i]) / r[i])
+            c1 += 1
+        if r[i] + p[i]:
+            ssi += min(r[i], p[i]) / (r[i] + p[i])
+            c2 += 1
+    print('MAPE:', mape * 100 / c1)
+    print('MSE:', np.mean(np.square(r - p)))
+    print('RMSE:', np.sqrt(np.mean(np.square(r - p))))
+    stack = np.column_stack((p, r))
+    print('CPC:', 2 * np.sum(np.min(stack, axis=1)) / np.sum(stack))
+    print('SSI:', ssi * 2 / (c2 ^ 2))
+    print(np.sum(np.square(r - p)))
+    print(np.sum(np.square(r - np.mean(r))))
+    #p1 = plt.scatter(p, r, marker='.', color='green', s=10)
+    #plt.show()
+    print('R^2:', 1 - np.sum(np.square(r - p)) / np.sum(np.square(r - np.mean(r))))
 
 
 if __name__ == '__main__':
