@@ -31,7 +31,7 @@ class AccuracySummary:
             if r[i]+p[i]:
                 ssi += min(r[i], p[i])/(r[i]+p[i])
                 c2 += 1
-        self.results['MAPE'] = mape*100/c1
+        self.results['MAPE'] = mape/c1
         self.results['SSI'] = ssi*2/(c2^2)
 
         self.results['MSE'] = np.mean(np.square(r-p))
