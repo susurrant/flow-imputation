@@ -48,8 +48,11 @@ class AccuracySummary:
         print('real:', self.r[:20])
         print('pred:', list(map(int, self.p[:20])))
         for item in self.results.items():
-            print(item[0], end='\t')
-            print(str(round(item[1],3)), end='\n')
+            if item[0] == 'SMC':
+                print('SMC: correlation =', round(item[1][0], 3), ', p-value =', round(item[1][1], 3))
+            else:
+                print(item[0], end='\t')
+                print(str(round(item[1],3)), end='\n')
 
 
 class AccuracyScore:
