@@ -92,12 +92,9 @@ if __name__ == '__main__':
         #score_summary.dump_frequencies('dumps/near.freq', 'dumps/target.freq')
         #score_summary.pretty_print()
 
-        if evaluation_settings['Metric'] == 'MRR':
-            lookup_string = score_summary.mrr_string()
-        elif evaluation_settings['Metric'] == 'Accuracy':
-            lookup_string = score_summary.accuracy_string()
+        lookup_string = score_summary.accuracy_string()
 
-        early_stopping = score_summary.results['Filtered'][lookup_string]
+        early_stopping = score_summary.results[lookup_string]
 
         score_summary = scorer.compute_scores(test_triplets, verbose=True).get_summary()
         score_summary.pretty_print()

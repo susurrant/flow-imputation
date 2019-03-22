@@ -42,15 +42,14 @@ class AccuracySummary:
         self.results['CPC'] = 2 * np.sum(np.min(stack, axis=1)) / np.sum(stack)
 
     def accuracy_string(self):
-        return self.results.keys()
+        return 'MSE'
 
     def pretty_print(self):
-        items = self.accuracy_string()
         print('real:', self.r[:20])
         print('pred:', list(map(int, self.p[:20])))
-        for item in items:
-            print(item, end='\t')
-            print(str(round(self.results[item],3)), end='\n')
+        for item in self.results.items():
+            print(item[0], end='\t')
+            print(str(round(item[1],3)), end='\n')
 
 
 class AccuracyScore:

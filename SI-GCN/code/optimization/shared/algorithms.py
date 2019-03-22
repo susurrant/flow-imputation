@@ -1,6 +1,6 @@
 from abstract import IOptimizer
 import random
-import numpy as np
+
 
 class IterationCounter(IOptimizer):
 
@@ -16,6 +16,7 @@ class IterationCounter(IOptimizer):
             return self.next_component.next_batch()
         else:
             return None
+
 
 class Minibatches(IOptimizer):
 
@@ -57,6 +58,7 @@ class SampleTransformer(IOptimizer):
     def process_data(self, training_data):
         data = self.next_component.process_data(training_data)
         return self.transform_function(data)
+
 
 class ModelSaver(IOptimizer):
 
