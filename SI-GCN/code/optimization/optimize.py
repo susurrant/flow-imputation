@@ -114,7 +114,7 @@ class TheanoOptimizer(Optimizer):
         return self.__update__(*tuple(processed_batch))
 
 def __from_component(component_name, backend='theano'):
-    print('\t', component_name)
+    print('    ', component_name)
     if component_name == "GradientDescent":
         if backend == 'theano':
             return theano_algorithms.GradientDescent
