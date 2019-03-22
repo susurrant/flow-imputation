@@ -31,11 +31,11 @@
 
 	[Algorithm]
 		Name=Adam
-		learning_rate=0.1
+		learning_rate=0.01
 
 [General]
 	NegativeSampleRate=10
-	GraphSplitSize=0.5
+	GraphSplitSize=1
 	ExperimentName=models/GcnBlock
 	GraphBatchSize=1000
 
