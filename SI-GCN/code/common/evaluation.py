@@ -1,17 +1,17 @@
 
 import numpy as np
-
+from scipy import stats
 
 class AccuracySummary:
 
     def __init__(self, p, r):
-        self.results = {'MAE': 0,
-                        'MAPE': 0,
-                        'MSE': 0,
-                        'RMSE': 0,
-                        'CPC:': 0,
-                        'SSI': 0,
-                        'R^2': 0}
+        self.results = {'MAE': 0, # Mean Absolute Error
+                        'MAPE': 0,# Mean Absolute Percentage Error
+                        'MSE': 0, # Mean Square Error
+                        'RMSE': 0,# Root Mean Square Error
+                        'CPC': 0, # Common Part of Commuters
+                        'SSI': 0, # Sørensen similarity index
+                        'SMC': 0} # Spearman's rank correlation coefficient
         self.p = p
         self.r = r
         p = np.array(p)
@@ -33,7 +33,7 @@ class AccuracySummary:
         self.results['MAPE'] = mape*100/c1
         self.results['SSI'] = ssi*2/(c2^2)
 
-        self.results['R^2'] = 1 - np.sum(np.square(r - p))/np.sum(np.square(r-np.mean(r)))
+        self.results['SMC'] = stats.spearmanr(r, p)
 
         self.results['MSE'] = np.mean(np.square(r-p))
         self.results['RMSE'] = np.sqrt(self.results['MSE'])

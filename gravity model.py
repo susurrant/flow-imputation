@@ -1,5 +1,6 @@
 
 import numpy as np
+from scipy import stats
 import matplotlib.pyplot as plt
 
 
@@ -96,11 +97,10 @@ def evaluate(flows, attraction, beta, K, colnum):
     stack = np.column_stack((p, r))
     print('CPC:', 2 * np.sum(np.min(stack, axis=1)) / np.sum(stack))
     print('SSI:', ssi * 2 / (c2 ^ 2))
-    print(np.sum(np.square(r - p)))
-    print(np.sum(np.square(r - np.mean(r))))
-    #p1 = plt.scatter(p, r, marker='.', color='green', s=10)
-    #plt.show()
-    print('R^2:', 1 - np.sum(np.square(r - p)) / np.sum(np.square(r - np.mean(r))))
+    print('SMC:', stats.spearmanr(r, p))
+
+    # p1 = plt.scatter(p, r, marker='.', color='green', s=10)
+    # plt.show()
 
 
 if __name__ == '__main__':
