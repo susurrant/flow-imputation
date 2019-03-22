@@ -1,7 +1,7 @@
 [Encoder]
 	Name=gcn_basis
 	DropoutKeepProbability=0.8
-	InternalEncoderDimension=50
+	InternalEncoderDimension=100
 	NumberOfBasisFunctions=5
 	NumberOfLayers=2
 	UseInputTransform=Yes
@@ -16,10 +16,10 @@
 
 [Decoder]
 	Name=bilinear-diag
-	RegularizationParameter=0.01
+	RegularizationParameter=0.05
 
 [Shared]
-	CodeDimension=50
+	CodeDimension=100
 
 [Optimizer]
 	MaxGradientNorm=1
@@ -37,7 +37,7 @@
 	NegativeSampleRate=10
 	GraphSplitSize=0.5
 	ExperimentName=models/GcnBlock
-	GraphBatchSize=1000
+	GraphBatchSize=2000
 
 [Evaluation]
 	Metric=Accuracy
