@@ -73,6 +73,8 @@ def evaluate(flows, attraction, beta, K, colnum):
         r.append(f[2])
 
     print('\nnum of test flows:', len(r))
+    #print('real_min:', min(r), ', real_max:', max(r))
+    #print('pred_min:', min(p), ', pred_max:', max(p))
     print('real:', r[:20])
     print('pred:', list(map(int, p[:20])))
 

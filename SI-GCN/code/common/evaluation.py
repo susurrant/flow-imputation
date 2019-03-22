@@ -47,6 +47,8 @@ class AccuracySummary:
         return 'MSE'
 
     def pretty_print(self):
+        print('real_min:', int(min(self.r)), ', real_max:', int(max(self.r)))
+        print('pred_min:', int(min(self.p)), ', pred_max:', int(max(self.p)))
         print('real:', self.r[:20])
         print('pred:', list(map(int, self.p[:20])))
         for item in self.results.items():
@@ -57,7 +59,7 @@ class AccuracySummary:
             else:
                 print(item[0], end=': ')
                 print(str(round(item[1],3)), end='\n')
-
+        print("---------------------------------------------------------")
 
 class AccuracyScore:
 
@@ -88,7 +90,7 @@ class Scorer:
         score = AccuracyScore(pred, real)
 
         if verbose:
-            print("Evaluating accuracy for test triplets...")
+            print("----------Evaluating accuracy for test triplets----------")
 
         return score
 
