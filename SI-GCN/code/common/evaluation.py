@@ -47,7 +47,7 @@ class AccuracySummary:
         return 'MSE'
 
     def pretty_print(self):
-        print('real_min:', int(min(self.r)), ', real_max:', int(max(self.r)))
+        print('real_min:', min(self.r), ', real_max:', max(self.r))
         print('pred_min:', int(min(self.p)), ', pred_max:', int(max(self.p)))
         print('real:', self.r[:20])
         print('pred:', list(map(int, self.p[:20])))
