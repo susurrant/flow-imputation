@@ -87,7 +87,6 @@ def evaluate(flows, attraction, beta, K, colnum):
     mape = 0
     c2 = 0
     ssi = 0
-    pmae
     for i in range(p.shape[0]):
         if r[i]:
             mape += np.abs((r[i] - p[i]) / r[i])

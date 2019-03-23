@@ -49,7 +49,7 @@ class AccuracySummary:
     def pretty_print(self):
         print('real_min:', min(self.r), ', real_max:', max(self.r))
         print('pred_min:', int(min(self.p)), ', pred_max:', int(max(self.p)))
-        print('real:', self.r[:20])
+        print('real:', list(self.r[:20]))
         print('pred:', list(map(int, self.p[:20])))
         for item in self.results.items():
             if item[0] == 'SMC':
