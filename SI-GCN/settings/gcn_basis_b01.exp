@@ -1,9 +1,9 @@
 [Encoder]
 	Name=gcn_basis
 	DropoutKeepProbability=0.8
-	InternalEncoderDimension=200
-	NumberOfBasisFunctions=5
-	NumberOfLayers=2
+	InternalEncoderDimension=500
+	NumberOfBasisFunctions=2
+	NumberOfLayers=1
 	UseInputTransform=Yes
 	UseOutputTransform=No
 	AddDiagonal=No
@@ -16,10 +16,10 @@
 
 [Decoder]
 	Name=bilinear-diag
-	RegularizationParameter=0.01
+	RegularizationParameter=0.05
 
 [Shared]
-	CodeDimension=200
+	CodeDimension=500
 
 [Optimizer]
 	MaxGradientNorm=1
