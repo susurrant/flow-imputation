@@ -148,8 +148,10 @@ def gen_features(entity_file, flow_file, output_file, colnum, normalizaed=False)
 
 if __name__ == '__main__':
     #taxi_data('data/taxi_sj_1km_051317.csv', 'data/taxi_1km.txt')
-    classification('data/taxi_1km.txt', 1, 20)
-    c_file = 'data/taxi_1km_c1_t20.txt'
+    class_num = 1
+    threshold = 20
+    classification('data/taxi_1km.txt', class_num, threshold)
+    c_file = 'data/taxi_1km_c'+str(class_num)+'_t'+str(threshold)+'.txt'
     path = 'SI-GCN/data/taxi/'
     gen_data(c_file, [0.6, 0.2, 0.2], path, negative_sampling=False)
     gen_features(path+'entities.dict', c_file, path+'features.txt', colnum=25, normalizaed=True)
