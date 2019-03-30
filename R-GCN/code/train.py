@@ -10,7 +10,7 @@ import tensorflow as tf
 from optimization.optimize import build_tensorflow
 from common import settings_reader, io, model_builder, optimizer_parameter_parser, evaluation, auxilliaries
 import numpy as np
-
+from extras.graph_representations import MessageGraph
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Train a model on a given dataset.")
@@ -72,6 +72,9 @@ if __name__ == '__main__':
     optimizer_settings.merge(general_settings)
     evaluation_settings.merge(general_settings)
 
+    graph = MessageGraph(train_triplets, len(entities), len(relations))
+    graph.forward_incidence_matrix(['global'])
+    sys.exit(0)
 
     '''
     3. Construct the encoder-decoder pair:
@@ -226,7 +229,7 @@ if __name__ == '__main__':
         print(b)
         print(c)
 
-    sys.exit(0)
+
     '''
     5. Initialize for training:
     '''

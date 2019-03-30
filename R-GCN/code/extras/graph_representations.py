@@ -80,14 +80,14 @@ class MessageGraph():
             return tensor
         elif normalization[0] == "global":
             mtr_values = tf.to_float(tf.ones_like(self.receiver_indices))
+            print('mtr_values:', mtr_values)
             message_indices = tf.range(self.edge_count)
-
+            print('message_indices:', message_indices)
             mtr_indices = tf.to_int64(tf.transpose(tf.stack([self.receiver_indices, message_indices])))
+            print('mtr_indices:', mtr_indices)
             mtr_shape = tf.to_int64(tf.stack([self.vertex_count, self.edge_count]))
-
-            tensor = tf.sparse_softmax(tf.SparseTensor(indices=mtr_indices,
-                                   values=mtr_values,
-                                                       dense_shape=mtr_shape))
+            print('mtr_shape:', mtr_shape)
+            tensor = tf.sparse_softmax(tf.SparseTensor(indices=mtr_indices, values=mtr_values, dense_shape=mtr_shape))
 
             return tensor
         elif normalization[0] == "local":
