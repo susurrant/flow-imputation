@@ -1,7 +1,6 @@
-import numpy as np
+
 import tensorflow as tf
 from common.shared_functions import dot_or_lookup, glorot_variance, make_tf_variable, make_tf_bias
-
 from encoders.message_gcns.message_gcn import MessageGcn
 
 
@@ -9,7 +8,6 @@ class BasisGcn(MessageGcn):
     # __init__ call MessageGcn.__init__
     def parse_settings(self):
         self.dropout_keep_probability = float(self.settings['DropoutKeepProbability'])
-
         self.n_coefficients = int(self.settings['NumberOfBasisFunctions'])
 
     #self.shape = internal_shape = [int(encoder_settings['InternalEncoderDimension']), int(encoder_settings['InternalEncoderDimension'])]
