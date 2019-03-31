@@ -1,9 +1,6 @@
-'''
-Modified by Xin Yao (https://github.com/susurrant)
-1. 10th Jul. 2018: Settings can ignore comments (with # marked) in the setting file
-'''
 
-class Settings():
+
+class Settings:
     def __init__(self):
         self.__dict__ = {}
 

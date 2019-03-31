@@ -1,6 +1,4 @@
 import numpy as np
-from scipy.sparse import coo_matrix
-import math
 import tensorflow as tf
 from model import Model
 

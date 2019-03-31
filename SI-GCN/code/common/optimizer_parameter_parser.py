@@ -1,5 +1,5 @@
 
-class Parser():
+class Parser:
 
     sample_transform_function = None
     save_function = None

@@ -1,7 +1,7 @@
 import numpy as np
 import random
 
-class NegativeSampler():
+class NegativeSampler:
 
     negative_sample_rate = None
     n_entities = None
@@ -74,7 +74,7 @@ class NegativeSampler():
 
 
 
-class RelationFilter():
+class RelationFilter:
 
     def __init__(self, n_keep):
         self.n_keep = n_keep -1
