@@ -62,7 +62,6 @@ class AffineTransform(Model):
         return hidden
 
     def get_all_codes(self, mode='train'):
-        #print('-------AffineTransform.get_all_codes', self.onehot_input)
         if self.onehot_input:
             hidden_subject = self.W
             hidden_object = self.W

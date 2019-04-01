@@ -1,9 +1,8 @@
 from abstract import IOptimizer
-import random
 from theano import tensor as T
 import theano
 import numpy as np
-import tensorflow as tf
+
 
 class GradientDescent(IOptimizer):
 

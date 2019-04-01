@@ -1,5 +1,4 @@
 from abstract import IOptimizer
-import numpy as np
 import tensorflow as tf
 
 class GradientDescent(IOptimizer):

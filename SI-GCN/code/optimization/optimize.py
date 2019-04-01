@@ -2,9 +2,7 @@ import tensorflow_backend.algorithms as tensorflow_algorithms
 import theano_backend.algorithms as theano_algorithms
 import shared.algorithms as shared_algorithms
 import theano
-from theano import tensor as T
 from abstract import BaseOptimizer
-import numpy as np
 import tensorflow as tf
 
 '''
