@@ -147,7 +147,7 @@ def gen_features(entity_file, flow_file, output_file, colnum, normalizaed=False)
 
 
 if __name__ == '__main__':
-    #taxi_data('data/taxi_sj_1km_051317.csv', 'data/taxi_1km.txt')
+    taxi_data('data/taxi_sj_1km_051317.txt', 'data/taxi_1km.txt')
     class_num = 1
     threshold = 20
     classification('data/taxi_1km.txt', class_num, threshold)
