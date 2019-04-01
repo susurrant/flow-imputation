@@ -8,6 +8,7 @@ import random
 # 出租车数据处理
 def taxi_data(data_file, out_file):
     flows = {}
+    flow_count = 0
     with open(data_file, 'r') as f:
         f.readline()
         line = f.readline().strip()
@@ -19,7 +20,10 @@ def taxi_data(data_file, out_file):
                 if k not in flows:
                     flows[k] = 0
                 flows[k] += 1
+                flow_count += 1
             line = f.readline().strip()
+
+    print('number of taxi trips:', flow_count)
 
     with open(out_file, 'w', newline='') as rf:
         sheet = csv.writer(rf, delimiter='\t')
@@ -125,7 +129,7 @@ def gen_features(entity_file, flow_file, output_file, colnum, normalizaed=False)
         line = f.readline().strip()
         while line:
             s = line.split('\t')
-            features.append([(int(s[1])-1)//colnum, (int(s[1])-1)%colnum, 0]) # 0, 0
+            features.append([(int(s[1])-1)//colnum, (int(s[1])-1)%colnum, 0, 0]) # 0, 0
             node_list.append(s[1])
             line = f.readline().strip()
 
@@ -134,12 +138,13 @@ def gen_features(entity_file, flow_file, output_file, colnum, normalizaed=False)
         line = f.readline().strip()
         while line:
             s = line.split('\t')
-            features[node_list.index(s[0])][2] += int(s[-1]) # 3
-            features[node_list.index(s[2])][2] += int(s[-1])
+            features[node_list.index(s[0])][3] += int(s[-1]) # 3    # pick-up:  pull
+            features[node_list.index(s[2])][2] += int(s[-1])        # drop-off: attract
             line = f.readline().strip()
 
     features = np.array(features, dtype=np.float)
 
+    np.savetxt(output_file[:-4]+'_raw.txt', features, fmt='%d', delimiter='\t')
     if normalizaed:
         features /= np.max(features, axis=0)
 
@@ -147,11 +152,12 @@ def gen_features(entity_file, flow_file, output_file, colnum, normalizaed=False)
 
 
 if __name__ == '__main__':
-    taxi_data('data/taxi_sj_1km_051317.txt', 'data/taxi_1km.txt')
+    #taxi_data('data/taxi_sj_1km_051317.txt', 'data/taxi_1km.txt')
     class_num = 1
     threshold = 20
+    col_num = 30
     classification('data/taxi_1km.txt', class_num, threshold)
     c_file = 'data/taxi_1km_c'+str(class_num)+'_t'+str(threshold)+'.txt'
     path = 'SI-GCN/data/taxi/'
     gen_data(c_file, [0.6, 0.2, 0.2], path, negative_sampling=False)
-    gen_features(path+'entities.dict', c_file, path+'features.txt', colnum=25, normalizaed=True)
+    gen_features(path+'entities.dict', c_file, path+'features.txt', colnum=col_num, normalizaed=True)

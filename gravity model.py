@@ -4,19 +4,20 @@ from scipy import stats
 import matplotlib.pyplot as plt
 
 
-def read_data(filename):
+def read_flows(filename):
     flows = np.loadtxt(filename, dtype=np.uint16, delimiter='\t')[:,[0,2,3]]
-    attraction = {}
+    return flows
 
-    for f in flows:
-        if f[0] not in attraction:
-            attraction[f[0]] = 0
-        attraction[f[0]] += f[2]
-        if f[1] not in attraction:
-            attraction[f[1]] = 0
-        attraction[f[1]] += f[2]
 
-    return flows, attraction
+def read_features(entity_dict, feature_file):
+    grid_list = list(np.loadtxt(entity_dict, dtype=np.uint16, delimiter='\t')[:, 1])
+    features = {}
+    with open(feature_file, 'r') as f:
+        lines = f.readlines()
+        for i, line in enumerate(lines):
+            sl = line.strip().split('\t')
+            features[grid_list[i]] = list(map(int, sl[2:]))  #[attract, pull]
+    return features
 
 
 def merge_attraction(entity_file, tr_a, te_a, v_a):
@@ -46,31 +47,43 @@ def grid_dis(i, j, colnum):
     return np.sqrt((x1 - x0) ** 2 + (y1 - y0) ** 2)
 
 
-def gravity_model(flows, attraction, colnum):
+def gravity_model(flows, features, colnum):
     Y = []
     X = []
-    for k in flows:
-        if k[2]:
-            #print(k)
-            Y.append(np.log(attraction[k[0]]*attraction[k[1]]/k[2]))
-            X.append(np.log(grid_dis(k[0], k[1], colnum)))
+    feature_size = len(list(features.values())[0])
+    if feature_size == 1:
+        for k in flows:
+            if k[2]:
+                Y.append(np.log(features[k[0]] * features[k[1]] / k[2]))
+                X.append(np.log(grid_dis(k[0], k[1], colnum)))
+    elif feature_size == 2:
+        for k in flows:
+            if k[2]:
+                Y.append(np.log(features[k[0]][1] * features[k[1]][0] / k[2]))
+                X.append(np.log(grid_dis(k[0], k[1], colnum)))
 
     p = np.polyfit(X, Y, 1)
     beta = p[0]
     K = np.e**(-p[1])
-    '''
-    p1 = plt.scatter(X, Y, marker='.', color='green', s=10)
-    plt.show()
-    '''
+
+    #p1 = plt.scatter(X, Y, marker='.', color='green', s=10)
+    #plt.show()
+
     return beta, K
 
 
-def evaluate(flows, attraction, beta, K, colnum):
+def predict(flows, features, beta, K, colnum):
     p = []
     r = []
-    for f in flows:
-        p.append(K * attraction[f[0]] * attraction[f[1]] / grid_dis(f[0], f[1], colnum) ** beta)
-        r.append(f[2])
+    feature_size = len(list(features.values())[0])
+    if feature_size == 1:
+        for f in flows:
+            p.append(K * features[f[0]] * features[f[1]] / grid_dis(f[0], f[1], colnum) ** beta)
+            r.append(f[2])
+    elif feature_size == 2:
+        for f in flows:
+            p.append(K * features[f[0]][1] * features[f[1]][0] / grid_dis(f[0], f[1], colnum) ** beta)
+            r.append(f[2])
 
     print('\nnum of test flows:', len(r))
     print('real_min:', min(r), ', real_max:', max(r))
@@ -78,10 +91,13 @@ def evaluate(flows, attraction, beta, K, colnum):
     print('real:', r[:20])
     print('pred:', list(map(int, p[:20])))
 
+    return p, r
+
+def evaluate(p, r):
     p = np.array(p)
     r = np.array(r)
 
-    print('MAE\t', round(np.mean(np.abs(r - p)),3))
+    print('\nMAE\t', round(np.mean(np.abs(r - p)),3))
 
     c1 = 0
     mape = 0
@@ -109,19 +125,23 @@ def evaluate(flows, attraction, beta, K, colnum):
 
     llr = stats.linregress(r, p)
     print('LLR: R =', round(llr[2], 3), ', p-value =', round(llr[3], 3))
+
     # p1 = plt.scatter(p, r, marker='.', color='green', s=10)
     # plt.show()
 
 
 if __name__ == '__main__':
-    colnum = 25
+
+    col_num = 30
     path = 'SI-GCN/data/taxi/'
-    tr_f, tr_a = read_data(path + 'train.txt')
-    te_f, te_a = read_data(path + 'test.txt')
-    v_f, v_a = read_data(path + 'valid.txt')
-    attraction = merge_attraction(path + 'entities.dict', tr_a, te_a, v_a)
+    tr_f = read_flows(path + 'train.txt')
+    te_f = read_flows(path + 'test.txt')
+    #v_f = read_flows(path + 'valid.txt')
 
-    beta, K = gravity_model(tr_f, attraction, colnum)
+    features = read_features(path + 'entities.dict', path + 'features_raw.txt')
+    #attraction = merge_attraction(path + 'entities.dict', tr_a, te_a, v_a)
+
+    beta, K = gravity_model(tr_f, features, col_num)
     print('beta =', beta, ', K =', K)
-
-    evaluate(te_f, attraction, beta, K, colnum)
+    pred, real = predict(te_f, features, beta, K, col_num)
+    evaluate(pred, real)
