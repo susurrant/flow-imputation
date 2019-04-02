@@ -30,7 +30,6 @@ class NegativeSampler:
 
             self.subs[triplet[2]].append((triplet[1], triplet[0]))
 
-
     def set_negatives(self):
         p_dict = set(map(tuple, self.positives[:, [0, 2]]))
         n_dict = set()
@@ -45,13 +44,8 @@ class NegativeSampler:
         self.negatives = np.array(self.negatives)
         np.random.shuffle(self.negatives)
 
-
-    # based on batch triplets
-    def sample(self, triplets):
-        pass
-
     # based on train triplets
-    def sample2(self, triplets):
+    def sample(self, triplets):
         size_of_batch = len(triplets)
         number_to_generate = size_of_batch * self.negative_sample_rate
         if number_to_generate > self.negatives.shape[0]:
@@ -61,14 +55,14 @@ class NegativeSampler:
 
         return np.concatenate((triplets, neg_samples), axis=0)
 
-
+    # based on batch triplets
     def transform(self, triplets):
         size_of_batch = len(triplets)
         number_to_generate = size_of_batch*self.negative_sample_rate
         
         new_labels = np.zeros((size_of_batch * (self.negative_sample_rate + 1))).astype(np.uint16)
         new_indexes = np.tile(triplets, (self.negative_sample_rate + 1,1)).astype(np.uint16)
-        new_labels[:size_of_batch] = 1 # triplets[:, 3]
+        new_labels[:size_of_batch] = triplets[:, 3]
 
         choices = np.random.binomial(1, 0.5, number_to_generate)
         values = np.random.randint(self.n_entities, size=number_to_generate)
@@ -82,7 +76,7 @@ class NegativeSampler:
                 else:
                     new_indexes[index+size_of_batch,0] = values[index]
 
-        return new_indexes, new_labels # new_indexes[:, :3]
+        return new_indexes[:, :3], new_labels
 
     def transform_exclusive(self, triplets):
         size_of_batch = len(triplets)
@@ -90,7 +84,7 @@ class NegativeSampler:
 
         new_labels = np.zeros((size_of_batch * (self.negative_sample_rate + 1))).astype(np.uint16)
         new_indexes = np.tile(triplets, (self.negative_sample_rate + 1, 1)).astype(np.uint16)
-        new_labels[:size_of_batch] = 1
+        new_labels[:size_of_batch] = triplets[:, 3]
 
         choices = np.random.binomial(1, 0.5, number_to_generate)
 
@@ -107,7 +101,7 @@ class NegativeSampler:
                     while (new_indexes[index][1], new_indexes[index][0]) in self.subs[new_indexes[index][2]]:
                         new_indexes[index, 0] = random.randint(0, self.n_entities-1)
 
-        return new_indexes, new_labels
+        return new_indexes[:, :3], new_labels
 
 
 class RelationFilter:

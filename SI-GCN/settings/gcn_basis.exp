@@ -34,7 +34,7 @@
 		learning_rate=0.01
 
 [General]
-	NegativeSampleRate=50
+	NegativeSampleRate=10
 	GraphSplitSize=0.5
 	ExperimentName=models/GcnBlock
 	GraphBatchSize=1000
