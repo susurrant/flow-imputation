@@ -32,7 +32,7 @@ if __name__ == '__main__':
     valid_path = dataset + '/valid.txt'
     if settings['Evaluation']['Dataset'] == 'Negative':
         test_path = dataset + '/test_n.txt'
-    else:
+    elif settings['Evaluation']['Dataset'] == 'Positive':
         test_path = dataset + '/test.txt'
     feature_path = dataset + '/features.txt'
 
