@@ -69,8 +69,41 @@ def classification(filename, class_num, threshold):
             sheet.writerow([g[0], i, g[1], m])
 
 
-def gen_data(data_file, r, output_path):
-    p_data = np.loadtxt(data_file, dtype=np.uint16, delimiter='\t', skiprows=1)
+def read_features(entity_dict, feature_file):
+    grid_list = list(np.loadtxt(entity_dict, dtype=np.uint16, delimiter='\t')[:, 1])
+    features = {}
+    with open(feature_file, 'r') as f:
+        lines = f.readlines()
+        for i, line in enumerate(lines):
+            sl = line.strip().split('\t')
+            features[grid_list[i]] = list(map(int, sl[2:]))  #[attract, pull]
+    return features
+
+
+# add negative samples to test.txt
+def ns2test(flow_file, output_path):
+    p_data = np.loadtxt(flow_file, dtype=np.uint16, delimiter='\t', skiprows=1)
+    grids = list(set(p_data[:, 0]) | set(p_data[:, 2]))
+    test_triplets = np.loadtxt(output_path+'test.txt', dtype=np.uint16, delimiter='\t')
+    features = read_features(output_path+'entities.dict', output_path+'features_raw.txt') #[attract, pull]
+    p_dict = set(map(tuple, p_data[:, [0, 2]]))
+    n_dict = set()
+    negatives = []
+    for i in range(len(grids)):
+        for j in range(len(grids)):
+            if j != i:
+                n_dict.add((grids[i], grids[j]))
+    n_dict -= p_dict
+    for g in n_dict:
+        negatives.append([g[0], 0, g[1], 0, features[g[0]][1] + features[g[1]][0]])  # 只考虑一种关系，第二项值为0
+    negatives = np.array(negatives)
+    np.random.shuffle(negatives)
+    n_idx = np.random.choice(negatives.shape[0], size=test_triplets.shape[0]//5, replace=False, p=negatives[:, 4] / np.sum(negatives[:, 4]))
+    np.savetxt(output_path + 'test.txt', np.concatenate((test_triplets, negatives[n_idx][:, :4]), axis=0), fmt='%d', delimiter='\t')
+
+
+def gen_data(flow_file, r, output_path):
+    p_data = np.loadtxt(flow_file, dtype=np.uint16, delimiter='\t', skiprows=1)
     grids = list(set(p_data[:, 0]) | set(p_data[:, 2]))
 
     # 生成训练、测试、验证数据集
@@ -100,10 +133,10 @@ def gen_data(data_file, r, output_path):
 
 
 # 生成节点特征
-def gen_features(entity_file, flow_file, output_file, colnum, normalizaed=False):
+def gen_features(flow_file, output_path, colnum, normalizaed=False):
     features = [] # [row, col, attract, pull]
     node_list = []
-    with open(entity_file, 'r') as f:
+    with open(output_path + 'entities.dict', 'r') as f:
         line = f.readline().strip()
         while line:
             s = line.split('\t')
@@ -122,11 +155,11 @@ def gen_features(entity_file, flow_file, output_file, colnum, normalizaed=False)
 
     features = np.array(features, dtype=np.float)
 
-    np.savetxt(output_file[:-4]+'_raw.txt', features, fmt='%d', delimiter='\t')
+    np.savetxt(output_path + 'features_raw.txt', features, fmt='%d', delimiter='\t')
     if normalizaed:
         features /= np.max(features, axis=0)
 
-    np.savetxt(output_file, features, fmt='%.3f', delimiter='\t')
+    np.savetxt(output_path + 'features.txt', features, fmt='%.3f', delimiter='\t')
 
 
 if __name__ == '__main__':
@@ -135,7 +168,8 @@ if __name__ == '__main__':
     threshold = 20
     col_num = 30
     classification('data/taxi_1km.txt', class_num, threshold)
-    c_file = 'data/taxi_1km_c'+str(class_num)+'_t'+str(threshold)+'.txt'
+    flow_file = 'data/taxi_1km_c'+str(class_num)+'_t'+str(threshold)+'.txt'
     path = 'SI-GCN/data/taxi/'
-    gen_data(c_file, [0.6, 0.2, 0.2], path)
-    gen_features(path+'entities.dict', c_file, path+'features.txt', colnum=col_num, normalizaed=True)
+    gen_data(flow_file, [0.6, 0.2, 0.2], path)
+    gen_features(flow_file, path, colnum=col_num, normalizaed=True)
+    ns2test(flow_file, path)

@@ -88,8 +88,8 @@ def predict(flows, features, beta, K, colnum):
     print('\nnum of test flows:', len(r))
     print('real_min:', min(r), ', real_max:', max(r))
     print('pred_min:', int(min(p)), ', pred_max:', int(max(p)))
-    print('real:', r[:20])
-    print('pred:', list(map(int, p[:20])))
+    print('real:', r[-20:])
+    print('pred:', list(map(int, p[-20:])))
 
     return p, r
 
