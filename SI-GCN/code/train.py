@@ -173,7 +173,7 @@ if __name__ == '__main__':
     if 'NegativeSampleRate' in general_settings:
         ns = auxilliaries.NegativeSampler(int(general_settings['NegativeSampleRate']), general_settings['EntityCount'], entities.values())
         ns.set_positives(train_triplets)
-        ns.set_negativies()
+        ns.set_negatives()
 
         def t_func_abadoned(x): #horrible hack!!!
             arr = np.array(x)
