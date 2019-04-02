@@ -20,25 +20,6 @@ def read_features(entity_dict, feature_file):
     return features
 
 
-def merge_attraction(entity_file, tr_a, te_a, v_a):
-    gids = []
-    with open(entity_file, 'r') as f:
-        lines = f.readlines()
-        for line in lines:
-            gids.append(int(line.strip().split('\t')[-1]))
-
-    attraction = {}
-    for gid in gids:
-        attraction[gid] = 0
-        if gid in tr_a:
-            attraction[gid] += tr_a[gid]
-        if gid in te_a:
-            attraction[gid] += te_a[gid]
-        if gid in v_a:
-            attraction[gid] += v_a[gid]
-    return attraction
-
-
 def grid_dis(i, j, colnum):
     x0 = int(i) % colnum
     y0 = int(i) // colnum
@@ -93,6 +74,7 @@ def predict(flows, features, beta, K, colnum):
 
     return p, r
 
+
 def evaluate(p, r):
     p = np.array(p)
     r = np.array(r)
@@ -110,7 +92,7 @@ def evaluate(p, r):
         if r[i] + p[i]:
             ssi += min(r[i], p[i]) / (r[i] + p[i])
             c2 += 1
-    print('MAPE:', round(mape / c1, 3))
+    #print('MAPE:', round(mape / c1, 3))
 
     print('MSE:', round(np.mean(np.square(r - p)), 3))
     print('RMSE:', round(np.sqrt(np.mean(np.square(r - p))), 3))
@@ -120,11 +102,11 @@ def evaluate(p, r):
 
     print('SSI:', round(ssi * 2 / (c2 ^ 2), 3))
 
-    smc = stats.spearmanr(r, p)
-    print('SMC: correlation =', round(smc[0], 3), ', p-value =', round(smc[1], 3))
+    #smc = stats.spearmanr(r, p)
+    #print('SMC: correlation =', round(smc[0], 3), ', p-value =', round(smc[1], 3))
 
-    llr = stats.linregress(r, p)
-    print('LLR: R =', round(llr[2], 3), ', p-value =', round(llr[3], 3))
+    #llr = stats.linregress(r, p)
+    #print('LLR: R =', round(llr[2], 3), ', p-value =', round(llr[3], 3))
 
     # p1 = plt.scatter(p, r, marker='.', color='green', s=10)
     # plt.show()
@@ -135,11 +117,10 @@ if __name__ == '__main__':
     col_num = 30
     path = 'SI-GCN/data/taxi/'
     tr_f = read_flows(path + 'train.txt')
-    te_f = read_flows(path + 'test.txt')
+    te_f = read_flows(path + 'test_n.txt')
     #v_f = read_flows(path + 'valid.txt')
 
     features = read_features(path + 'entities.dict', path + 'features_raw.txt')
-    #attraction = merge_attraction(path + 'entities.dict', tr_a, te_a, v_a)
 
     beta, K = gravity_model(tr_f, features, col_num)
     print('beta =', beta, ', K =', K)

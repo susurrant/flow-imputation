@@ -31,7 +31,7 @@ class AccuracySummary:
             if r[i]+p[i]:
                 ssi += min(r[i], p[i])/(r[i]+p[i])
                 c2 += 1
-        self.results['MAPE'] = mape/c1
+        #self.results['MAPE'] = mape/c1
         self.results['SSI'] = ssi*2/(c2^2)
 
         self.results['MSE'] = np.mean(np.square(r-p))
@@ -40,8 +40,8 @@ class AccuracySummary:
         stack = np.column_stack((p, r))
         self.results['CPC'] = 2 * np.sum(np.min(stack, axis=1)) / np.sum(stack)
 
-        self.results['SMC'] = stats.spearmanr(r, p)
-        self.results['LLR'] = stats.linregress(r, p)
+        #self.results['SMC'] = stats.spearmanr(r, p)
+        #self.results['LLR'] = stats.linregress(r, p)
 
     def accuracy_string(self):
         return 'MSE'
@@ -52,9 +52,9 @@ class AccuracySummary:
         print('real:', list(self.r[:20]))
         print('pred:', list(map(int, self.p[:20])))
         for item in self.results.items():
-            if item[0] == 'SMC':
+            if item[0] == 'SMC1':
                 print('SMC: correlation =', round(item[1][0], 3), ', p-value =', round(item[1][1], 3))
-            elif item[0] == 'LLR':
+            elif item[0] == 'LLR1':
                 print('LLR: R =', round(item[1][2], 3), ', p-value =', round(item[1][3], 3))
             else:
                 print(item[0], end=': ')
