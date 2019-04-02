@@ -234,16 +234,22 @@ if __name__ == '__main__':
     optimizer_weights = model.get_weights()
     optimizer_input = model.get_train_input_variables()
     loss = model.get_loss(mode='train') + model.get_regularization()
-    #print(optimizer_input)
 
 
     '''
-    6. Clean this shit up:
+    6. Add additiontional ops:
     '''
     for add_op in model.get_additional_ops():
         opp.additional_ops.append(add_op)
 
     optimizer_parameters = opp.get_parametrization()
+
+    print('optimizer weights:')
+    print(optimizer_weights)
+    print('optimizer input:')
+    print(optimizer_input)
+    print('optimizer parameters:')
+    print(optimizer_parameters)
 
 
     '''
