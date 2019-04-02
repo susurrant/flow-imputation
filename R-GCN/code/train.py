@@ -72,9 +72,6 @@ if __name__ == '__main__':
     optimizer_settings.merge(general_settings)
     evaluation_settings.merge(general_settings)
 
-    graph = MessageGraph(train_triplets, len(entities), len(relations))
-    graph.forward_incidence_matrix(['global'])
-    sys.exit(0)
 
     '''
     3. Construct the encoder-decoder pair:
