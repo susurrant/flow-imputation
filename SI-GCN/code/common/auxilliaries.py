@@ -75,7 +75,8 @@ class NegativeSampler:
                     new_indexes[index+size_of_batch,2] = values[index]
                 else:
                     new_indexes[index+size_of_batch,0] = values[index]
-
+        print(new_indexes[:, :3])
+        print(new_labels)
         return new_indexes[:, :3], new_labels
 
     def transform_exclusive(self, triplets):
