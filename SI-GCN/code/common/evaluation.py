@@ -17,7 +17,7 @@ class AccuracySummary:
         self.r = r
         p = np.array(p)
         r = np.array(r)
-        print(np.sum(np.where(p == 0)) / p.shape[0])
+
         self.results['MAE'] = np.mean(np.abs(r-p))
 
         c1 = 0
@@ -47,6 +47,7 @@ class AccuracySummary:
         return 'MSE'
 
     def pretty_print(self):
+        print('ratio of non-zeros', np.sum(self.p != 0) / self.p.shape[0])
         print('real_min:', min(self.r), ', real_max:', max(self.r))
         print('pred_min:', int(min(self.p)), ', pred_max:', int(max(self.p)))
         print('real:', list(self.r[:20]))

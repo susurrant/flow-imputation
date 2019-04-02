@@ -79,7 +79,7 @@ def evaluate(p, r):
     p = np.array(p)
     r = np.array(r)
 
-    print(np.sum(np.where(p==0)) / p.shape[0])
+    print(np.sum(p != 0) / p.shape[0])
 
     print('\nMAE\t', round(np.mean(np.abs(r - p)),3))
 
@@ -110,8 +110,8 @@ def evaluate(p, r):
     #llr = stats.linregress(r, p)
     #print('LLR: R =', round(llr[2], 3), ', p-value =', round(llr[3], 3))
 
-    # p1 = plt.scatter(p, r, marker='.', color='green', s=10)
-    # plt.show()
+    #p1 = plt.scatter(p, r, marker='.', color='green', s=10)
+    #plt.show()
 
 
 if __name__ == '__main__':
@@ -121,7 +121,6 @@ if __name__ == '__main__':
     tr_f = read_flows(path + 'train.txt')
     te_f = read_flows(path + 'test_n.txt')
     #v_f = read_flows(path + 'valid.txt')
-
     features = read_features(path + 'entities.dict', path + 'features_raw.txt')
 
     beta, K = gravity_model(tr_f, features, col_num)
