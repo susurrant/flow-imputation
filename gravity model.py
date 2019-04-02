@@ -79,6 +79,8 @@ def evaluate(p, r):
     p = np.array(p)
     r = np.array(r)
 
+    print(np.sum(np.where(p==0)) / p.shape[0])
+
     print('\nMAE\t', round(np.mean(np.abs(r - p)),3))
 
     c1 = 0

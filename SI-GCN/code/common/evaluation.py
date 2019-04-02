@@ -17,7 +17,7 @@ class AccuracySummary:
         self.r = r
         p = np.array(p)
         r = np.array(r)
-
+        print(np.sum(np.where(p == 0)) / p.shape[0])
         self.results['MAE'] = np.mean(np.abs(r-p))
 
         c1 = 0
