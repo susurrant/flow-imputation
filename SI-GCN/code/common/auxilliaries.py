@@ -44,18 +44,6 @@ class NegativeSampler:
         self.negatives = np.array(self.negatives)
         np.random.shuffle(self.negatives)
 
-    # based on train triplets
-    def sample(self, triplets):
-        size_of_batch = len(triplets)
-        number_to_generate = size_of_batch * self.negative_sample_rate
-        if number_to_generate > self.negatives.shape[0]:
-            number_to_generate = self.negatives.shape[0]
-
-        neg_samples = self.negatives[random.sample(range(self.negatives.shape[0]), int(number_to_generate))]
-
-        return np.concatenate((triplets, neg_samples), axis=0)
-
-    # based on batch triplets
     def transform(self, triplets):
         size_of_batch = len(triplets)
         number_to_generate = size_of_batch*self.negative_sample_rate
@@ -75,7 +63,7 @@ class NegativeSampler:
                     new_indexes[index+size_of_batch,2] = values[index]
                 else:
                     new_indexes[index+size_of_batch,0] = values[index]
-                    
+
         return new_indexes[:, :3], new_labels
 
     def transform_exclusive(self, triplets):
