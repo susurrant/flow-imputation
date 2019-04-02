@@ -171,8 +171,9 @@ if __name__ == '__main__':
         return edges
 
     if 'NegativeSampleRate' in general_settings:
-        ns = auxilliaries.NegativeSampler(int(general_settings['NegativeSampleRate']), general_settings['EntityCount'])
-        ns.set_known_positives(train_triplets)
+        ns = auxilliaries.NegativeSampler(int(general_settings['NegativeSampleRate']), general_settings['EntityCount'], entities.values())
+        ns.set_positives(train_triplets)
+        ns.set_negativies()
 
         def t_func_abadoned(x): #horrible hack!!!
             arr = np.array(x)
@@ -217,9 +218,9 @@ if __name__ == '__main__':
                 graph_split_ids = np.random.choice(graph_batch_ids, size=split_size, replace=False)
                 graph_split = np.array(train_triplets)[graph_split_ids]
 
-                t = ns.transform(graph_batch)
-                return (graph_split[:, :3], t[0], t[1])
-                #return (graph_split[:,:3], graph_batch[:,:3], graph_batch[:,3])
+                t = ns.sample2(graph_batch)
+                return (graph_split[:, :3], t[:, :3], t[:, 3])
+                #return (graph_split[:, :3], graph_batch[:, :3], graph_batch[:, 3])
 
         opp.set_sample_transform_function(t_func)
 

@@ -69,7 +69,7 @@ def classification(filename, class_num, threshold):
             sheet.writerow([g[0], i, g[1], m])
 
 
-def gen_data(data_file, r, output_path, negative_sampling = False):
+def gen_data(data_file, r, output_path):
     p_data = np.loadtxt(data_file, dtype=np.uint16, delimiter='\t', skiprows=1)
     grids = list(set(p_data[:, 0]) | set(p_data[:, 2]))
 
@@ -82,28 +82,6 @@ def gen_data(data_file, r, output_path, negative_sampling = False):
     test_set = set(random.sample(s, int(r[1] * p_data.shape[0])))
     test_data = p_data[list(test_set)]
     valid_data = p_data[list(s - test_set)]
-
-    # negative triplets
-    if negative_sampling:
-        p_dict = set(map(tuple, p_data[:, [0, 2]]))
-        n_data = []
-        n_dict = set()
-        for i in range(len(grids)):  # can be optimized using set operations
-            for j in range(len(grids)):
-                if j != i:
-                    n_dict.add((grids[i], grids[j]))
-        n_dict -= p_dict
-        for g in n_dict:
-            n_data.append([g[0], 0, g[1], 0])  #只考虑一种关系，第二项值为0
-
-        n_data = np.array(n_data)
-        t = set(range(n_data.shape[0]))
-        train_set = set(random.sample(range(n_data.shape[0]), int(r[0] * n_data.shape[0])))
-        train_data = np.row_stack((train_data, n_data[list(train_set)]))
-        s = t - train_set
-        test_set = set(random.sample(s, int(r[1] * n_data.shape[0])))
-        test_data = np.row_stack((test_data, n_data[list(test_set)]))
-        valid_data = np.row_stack((valid_data, n_data[list(s - test_set)]))
 
     np.random.shuffle(train_data)
     np.savetxt(output_path + 'train.txt', train_data, fmt='%d', delimiter='\t')
@@ -159,5 +137,5 @@ if __name__ == '__main__':
     classification('data/taxi_1km.txt', class_num, threshold)
     c_file = 'data/taxi_1km_c'+str(class_num)+'_t'+str(threshold)+'.txt'
     path = 'SI-GCN/data/taxi/'
-    gen_data(c_file, [0.6, 0.2, 0.2], path, negative_sampling=False)
+    gen_data(c_file, [0.6, 0.2, 0.2], path)
     gen_features(path+'entities.dict', c_file, path+'features.txt', colnum=col_num, normalizaed=True)
