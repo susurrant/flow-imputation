@@ -81,10 +81,13 @@ def read_features(entity_dict, feature_file):
 
 
 # add negative samples to test.txt
-def ns2test(flow_file, output_path):
+def sample_negatives(flow_file, output_path):
     p_data = np.loadtxt(flow_file, dtype=np.uint16, delimiter='\t', skiprows=1)
     grids = list(set(p_data[:, 0]) | set(p_data[:, 2]))
-    test_triplets = np.loadtxt(output_path+'test.txt', dtype=np.uint16, delimiter='\t')
+    sample_size = 0
+    with open(output_path+'test.txt', 'r') as f:
+        for _ in f:
+            sample_size += 1
     features = read_features(output_path+'entities.dict', output_path+'features_raw.txt') #[attract, pull]
     p_dict = set(map(tuple, p_data[:, [0, 2]]))
     n_dict = set()
@@ -98,11 +101,11 @@ def ns2test(flow_file, output_path):
         negatives.append([g[0], 0, g[1], 0, features[g[0]][1] + features[g[1]][0]])  # 只考虑一种关系，第二项值为0
     negatives = np.array(negatives)
     np.random.shuffle(negatives)
-    n_idx = np.random.choice(negatives.shape[0], size=test_triplets.shape[0]//5, replace=False, p=negatives[:, 4] / np.sum(negatives[:, 4]))
-    np.savetxt(output_path + 'test.txt', np.concatenate((test_triplets, negatives[n_idx][:, :4]), axis=0), fmt='%d', delimiter='\t')
+    n_idx = np.random.choice(negatives.shape[0], size=sample_size, replace=False, p=negatives[:, 4] / np.sum(negatives[:, 4]))
+    np.savetxt(output_path + 'test_n.txt', negatives[n_idx][:, :4], fmt='%d', delimiter='\t')
 
 
-def gen_data(flow_file, r, output_path):
+def gen_data(flow_file, output_path, r):
     p_data = np.loadtxt(flow_file, dtype=np.uint16, delimiter='\t', skiprows=1)
     grids = list(set(p_data[:, 0]) | set(p_data[:, 2]))
 
@@ -170,6 +173,6 @@ if __name__ == '__main__':
     classification('data/taxi_1km.txt', class_num, threshold)
     flow_file = 'data/taxi_1km_c'+str(class_num)+'_t'+str(threshold)+'.txt'
     path = 'SI-GCN/data/taxi/'
-    gen_data(flow_file, [0.6, 0.2, 0.2], path)
+    gen_data(flow_file, path, [0.6, 0.2, 0.2])
     gen_features(flow_file, path, colnum=col_num, normalizaed=True)
-    ns2test(flow_file, path)
+    sample_negatives(flow_file, path)

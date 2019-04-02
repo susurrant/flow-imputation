@@ -30,7 +30,10 @@ if __name__ == '__main__':
     entities_path = dataset + '/entities.dict'
     train_path = dataset + '/train.txt'
     valid_path = dataset + '/valid.txt'
-    test_path = dataset + '/test.txt'
+    if settings['Evaluation']['Dataset'] == 'Negative':
+        test_path = dataset + '/test_n.txt'
+    else:
+        test_path = dataset + '/test.txt'
     feature_path = dataset + '/features.txt'
 
     train_triplets = io.read_triplets_as_list(train_path, entities_path, relations_path)
