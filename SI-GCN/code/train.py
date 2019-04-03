@@ -221,7 +221,7 @@ if __name__ == '__main__':
                 graph_split_ids = np.random.choice(graph_batch_ids, size=split_size, replace=False)
                 graph_split = np.array(train_triplets)[graph_split_ids]
 
-                t = ns.transform_exclusive(graph_batch)
+                t = ns.transform(graph_batch)
                 return (graph_split[:, :3], t[0], t[1])
                 #return (graph_split[:, :3], graph_batch[:, :3], graph_batch[:, 3])
 
