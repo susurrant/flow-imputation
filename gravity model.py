@@ -1,6 +1,7 @@
 
 import numpy as np
 from scipy import stats
+from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 
 
@@ -28,7 +29,7 @@ def grid_dis(i, j, colnum):
     return np.sqrt((x1 - x0) ** 2 + (y1 - y0) ** 2)
 
 
-def gravity_model(flows, features, colnum):
+def gravity_model_linear(flows, features, colnum):
     Y = []
     X = []
     feature_size = len(list(features.values())[0])
@@ -53,7 +54,32 @@ def gravity_model(flows, features, colnum):
     return beta, K
 
 
-def predict(flows, features, beta, K, colnum):
+def gravity_model(flows, features, colnum):
+    Y = []
+    X = []
+    feature_size = len(list(features.values())[0])
+    if feature_size == 1:
+        for k in flows:
+            if k[2]:
+                Y.append(np.log(features[k[0]] * features[k[1]] / k[2]))
+                X.append(np.log(grid_dis(k[0], k[1], colnum)))
+    elif feature_size == 2:
+        for k in flows:
+            if k[2]:
+                Y.append(np.log(k[2]))
+                X.append([np.log(features[k[0]][1]), np.log(features[k[1]][0]), np.log(grid_dis(k[0], k[1], colnum))])
+
+    reg = LinearRegression().fit(X, Y)
+    beta = reg.coef_
+    K = np.e**reg.intercept_
+
+    #p1 = plt.scatter(X, Y, marker='.', color='green', s=10)
+    #plt.show()
+
+    return beta, K
+
+
+def predict_linear(flows, features, beta, K, colnum):
     p = []
     r = []
     feature_size = len(list(features.values())[0])
@@ -71,6 +97,28 @@ def predict(flows, features, beta, K, colnum):
     print('pred_min:', int(min(p)), ', pred_max:', int(max(p)))
     print('real:', r[-20:])
     print('pred:', list(map(int, p[-20:])))
+
+    return p, r
+
+
+def predict(flows, features, beta, K, colnum):
+    p = []
+    r = []
+    feature_size = len(list(features.values())[0])
+    if feature_size == 1:
+        for f in flows:
+            p.append(K * features[f[0]] * features[f[1]] / grid_dis(f[0], f[1], colnum) ** beta)
+            r.append(f[2])
+    elif feature_size == 2:
+        for f in flows:
+            p.append(K * (features[f[0]][1]**beta[0]) * (features[f[1]][0]**beta[1]) * (grid_dis(f[0], f[1], colnum) ** beta[2]))
+            r.append(f[2])
+
+    print('\nnum of test flows:', len(r))
+    print('real_min:', min(r), ', real_max:', max(r))
+    print('pred_min:', int(min(p)), ', pred_max:', int(max(p)))
+    print('real:', r[0:20])
+    print('pred:', list(map(int, p[0:20])))
 
     return p, r
 
