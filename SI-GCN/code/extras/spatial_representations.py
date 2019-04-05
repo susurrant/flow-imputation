@@ -19,6 +19,9 @@ class SpatialRepresentation(Model):
         variance = glorot_variance(self.shape)
         self.alpha = make_tf_variable(0, variance, self.shape)
 
+    def local_get_weights(self):
+        return [self.alpha]
+
     def get_all_subject_codes(self, mode='train'):
         return tf.pow(self.features, self.alpha)
 
