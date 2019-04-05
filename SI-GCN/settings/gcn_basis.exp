@@ -2,7 +2,7 @@
 	Name=gcn_basis
 	DropoutKeepProbability=0.8
 	InternalEncoderDimension=500
-	NumberOfBasisFunctions=4
+	NumberOfBasisFunctions=1
 	NumberOfLayers=1
 	UseInputTransform=Yes
 	UseOutputTransform=No

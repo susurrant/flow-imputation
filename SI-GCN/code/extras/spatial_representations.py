@@ -15,7 +15,7 @@ class SpatialRepresentation(Model):
         self.features = features.astype(np.float32)
 
     def local_initialize_train(self):
-        initializer = np.ones(shape=self.shape).astype(np.float32)
+        initializer = np.random.random(size=self.shape).astype(np.float32)
         self.alpha = tf.Variable(initializer)
 
     def local_get_weights(self):
