@@ -2,7 +2,6 @@
 import tensorflow as tf
 from model import Model
 import numpy as np
-from common.shared_functions import glorot_variance, make_tf_variable
 
 
 class SpatialRepresentation(Model):
@@ -16,8 +15,8 @@ class SpatialRepresentation(Model):
         self.features = features.astype(np.float32)
 
     def local_initialize_train(self):
-        variance = glorot_variance(self.shape)
-        self.alpha = make_tf_variable(0, variance, self.shape)
+        initializer = np.ones(shape=self.shape).astype(np.float32)
+        self.alpha = tf.Variable(initializer)
 
     def local_get_weights(self):
         return [self.alpha]
