@@ -2,9 +2,8 @@
 from model import Model
 import numpy as np
 
-class SpatialRepresentation(Model):
-    embedding_width = None
 
+class SpatialRepresentation(Model):
     shape = None
 
     def __init__(self, shape, settings, features, next_component=None):
