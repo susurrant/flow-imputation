@@ -54,6 +54,28 @@ def gravity_model_linear(flows, features, colnum):
     return beta, K
 
 
+def predict_linear(flows, features, beta, K, colnum):
+    p = []
+    r = []
+    feature_size = len(list(features.values())[0])
+    if feature_size == 1:
+        for f in flows:
+            p.append(K * features[f[0]] * features[f[1]] / grid_dis(f[0], f[1], colnum) ** beta)
+            r.append(f[2])
+    elif feature_size == 2:
+        for f in flows:
+            p.append(K * features[f[0]][1] * features[f[1]][0] / grid_dis(f[0], f[1], colnum) ** beta)
+            r.append(f[2])
+
+    print('\nnum of test flows:', len(r))
+    print('real_min:', min(r), ', real_max:', max(r))
+    print('pred_min:', int(min(p)), ', pred_max:', int(max(p)))
+    print('real:', r[-20:])
+    print('pred:', list(map(int, p[-20:])))
+
+    return p, r
+
+
 def gravity_model(flows, features, colnum):
     Y = []
     X = []
@@ -77,28 +99,6 @@ def gravity_model(flows, features, colnum):
     #plt.show()
 
     return beta, K
-
-
-def predict_linear(flows, features, beta, K, colnum):
-    p = []
-    r = []
-    feature_size = len(list(features.values())[0])
-    if feature_size == 1:
-        for f in flows:
-            p.append(K * features[f[0]] * features[f[1]] / grid_dis(f[0], f[1], colnum) ** beta)
-            r.append(f[2])
-    elif feature_size == 2:
-        for f in flows:
-            p.append(K * features[f[0]][1] * features[f[1]][0] / grid_dis(f[0], f[1], colnum) ** beta)
-            r.append(f[2])
-
-    print('\nnum of test flows:', len(r))
-    print('real_min:', min(r), ', real_max:', max(r))
-    print('pred_min:', int(min(p)), ', pred_max:', int(max(p)))
-    print('real:', r[-20:])
-    print('pred:', list(map(int, p[-20:])))
-
-    return p, r
 
 
 def predict(flows, features, beta, K, colnum):

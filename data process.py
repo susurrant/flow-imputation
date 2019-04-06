@@ -143,7 +143,7 @@ def gen_features(flow_file, output_path, colnum, normalizaed=False):
         line = f.readline().strip()
         while line:
             s = line.split('\t')
-            features.append([(int(s[1])-1)//colnum, (int(s[1])-1)%colnum, 0, 0]) # 0, 0
+            features.append([int(s[1])//colnum, int(s[1])%colnum, 0, 0]) # 0, 0
             node_list.append(s[1])
             line = f.readline().strip()
 
@@ -183,7 +183,7 @@ def break_calc():
 if __name__ == '__main__':
     #taxi_data('data/taxi_sj_1km_051317.txt', 'data/taxi_1km.txt')
     class_num = 1
-    threshold = 50
+    threshold = 20
     col_num = 30
     path = 'SI-GCN/data/taxi/'
 
