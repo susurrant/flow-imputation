@@ -17,7 +17,7 @@ class SpatialRepresentation(Model):
     def local_initialize_train(self):
         co = np.ones((self.shape[0], 2)).astype(np.float32)
         feat = np.random.random(size=(self.shape[0], self.shape[1]-2)).astype(np.float32)
-        self.alpha = tf.Variable(np.concatenate((co, feat), axis=1)
+        self.alpha = tf.Variable(np.concatenate((co, feat), axis=1))
 
     def local_get_weights(self):
         return [self.alpha]
