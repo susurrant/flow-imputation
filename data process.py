@@ -165,9 +165,9 @@ def gen_features(flow_file, output_path, colnum, normalizaed=False):
     np.savetxt(output_path + 'features.txt', features, fmt='%.3f', delimiter='\t')
 
 
-def break_calc():
+def break_calc(filename, c_num):
     data = []
-    with open('data/sta.txt', 'r') as f:
+    with open(filename, 'r') as f:
         f.readline()
         line = f.readline().strip()
         while line:
@@ -175,7 +175,7 @@ def break_calc():
             data.append(int(d[-1]))
             line = f.readline().strip()
     print(max(data))
-    nl, nk = fisher_jenks(data, 10)
+    nl, nk = fisher_jenks(data, c_num)
     print(nl)
     print(nk)
 
@@ -183,7 +183,7 @@ def break_calc():
 if __name__ == '__main__':
     #taxi_data('data/taxi_sj_1km_051317.txt', 'data/taxi_1km.txt')
     class_num = 1
-    threshold = 30
+    threshold = 50
     col_num = 30
     path = 'SI-GCN/data/taxi/'
 
