@@ -83,8 +83,8 @@ def gravity_model(flows, features, colnum):
     if feature_size == 1:
         for k in flows:
             if k[2]:
-                Y.append(np.log(features[k[0]] * features[k[1]] / k[2]))
-                X.append(np.log(grid_dis(k[0], k[1], colnum)))
+                Y.append(np.log(k[2]))
+                X.append([np.log(features[k[0]]), np.log(features[k[1]]), np.log(grid_dis(k[0], k[1], colnum))])
     elif feature_size == 2:
         for k in flows:
             if k[2]:
@@ -107,7 +107,7 @@ def predict(flows, features, beta, K, colnum):
     feature_size = len(list(features.values())[0])
     if feature_size == 1:
         for f in flows:
-            p.append(K * features[f[0]] * features[f[1]] / grid_dis(f[0], f[1], colnum) ** beta)
+            p.append(K * (features[f[0]]**beta[0]) * (features[f[1]]**beta[1]) * (grid_dis(f[0], f[1], colnum) ** beta[2]))
             r.append(f[2])
     elif feature_size == 2:
         for f in flows:

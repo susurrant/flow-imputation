@@ -29,7 +29,7 @@ def gen_SI():
 
     with open('data/si_1km.txt', 'wb') as rf:
         rf.write('ox,oy,dx,dy,m\r\n')
-        with open('data/taxi_1km_c1_t20.txt', 'r') as f:
+        with open('data/taxi_1km_c1_t50.txt', 'r') as f:
             f.readline()
             line = f.readline().strip()
             while line:
@@ -37,7 +37,7 @@ def gen_SI():
                 rf.write(cen[d[0]][0]+','+cen[d[0]][1]+','+cen[d[2]][0]+','+cen[d[2]][1]+','+d[3]+'\r\n')
                 line = f.readline().strip()
 
-    xy2line('si_1km.txt', 'si_1km_051317')
+    xy2line('si_1km.txt', 'si_1km_051317_t50')
 
 
 #XY To Line
