@@ -1,7 +1,7 @@
 [Encoder]
 	Name=gcn_basis
 	DropoutKeepProbability=0.8
-	InternalEncoderDimension=500
+	InternalEncoderDimension=100
 	NumberOfBasisFunctions=1
 	NumberOfLayers=1
 	UseInputTransform=Yes
@@ -19,15 +19,15 @@
 	RegularizationParameter=0.05
 
 [Shared]
-	CodeDimension=500
+	CodeDimension=100
 
 [Optimizer]
 	MaxGradientNorm=1
-	ReportTrainLossEvery=250
+	ReportTrainLossEvery=500
 
 	[EarlyStopping]
 		CheckEvery=500
-		BurninPhaseDuration=20000
+		BurninPhaseDuration=30000
 
 	[Algorithm]
 		Name=Adam
