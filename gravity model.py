@@ -17,7 +17,7 @@ def read_features(entity_dict, feature_file):
         lines = f.readlines()
         for i, line in enumerate(lines):
             sl = line.strip().split('\t')
-            features[grid_list[i]] = list(map(int, sl[2:]))  #[attract, pull]
+            features[grid_list[i]] = list(map(int, sl))  #[attract, pull]
     return features
 
 
@@ -26,6 +26,10 @@ def grid_dis(i, j, colnum):
     y0 = int(i) // colnum
     x1 = int(j) % colnum
     y1 = int(j) // colnum
+    return np.sqrt((x1 - x0) ** 2 + (y1 - y0) ** 2)
+
+
+def dis(x0, y0, x1, y1):
     return np.sqrt((x1 - x0) ** 2 + (y1 - y0) ** 2)
 
 
@@ -89,7 +93,8 @@ def gravity_model(flows, features, colnum):
         for k in flows:
             if k[2]:
                 Y.append(np.log(k[2]))
-                X.append([np.log(features[k[0]][1]), np.log(features[k[1]][0]), np.log(grid_dis(k[0], k[1], colnum))])
+                X.append([np.log(features[k[0]][3]), np.log(features[k[1]][2]),
+                          np.log(dis(features[k[0]][0], features[k[0]][1], features[k[1]][0], features[k[1]][1]))])
 
     reg = LinearRegression().fit(X, Y)
     beta = reg.coef_
@@ -111,7 +116,8 @@ def predict(flows, features, beta, K, colnum):
             r.append(f[2])
     elif feature_size == 2:
         for f in flows:
-            p.append(K * (features[f[0]][1]**beta[0]) * (features[f[1]][0]**beta[1]) * (grid_dis(f[0], f[1], colnum) ** beta[2]))
+            p.append(K * (features[f[0]][3]**beta[0]) * (features[f[1]][2]**beta[1]) *
+                     (dis(features[f[0]][0], features[f[0]][1], features[f[1]][0], features[f[1]][1]) ** beta[2]))
             r.append(f[2])
 
     print('\nnum of test flows:', len(r))
@@ -170,6 +176,7 @@ if __name__ == '__main__':
     te_f = read_flows(path + 'test.txt')
     #v_f = read_flows(path + 'valid.txt')
     features = read_features(path + 'entities.dict', path + 'features_raw.txt')
+    print(features[])
 
     beta, K = gravity_model(tr_f, features, col_num)
     print('beta =', beta, ', K =', K)
