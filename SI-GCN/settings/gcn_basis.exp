@@ -31,13 +31,13 @@
 
 	[Algorithm]
 		Name=Adam
-		learning_rate=0.01
+		learning_rate=0.02
 
 [General]
 	NegativeSampleRate=1
 	GraphSplitSize=0.5
 	ExperimentName=models/GcnBlock
-	GraphBatchSize=2000
+	GraphBatchSize=4000
 
 [Evaluation]
 	Metric=Accuracy

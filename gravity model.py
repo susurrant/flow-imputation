@@ -84,12 +84,12 @@ def gravity_model(flows, features, colnum):
     Y = []
     X = []
     feature_size = len(list(features.values())[0])
-    if feature_size == 1:
+    if feature_size == 3:
         for k in flows:
             if k[2]:
                 Y.append(np.log(k[2]))
                 X.append([np.log(features[k[0]]), np.log(features[k[1]]), np.log(grid_dis(k[0], k[1], colnum))])
-    elif feature_size == 2:
+    elif feature_size == 4:
         for k in flows:
             if k[2]:
                 Y.append(np.log(k[2]))
@@ -110,11 +110,11 @@ def predict(flows, features, beta, K, colnum):
     p = []
     r = []
     feature_size = len(list(features.values())[0])
-    if feature_size == 1:
+    if feature_size == 3:
         for f in flows:
             p.append(K * (features[f[0]]**beta[0]) * (features[f[1]]**beta[1]) * (grid_dis(f[0], f[1], colnum) ** beta[2]))
             r.append(f[2])
-    elif feature_size == 2:
+    elif feature_size == 4:
         for f in flows:
             p.append(K * (features[f[0]][3]**beta[0]) * (features[f[1]][2]**beta[1]) *
                      (dis(features[f[0]][0], features[f[0]][1], features[f[1]][0], features[f[1]][1]) ** beta[2]))
@@ -176,7 +176,7 @@ if __name__ == '__main__':
     te_f = read_flows(path + 'test.txt')
     #v_f = read_flows(path + 'valid.txt')
     features = read_features(path + 'entities.dict', path + 'features_raw.txt')
-    print(features[])
+    print(features[8])
 
     beta, K = gravity_model(tr_f, features, col_num)
     print('beta =', beta, ', K =', K)
