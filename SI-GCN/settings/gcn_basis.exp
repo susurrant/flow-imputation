@@ -1,7 +1,7 @@
 [Encoder]
 	Name=gcn_basis
 	DropoutKeepProbability=0.8
-	InternalEncoderDimension=250
+	InternalEncoderDimension=200
 	NumberOfBasisFunctions=1
 	NumberOfLayers=1
 	UseInputTransform=Yes
@@ -19,7 +19,7 @@
 	RegularizationParameter=0.05
 
 [Shared]
-	CodeDimension=250
+	CodeDimension=200
 
 [Optimizer]
 	MaxGradientNorm=1
@@ -37,7 +37,7 @@
 	NegativeSampleRate=1
 	GraphSplitSize=0.5
 	ExperimentName=models/GcnBlock
-	GraphBatchSize=2000
+	GraphBatchSize=4283
 
 [Evaluation]
 	Metric=Accuracy
