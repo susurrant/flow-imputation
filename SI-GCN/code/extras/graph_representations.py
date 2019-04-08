@@ -132,3 +132,6 @@ class Representation(Model):
 
     def local_get_test_input_variables(self):
         return [self.X]
+
+    def print(self):
+        pass
