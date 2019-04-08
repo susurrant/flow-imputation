@@ -31,7 +31,7 @@
 
 	[Algorithm]
 		Name=Adam
-		learning_rate=0.01
+		learning_rate=0.005
 
 [General]
 	NegativeSampleRate=1

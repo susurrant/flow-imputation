@@ -16,7 +16,7 @@ def read_features(entity_dict, feature_file):
         lines = f.readlines()
         for i, line in enumerate(lines):
             sl = line.strip().split('\t')
-            features[grid_list[i]] = list(map(int, sl))  #[attract, pull]
+            features[grid_list[i]] = list(map(float, sl))  #[attract, pull]
     return features
 
 
