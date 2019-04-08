@@ -27,17 +27,17 @@
 
 	[EarlyStopping]
 		CheckEvery=500
-		BurninPhaseDuration=30000
+		BurninPhaseDuration=40000
 
 	[Algorithm]
 		Name=Adam
-		learning_rate=0.02
+		learning_rate=0.01
 
 [General]
 	NegativeSampleRate=1
 	GraphSplitSize=0.5
 	ExperimentName=models/GcnBlock
-	GraphBatchSize=4000
+	GraphBatchSize=2000
 
 [Evaluation]
 	Metric=Accuracy
