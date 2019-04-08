@@ -51,7 +51,7 @@ if __name__ == '__main__':
     print(train_y.shape)
 
     learn_rate = 0.005
-    num_of_hidden_units = 20
+    num_of_hidden_units = 3
 
     xs = tf.placeholder(tf.float32, shape = (None, 3))
     ys = tf.placeholder(tf.float32, shape = (None, 1))
@@ -59,7 +59,8 @@ if __name__ == '__main__':
     hidden_layer = add_layer(xs, 3, num_of_hidden_units, activation_function=tf.nn.sigmoid)
     prediction = add_layer(hidden_layer, num_of_hidden_units, 1, activation_function=None)
 
-    loss = tf.reduce_mean(tf.square(ys - prediction))
+    #loss = tf.reduce_mean(tf.square(ys - prediction))
+    loss = tf.losses.mean_squared_error(ys, prediction)
     train_step = tf.train.GradientDescentOptimizer(learn_rate).minimize(loss)
 
     with tf.Session() as sess:
@@ -68,7 +69,7 @@ if __name__ == '__main__':
         for i in range(40000):
             sess.run(train_step, feed_dict={xs: train_X, ys: train_y})
             if i % 1000 == 0:
-                print('iteration', i, ': ', sess.run(loss, feed_dict={xs: train_X, ys: train_y}))
+                print('iteration', i, ':', sess.run(loss, feed_dict={xs: train_X, ys: train_y}))
 
         pred = sess.run(prediction, feed_dict={xs:test_X})
         evaluate(pred.flatten().tolist(), test_y.flatten().tolist())
