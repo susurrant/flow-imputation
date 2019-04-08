@@ -46,21 +46,21 @@ class BilinearDiag(Model):
     def predict(self):
         e1s, rs, e2s = self.compute_codes(mode='test')
         energies = tf.reduce_sum(e1s * rs * e2s, 1) # sum by row
-        #return tf.nn.sigmoid(energies)
+        return tf.nn.sigmoid(energies)
         return energies
 
     def predict_all_subject_scores(self):
         e1s, rs, e2s = self.compute_codes(mode='test')
         all_subject_codes = self.next_component.get_all_subject_codes(mode='test')
         all_energies = tf.transpose(tf.matmul(all_subject_codes, tf.transpose(rs * e2s)))
-        #return tf.nn.sigmoid(all_energies)
+        return tf.nn.sigmoid(all_energies)
         return all_energies
 
     def predict_all_object_scores(self):
         e1s, rs, e2s = self.compute_codes(mode='test')
         all_object_codes = self.next_component.get_all_object_codes(mode='test')
         all_energies = tf.matmul(e1s * rs, tf.transpose(all_object_codes))
-        #return tf.nn.sigmoid(all_energies)
+        return tf.nn.sigmoid(all_energies)
         return all_energies
 
     def local_get_regularization(self):
