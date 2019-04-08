@@ -4,8 +4,8 @@
 	InternalEncoderDimension=500
 	NumberOfBasisFunctions=1
 	NumberOfLayers=1
-	UseInputTransform=No
-	UseOutputTransform=No
+	UseInputTransform=Yes
+	UseOutputTransform=Yes
 	AddDiagonal=No
 	DiagonalCoefficients=No
 	SkipConnections=None
