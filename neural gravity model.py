@@ -49,8 +49,8 @@ if __name__ == '__main__':
     train_X, train_y, test_X, test_y = read_data(path, normalization=True)
     print(train_X.shape)
     print(train_y.shape)
-    
-    learn_rate = 0.001
+
+    learn_rate = 0.005
     num_of_hidden_units = 20
 
     xs = tf.placeholder(tf.float32, shape = (None, 3))
@@ -65,10 +65,10 @@ if __name__ == '__main__':
     with tf.Session() as sess:
         init = tf.global_variables_initializer()
         sess.run(init)
-        for i in range(10000):
+        for i in range(40000):
             sess.run(train_step, feed_dict={xs: train_X, ys: train_y})
-            #if i % 100 == 0:
-            #    print(sess.run(loss, feed_dict={xs: train_X, ys: train_y}))
+            if i % 1000 == 0:
+                print('iteration', i, ': ', sess.run(loss, feed_dict={xs: train_X, ys: train_y}))
 
         pred = sess.run(prediction, feed_dict={xs:test_X})
         evaluate(pred.flatten().tolist(), test_y.flatten().tolist())

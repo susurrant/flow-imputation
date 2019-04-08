@@ -89,12 +89,6 @@ def predict(flows, features, beta, K):
                      (dis(features[f[0]][0], features[f[0]][1], features[f[1]][0], features[f[1]][1]) ** beta[2]))
             r.append(f[2])
 
-    print('\nnum of test flows:', len(r))
-    print('real_min:', min(r), ', real_max:', max(r))
-    print('pred_min:', int(min(p)), ', pred_max:', int(max(p)))
-    print('real:', r[0:20])
-    print('pred:', list(map(int, p[0:20])))
-
     return p, r
 
 

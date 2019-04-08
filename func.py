@@ -33,6 +33,12 @@ def dis(x0, y0, x1, y1):
 
 
 def evaluate(p, r):
+    print('\nnum of test flows:', len(r))
+    print('real_min:', min(r), ', real_max:', max(r))
+    print('pred_min:', int(min(p)), ', pred_max:', int(max(p)))
+    print('real:', r[0:20])
+    print('pred:', list(map(int, p[0:20])))
+
     p = np.array(p)
     r = np.array(r)
 
