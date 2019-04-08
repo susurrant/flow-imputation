@@ -3,7 +3,7 @@
 	DropoutKeepProbability=0.8
 	InternalEncoderDimension=250
 	NumberOfBasisFunctions=1
-	NumberOfLayers=2
+	NumberOfLayers=1
 	UseInputTransform=Yes
 	UseOutputTransform=No
 	AddDiagonal=No
@@ -37,7 +37,7 @@
 	NegativeSampleRate=1
 	GraphSplitSize=0.5
 	ExperimentName=models/GcnBlock
-	GraphBatchSize=4000
+	GraphBatchSize=2000
 
 [Evaluation]
 	Metric=Accuracy
