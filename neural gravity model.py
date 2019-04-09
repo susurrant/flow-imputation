@@ -18,16 +18,14 @@ def read_data(path, normalization=False):
         features = read_features(path + 'entities.dict', path + 'features_raw.txt')
 
     for k in tr_f:
-        if k[2]:
-            train_y.append(k[2])
-            train_X.append([features[k[0]][3], features[k[1]][2],
-                            dis(features[k[0]][0], features[k[0]][1], features[k[1]][0], features[k[1]][1])])
+        train_y.append(k[2])
+        train_X.append([features[k[0]][3], features[k[1]][2],
+                        dis(features[k[0]][0], features[k[0]][1], features[k[1]][0], features[k[1]][1])])
 
     for k in te_f:
-        if k[2]:
-            test_y.append(k[2])
-            test_X.append([features[k[0]][3], features[k[1]][2],
-                           dis(features[k[0]][0], features[k[0]][1], features[k[1]][0], features[k[1]][1])])
+        test_y.append(k[2])
+        test_X.append([features[k[0]][3], features[k[1]][2],
+                       dis(features[k[0]][0], features[k[0]][1], features[k[1]][0], features[k[1]][1])])
 
     return np.array(train_X).reshape((-1, 3)), np.array(train_y).reshape((-1, 1)), \
            np.array(test_X).reshape((-1, 3)), np.array(test_y).reshape((-1, 1))
@@ -66,7 +64,7 @@ if __name__ == '__main__':
     with tf.Session() as sess:
         init = tf.global_variables_initializer()
         sess.run(init)
-        for i in range(10000):
+        for i in range(20000):
             sess.run(train_step, feed_dict={xs: train_X, ys: train_y})
             if i % 2000 == 0:
                 print('iteration', i, ':', sess.run(loss, feed_dict={xs: train_X, ys: train_y}))
