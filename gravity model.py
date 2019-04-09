@@ -10,14 +10,12 @@ def gravity_model_linear(flows, features):
     feature_size = len(list(features.values())[0])
     if feature_size == 3:
         for k in flows:
-            if k[2]:
-                Y.append(np.log(features[k[0]][2] * features[k[1]][2] / k[2]))
-                X.append(np.log(dis(features[k[0]][0], features[k[0]][1], features[k[1]][0], features[k[1]][1])))
+            Y.append(np.log(features[k[0]][2] * features[k[1]][2] / k[2]))
+            X.append(np.log(dis(features[k[0]][0], features[k[0]][1], features[k[1]][0], features[k[1]][1])))
     elif feature_size == 4:
         for k in flows:
-            if k[2]:
-                Y.append(np.log(features[k[0]][3] * features[k[1]][2] / k[2]))
-                X.append(np.log(dis(features[k[0]][0], features[k[0]][1], features[k[1]][0], features[k[1]][1])))
+            Y.append(np.log(features[k[0]][3] * features[k[1]][2] / k[2]))
+            X.append(np.log(dis(features[k[0]][0], features[k[0]][1], features[k[1]][0], features[k[1]][1])))
 
     p = np.polyfit(X, Y, 1)
     beta = p[0]
@@ -53,16 +51,14 @@ def gravity_model(flows, features):
     feature_size = len(list(features.values())[0])
     if feature_size == 3:
         for k in flows:
-            if k[2]:
-                Y.append(np.log(k[2]))
-                X.append([np.log(features[k[0]][2]), np.log(features[k[1]][2]),
-                          np.log(dis(features[k[0]][0], features[k[0]][1], features[k[1]][0], features[k[1]][1]))])
+            Y.append(np.log(k[2]))
+            X.append([np.log(features[k[0]][2]), np.log(features[k[1]][2]),
+                      np.log(dis(features[k[0]][0], features[k[0]][1], features[k[1]][0], features[k[1]][1]))])
     elif feature_size == 4:
         for k in flows:
-            if k[2]:
-                Y.append(np.log(k[2]))
-                X.append([np.log(features[k[0]][3]), np.log(features[k[1]][2]),
-                          np.log(dis(features[k[0]][0], features[k[0]][1], features[k[1]][0], features[k[1]][1]))])
+            Y.append(np.log(k[2]))
+            X.append([np.log(features[k[0]][3]), np.log(features[k[1]][2]),
+                      np.log(dis(features[k[0]][0], features[k[0]][1], features[k[1]][0], features[k[1]][1]))])
 
     reg = LinearRegression().fit(X, Y)
     beta = reg.coef_
@@ -101,7 +97,7 @@ if __name__ == '__main__':
     #v_f = read_flows(path + 'valid.txt')
     features = read_features(path + 'entities.dict', path + 'features_raw.txt')
 
-    beta, K = gravity_model_linear(tr_f, features)
+    beta, K = gravity_model(tr_f, features)
     print('beta =', beta, ', K =', K)
-    pred, real = predict_linear(te_f, features, beta, K)
+    pred, real = predict(te_f, features, beta, K)
     evaluate(pred, real)
