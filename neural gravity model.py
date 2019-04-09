@@ -66,7 +66,7 @@ if __name__ == '__main__':
     with tf.Session() as sess:
         init = tf.global_variables_initializer()
         sess.run(init)
-        for i in range(20000):
+        for i in range(10000):
             sess.run(train_step, feed_dict={xs: train_X, ys: train_y})
             if i % 2000 == 0:
                 print('iteration', i, ':', sess.run(loss, feed_dict={xs: train_X, ys: train_y}))
