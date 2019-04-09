@@ -101,7 +101,7 @@ if __name__ == '__main__':
     #v_f = read_flows(path + 'valid.txt')
     features = read_features(path + 'entities.dict', path + 'features_raw.txt')
 
-    beta, K = gravity_model(tr_f, features)
+    beta, K = gravity_model_linear(tr_f, features)
     print('beta =', beta, ', K =', K)
-    pred, real = predict(te_f, features, beta, K)
+    pred, real = predict_linear(te_f, features, beta, K)
     evaluate(pred, real)
