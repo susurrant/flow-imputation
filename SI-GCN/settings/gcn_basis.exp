@@ -5,7 +5,7 @@
 	NumberOfBasisFunctions=1
 	NumberOfLayers=1
 	UseInputTransform=Yes
-	UseOutputTransform=No
+	UseOutputTransform=Yes
 	AddDiagonal=No
 	DiagonalCoefficients=No
 	SkipConnections=None

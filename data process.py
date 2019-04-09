@@ -181,7 +181,7 @@ def break_calc(filename, c_num):
 
 
 if __name__ == '__main__':
-    taxi_data('data/taxi_sj_1km_05.txt', 'data/taxi_1km.txt')
+    #taxi_data('data/taxi_sj_1km_05.txt', 'data/taxi_1km.txt')
     class_num = 1
     threshold = 150
     col_num = 30

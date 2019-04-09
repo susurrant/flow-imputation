@@ -1,1 +1,1 @@
-python train.py --settings ../settings/gcn_basis.exp --dataset ../data/Toy
+python train.py --settings ../settings/gcn_basis.exp --dataset ../data/taxi
