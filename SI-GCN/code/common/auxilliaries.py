@@ -7,7 +7,7 @@ class NegativeSampler:
     negative_sample_rate = None
     n_entities = None
     
-    def __init__(self, negative_sample_rate, n_entities, gids):
+    def __init__(self, negative_sample_rate, n_entities, gids, threshold):
         self.negative_sample_rate = negative_sample_rate
         self.n_entities = n_entities
         self.gids = list(gids)
@@ -15,6 +15,7 @@ class NegativeSampler:
         self.subs = {}
         self.positives = None
         self.negatives = []
+        self.threshold = threshold
 
     def set_positives(self, triplets):
         self.positives = triplets
@@ -48,7 +49,7 @@ class NegativeSampler:
         size_of_batch = len(triplets)
         number_to_generate = size_of_batch*self.negative_sample_rate
         
-        new_labels = np.zeros((size_of_batch * (self.negative_sample_rate + 1))).astype(np.uint16)
+        new_labels = np.zeros((size_of_batch * (self.negative_sample_rate + 1))).astype(np.uint16) + self.threshold
         new_indexes = np.tile(triplets, (self.negative_sample_rate + 1,1)).astype(np.uint16)
         new_labels[:size_of_batch] = triplets[:, 3]
 
@@ -71,7 +72,7 @@ class NegativeSampler:
         size_of_batch = len(triplets)
         number_to_generate = size_of_batch * self.negative_sample_rate
 
-        new_labels = np.zeros((size_of_batch * (self.negative_sample_rate + 1))).astype(np.uint16)
+        new_labels = np.zeros((size_of_batch * (self.negative_sample_rate + 1))).astype(np.uint16) + self.threshold
         new_indexes = np.tile(triplets, (self.negative_sample_rate + 1, 1)).astype(np.uint16)
         new_labels[:size_of_batch] = triplets[:, 3]
 
