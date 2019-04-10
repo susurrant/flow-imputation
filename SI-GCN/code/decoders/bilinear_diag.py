@@ -26,7 +26,7 @@ class BilinearDiag(Model):
     def get_loss(self, mode='train'):
         e1s, rs, e2s = self.compute_codes(mode=mode)
         energies = tf.reduce_sum(e1s * rs * e2s, 1)
-        weight = int(self.settings['NegativeSampleRate'])
+        #weight = int(self.settings['NegativeSampleRate'])
         weight = 1
         #return tf.reduce_mean(tf.losses.absolute_difference(self.Y, energies, weight))  # 损失函数修改
         return tf.losses.mean_squared_error(self.Y, energies, weight)
