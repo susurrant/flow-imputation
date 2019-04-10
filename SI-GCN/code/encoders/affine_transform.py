@@ -25,7 +25,8 @@ class AffineTransform(Model):
     def local_initialize_train(self):
         variance = glorot_variance(self.shape)
 
-        self.W = make_tf_variable(0, variance, self.shape)
+        #self.W = make_tf_variable(0, variance, self.shape)
+        self.W = make_tf_variable(0, 1, self.shape, init='uniform')
         self.b = make_tf_bias(self.shape[1])
 
     def local_get_weights(self):
