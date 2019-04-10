@@ -76,20 +76,21 @@ class NegativeSampler:
         new_indexes = np.tile(triplets, (self.negative_sample_rate + 1, 1)).astype(np.uint16)
         new_labels[:size_of_batch] = triplets[:, 3]
 
-        choices = np.random.binomial(1, 0.5, number_to_generate)
+        if self.negative_sample_rate:
+            choices = np.random.binomial(1, 0.5, number_to_generate)
 
-        for i in range(size_of_batch):
-            for j in range(self.negative_sample_rate):
-                index = i + j * size_of_batch + size_of_batch
+            for i in range(size_of_batch):
+                for j in range(self.negative_sample_rate):
+                    index = i + j * size_of_batch + size_of_batch
 
-                if choices[index - size_of_batch]:
-                    new_indexes[index, 2] = random.randint(0, self.n_entities-1)
-                    while (new_indexes[index][1], new_indexes[index][2]) in self.objs[new_indexes[index][0]]:
+                    if choices[index - size_of_batch]:
                         new_indexes[index, 2] = random.randint(0, self.n_entities-1)
-                else:
-                    new_indexes[index, 0] = random.randint(0, self.n_entities-1)
-                    while (new_indexes[index][1], new_indexes[index][0]) in self.subs[new_indexes[index][2]]:
+                        while (new_indexes[index][1], new_indexes[index][2]) in self.objs[new_indexes[index][0]]:
+                            new_indexes[index, 2] = random.randint(0, self.n_entities-1)
+                    else:
                         new_indexes[index, 0] = random.randint(0, self.n_entities-1)
+                        while (new_indexes[index][1], new_indexes[index][0]) in self.subs[new_indexes[index][2]]:
+                            new_indexes[index, 0] = random.randint(0, self.n_entities-1)
 
         return new_indexes[:, :3], new_labels
 
