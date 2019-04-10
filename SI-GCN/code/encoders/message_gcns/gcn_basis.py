@@ -18,18 +18,13 @@ class BasisGcn(MessageGcn):
         self_matrix_shape = (vertex_feature_dimension, self.shape[1])
 
         glorot_var_combined = glorot_variance([vertex_matrix_shape[0], vertex_matrix_shape[2]])
-        #self.W_forward = make_tf_variable(0, glorot_var_combined, vertex_matrix_shape)  # mean, variance, shape
-        #self.W_backward = make_tf_variable(0, glorot_var_combined, vertex_matrix_shape)
-        #self.W_self = make_tf_variable(0, glorot_var_combined, self_matrix_shape)
-        self.W_forward = make_tf_variable(0, 1, vertex_matrix_shape, init='uniform')  # mean, variance, shape
-        self.W_backward = make_tf_variable(0, 1, vertex_matrix_shape, init='uniform')
-        self.W_self = make_tf_variable(0, 1, self_matrix_shape, init='uniform')
+        self.W_forward = make_tf_variable(0, glorot_var_combined, vertex_matrix_shape)  # mean, variance, shape
+        self.W_backward = make_tf_variable(0, glorot_var_combined, vertex_matrix_shape)
+        self.W_self = make_tf_variable(0, glorot_var_combined, self_matrix_shape)
 
         type_init_var = 1
-        #self.C_forward = make_tf_variable(0, type_init_var, type_matrix_shape)
-        #self.C_backward = make_tf_variable(0, type_init_var, type_matrix_shape)
-        self.C_forward = make_tf_variable(0, 1, type_matrix_shape, init='uniform')
-        self.C_backward = make_tf_variable(0, 1, type_matrix_shape, init='uniform')
+        self.C_forward = make_tf_variable(0, type_init_var, type_matrix_shape)
+        self.C_backward = make_tf_variable(0, type_init_var, type_matrix_shape)
 
         self.b = make_tf_bias(self.shape[1])
 
