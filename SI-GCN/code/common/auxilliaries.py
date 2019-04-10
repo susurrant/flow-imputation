@@ -45,7 +45,7 @@ class NegativeSampler:
         self.negatives = np.array(self.negatives)
         np.random.shuffle(self.negatives)
 
-    def transform(self, triplets):
+    def transform_old(self, triplets):
         size_of_batch = len(triplets)
         number_to_generate = int(size_of_batch*self.negative_sample_rate)
         
@@ -68,7 +68,7 @@ class NegativeSampler:
 
         return new_indexes[:, :3], new_labels
 
-    def transform_exclusive(self, triplets):
+    def transform_exclusive_old(self, triplets):
         size_of_batch = len(triplets)
         number_to_generate = int(size_of_batch * self.negative_sample_rate)
 
@@ -91,6 +91,31 @@ class NegativeSampler:
                         new_indexes[index, 0] = random.randint(0, self.n_entities-1)
                         while (new_indexes[index][1], new_indexes[index][0]) in self.subs[new_indexes[index][2]]:
                             new_indexes[index, 0] = random.randint(0, self.n_entities-1)
+
+        return new_indexes[:, :3], new_labels
+
+    def transform_exclusive(self, triplets):
+        size_of_batch = len(triplets)
+        number_to_generate = int(size_of_batch * self.negative_sample_rate)
+        n_idx = np.random.choice(size_of_batch, size=number_to_generate, replace=False)
+
+        new_labels = np.zeros((number_to_generate+size_of_batch)).astype(np.uint16) + self.threshold
+        new_indexes = np.concatenate((triplets, triplets[n_idx]), axis=0)
+        new_labels[:size_of_batch] = triplets[:, 3]
+
+        if self.negative_sample_rate:
+            choices = np.random.binomial(1, 0.5, number_to_generate)
+
+            for i in range(number_to_generate):
+                index = i + size_of_batch
+                if choices[i]:
+                    new_indexes[index, 2] = random.randint(0, self.n_entities-1)
+                    while (new_indexes[index][1], new_indexes[index][2]) in self.objs[new_indexes[index][0]]:
+                        new_indexes[index, 2] = random.randint(0, self.n_entities-1)
+                else:
+                    new_indexes[index, 0] = random.randint(0, self.n_entities-1)
+                    while (new_indexes[index][1], new_indexes[index][0]) in self.subs[new_indexes[index][2]]:
+                        new_indexes[index, 0] = random.randint(0, self.n_entities-1)
 
         return new_indexes[:, :3], new_labels
 

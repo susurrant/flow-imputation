@@ -150,7 +150,7 @@ if __name__ == '__main__':
                 weights = np.ones_like(weights)
                 weights[np.where(sample_counts == 0)] = 0
 
-            probabilities = (weights) / np.sum(weights)
+            probabilities = weights / np.sum(weights)
             chosen_vertex = np.random.choice(np.arange(degrees.shape[0]), p=probabilities)
             chosen_adj_list = adj_list[chosen_vertex]
             seen[chosen_vertex] = True
@@ -174,7 +174,7 @@ if __name__ == '__main__':
         return edges
 
     if 'NegativeSampleRate' in general_settings:
-        ns = auxilliaries.NegativeSampler(int(general_settings['NegativeSampleRate']), general_settings['EntityCount'],
+        ns = auxilliaries.NegativeSampler(float(general_settings['NegativeSampleRate']), general_settings['EntityCount'],
                                           entities.values(), np.min(train_triplets[:, 3]))
         ns.set_positives(train_triplets)
         ns.set_negatives()
