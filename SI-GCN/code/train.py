@@ -40,6 +40,7 @@ if __name__ == '__main__':
     valid_triplets = io.read_triplets_as_list(valid_path, entities_path, relations_path)
     test_triplets = io.read_triplets_as_list(test_path, entities_path, relations_path)
     features = io.read_features_as_list(feature_path)
+    settings['General']['GraphBatchSize'] = len(train_triplets)
 
     train_triplets = np.array(train_triplets)
     valid_triplets = np.array(valid_triplets)
