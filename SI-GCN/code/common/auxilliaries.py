@@ -47,7 +47,7 @@ class NegativeSampler:
 
     def transform(self, triplets):
         size_of_batch = len(triplets)
-        number_to_generate = size_of_batch*self.negative_sample_rate
+        number_to_generate = int(size_of_batch*self.negative_sample_rate)
         
         new_labels = np.zeros((size_of_batch * (self.negative_sample_rate + 1))).astype(np.uint16) + self.threshold
         new_indexes = np.tile(triplets, (self.negative_sample_rate + 1,1)).astype(np.uint16)
@@ -70,7 +70,7 @@ class NegativeSampler:
 
     def transform_exclusive(self, triplets):
         size_of_batch = len(triplets)
-        number_to_generate = size_of_batch * self.negative_sample_rate
+        number_to_generate = int(size_of_batch * self.negative_sample_rate)
 
         new_labels = np.zeros((size_of_batch * (self.negative_sample_rate + 1))).astype(np.uint16) + self.threshold
         new_indexes = np.tile(triplets, (self.negative_sample_rate + 1, 1)).astype(np.uint16)
