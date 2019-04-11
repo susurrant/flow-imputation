@@ -1,5 +1,4 @@
 
-
 import tensorflow as tf
 import numpy as np
 from func import *
@@ -57,7 +56,6 @@ if __name__ == '__main__':
     hidden_layer = add_layer(xs, 3, num_of_hidden_units, activation_function=tf.nn.sigmoid)
     prediction = add_layer(hidden_layer, num_of_hidden_units, 1, activation_function=None)
 
-    #loss = tf.reduce_mean(tf.square(ys - prediction))
     loss = tf.losses.mean_squared_error(ys, prediction)
     train_step = tf.train.GradientDescentOptimizer(learn_rate).minimize(loss)
 

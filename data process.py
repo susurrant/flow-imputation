@@ -66,7 +66,7 @@ def classification(filename, class_num, threshold):
         for g, m in flows.items():
             x = np.where(m <= nk)[0]
             i = x.min() if x.size > 0 else len(nk) - 1
-            sheet.writerow([g[0], i, g[1], m-threshold])
+            sheet.writerow([g[0], i, g[1], m])
 
 
 def read_features(entity_dict, feature_file):

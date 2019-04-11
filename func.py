@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 
 
 def read_flows(filename):
-    flows = np.loadtxt(filename, dtype=np.uint16, delimiter='\t')[:,[0,2,3]]
+    flows = np.loadtxt(filename, dtype=np.uint32, delimiter='\t')[:,[0,2,3]]
     return flows
 
 
 def read_features(entity_dict, feature_file):
-    grid_list = list(np.loadtxt(entity_dict, dtype=np.uint16, delimiter='\t')[:, 1])
+    grid_list = list(np.loadtxt(entity_dict, dtype=np.uint32, delimiter='\t')[:, 1])
     features = {}
     with open(feature_file, 'r') as f:
         lines = f.readlines()
