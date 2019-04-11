@@ -160,7 +160,7 @@ def gen_features(flow_file, output_path, colnum, normalizaed=False):
 
     np.savetxt(output_path + 'features_raw.txt', features, fmt='%d', delimiter='\t')
     if normalizaed:
-        features /= np.max(features, axis=0)
+        features = (features - np.min(features, axis=0)) / (np.max(features, axis=0) - np.min(features, axis=0))
 
     np.savetxt(output_path + 'features.txt', features, fmt='%.3f', delimiter='\t')
 
@@ -183,7 +183,7 @@ def break_calc(filename, c_num):
 if __name__ == '__main__':
     #taxi_data('data/taxi_sj_1km_05.txt', 'data/taxi_1km.txt')
     class_num = 1
-    threshold = 50
+    threshold = 30
     col_num = 30
     path = 'SI-GCN/data/taxi/'
 
