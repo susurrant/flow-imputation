@@ -10,7 +10,7 @@ def norm():
 
 def split():
     p_data = np.loadtxt('data.txt', dtype=np.uint32, delimiter='\t')
-    p_data[:, 3] = np.log(p_data[:, 3])
+    #p_data[:, 3] = np.log(p_data[:, 3])
 
     t = set(range(len(p_data)))
     train_set = set(random.sample(range(len(p_data)), int(0.6 * len(p_data))))
