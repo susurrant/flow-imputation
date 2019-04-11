@@ -89,7 +89,7 @@ class Scorer:
         pred = self.model.score(triples[:,:3])
         pred[np.where(pred<0)] = 0
         real = triples[:,3]
-        score = AccuracyScore(pred, real)
+        score = AccuracyScore(np.exp(pred), real)
 
         if verbose:
             print("----------Evaluating accuracy for test triplets----------")
