@@ -42,9 +42,9 @@ if __name__ == '__main__':
     features = io.read_features_as_list(feature_path)
 
     train_triplets = np.array(train_triplets)
-    train_triplets[:, 3] -= np.min(train_triplets[:, 3])
+    #train_triplets[:, 3] -= np.min(train_triplets[:, 3])
     valid_triplets = np.array(valid_triplets)
-    valid_triplets[:, 3] -= np.min(train_triplets[:, 3])
+    #valid_triplets[:, 3] -= np.min(train_triplets[:, 3])
     test_triplets = np.array(test_triplets)
     features = np.array(features)
 
