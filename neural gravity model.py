@@ -49,7 +49,7 @@ if __name__ == '__main__':
     print(train_y.shape)
 
     learn_rate = 0.005
-    num_of_hidden_units = 10
+    num_of_hidden_units = 20
 
     xs = tf.placeholder(tf.float32, shape = (None, 3))
     ys = tf.placeholder(tf.float32, shape = (None, 1))
