@@ -88,7 +88,6 @@ class Scorer:
     def compute_accuracy_scores(self, triples, verbose=False):
         pred = self.model.score(triples[:,:3])
         pred[np.where(pred<0)] = 0
-        pred += 30
         real = triples[:,3]
         score = AccuracyScore(pred, real)
 

@@ -223,7 +223,7 @@ if __name__ == '__main__':
                 graph_split = np.array(train_triplets)[graph_split_ids]
 
                 t = ns.transform_exclusive(graph_batch)
-                return (graph_split[:, :3], t[0], t[1]-np.min(train_triplets[:, 3]))
+                return (graph_split[:, :3], t[0], t[1])
                 #return (graph_split[:, :3], graph_batch[:, :3], graph_batch[:, 3])
 
         opp.set_sample_transform_function(t_func)
