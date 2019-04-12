@@ -47,6 +47,7 @@ class AccuracySummary:
         return 'MSE'
 
     def pretty_print(self):
+        print("----------Evaluating accuracy for test triplets----------")
         print('ratio of non-zeros', np.sum(self.p != 0) / self.p.shape[0])
         print('real_min:', min(self.r), ', real_max:', max(self.r))
         print('pred_min:', int(min(self.p)), ', pred_max:', int(max(self.p)))
@@ -91,7 +92,7 @@ class Scorer:
         score = AccuracyScore(pred, real)
 
         if verbose:
-            print("----------Evaluating accuracy for test triplets----------")
+            pass
 
         return score
 
