@@ -2,6 +2,7 @@
 import tensorflow as tf
 import numpy as np
 from func import *
+from scipy import stats
 
 def read_data(path, normalization=False):
     train_X = []
@@ -46,7 +47,7 @@ if __name__ == '__main__':
     train_X, train_y, test_X, test_y = read_data(path, normalization=True)
 
     learn_rate = 0.005
-    num_of_hidden_units = 10
+    num_of_hidden_units = 20
 
     xs = tf.placeholder(tf.float32, shape = (None, 3))
     ys = tf.placeholder(tf.float32, shape = (None, 1))
@@ -57,13 +58,24 @@ if __name__ == '__main__':
     loss = tf.losses.mean_squared_error(ys, prediction)
     train_step = tf.train.GradientDescentOptimizer(learn_rate).minimize(loss)
 
+    RMSE = []
+    SMC = []
+    MAPE = []
+
     with tf.Session() as sess:
         init = tf.global_variables_initializer()
         sess.run(init)
-        for i in range(40000):
+        for i in range(10001):
             sess.run(train_step, feed_dict={xs: train_X, ys: train_y})
-            if i % 2000 == 0:
-                print('iteration', i, ':', sess.run(loss, feed_dict={xs: train_X, ys: train_y}))
+            if i and i % 50 == 0:
+                #print('iteration', i, ':', sess.run(loss, feed_dict={xs: train_X, ys: train_y}))
+                pred = sess.run(prediction, feed_dict={xs: test_X}).flatten().tolist()
+                real = test_y.flatten().tolist()
+                RMSE.append(np.sqrt(np.mean(np.square(np.array(real) - np.array(pred)))))
+                SMC.append(stats.spearmanr(np.array(real), np.array(pred))[0])
+
+        np.savetxt('./GNN_RMSE.txt', np.array(RMSE), fmt='%.3f', delimiter=',')
+        np.savetxt('./GNN_SMC.txt', np.array(SMC), fmt='%.3f', delimiter=',')
 
         pred = sess.run(prediction, feed_dict={xs:test_X})
         evaluate(pred.flatten().tolist(), test_y.flatten().tolist())

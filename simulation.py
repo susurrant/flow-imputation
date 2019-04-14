@@ -2,7 +2,6 @@
 import numpy as np
 from func import dis
 import matplotlib.pyplot as plt
-from scipy import optimize
 import seaborn as sns
 
 class Region:
@@ -12,7 +11,6 @@ class Region:
         self.y = y
         self.a = a
         self.p = p
-
 
 
 def gravity_model(A, B, beta, K):

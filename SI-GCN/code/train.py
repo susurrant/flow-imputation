@@ -89,7 +89,7 @@ if __name__ == '__main__':
     opp = optimizer_parameter_parser.Parser(optimizer_settings)
     opp.set_save_function(model.save)
 
-    scorer = evaluation.Scorer(evaluation_settings, model, dataset)
+    scorer = evaluation.Scorer(evaluation_settings, model)
 
     def score_validation_data(validation_data):
         score_summary = scorer.compute_scores(validation_data, verbose=False).get_summary()
