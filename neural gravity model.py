@@ -46,7 +46,7 @@ if __name__ == '__main__':
     train_X, train_y, test_X, test_y = read_data(path, normalization=True)
 
     learn_rate = 0.005
-    num_of_hidden_units = 5
+    num_of_hidden_units = 10
 
     xs = tf.placeholder(tf.float32, shape = (None, 3))
     ys = tf.placeholder(tf.float32, shape = (None, 1))

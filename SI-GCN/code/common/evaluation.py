@@ -101,8 +101,8 @@ class Scorer:
                 self.RMSE.append(np.sqrt(np.mean(np.square(np.array(real)-np.array(pred)))))
                 self.SMC.append(stats.spearmanr(np.array(real), np.array(pred))[0])
             elif self.iter == 10000:
-                np.savetxt(self.outpath+'/results/RMSE.txt', np.array(self.RMSE), fmt='%.3f', delimiter=',')
-                np.savetxt(self.outpath + '/results/SMC.txt', np.array(self.SMC), fmt='%.3f', delimiter=',')
+                np.savetxt('../'+self.outpath+'/results/RMSE.txt', np.array(self.RMSE), fmt='%.3f', delimiter=',')
+                np.savetxt('../'+self.outpath + '/results/SMC.txt', np.array(self.SMC), fmt='%.3f', delimiter=',')
 
         return score
 
