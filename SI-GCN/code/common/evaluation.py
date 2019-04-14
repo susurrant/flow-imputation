@@ -79,9 +79,13 @@ class AccuracyScore:
         
 class Scorer:
 
-    def __init__(self, settings, model):
+    def __init__(self, settings, model, outpath):
         self.settings = settings
         self.model = model
+        self.iter = 0
+        self.RMSE = []
+        self.SMC = []
+        self.outpath = outpath
 
     def register_model(self, model):  #model_builder.build_decoder: BilinearDiag object inheriting from Model
         self.model = model
@@ -92,7 +96,13 @@ class Scorer:
         score = AccuracyScore(pred, real)
 
         if verbose:
-            pass
+            self.iter += 1
+            if self.iter < 10000 and self.iter % 50 == 0:
+                self.RMSE.append(np.sqrt(np.mean(np.square(np.array(real)-np.array(pred)))))
+                self.SMC.append(stats.spearmanr(np.array(real), np.array(p))[0])
+            elif self.iter == 10000:
+                np.savetxt(self.outpath+'/results/RMSE.txt', np.array(self.RMSE), fmt='%.3f', delimiter=',')
+                np.savetxt(self.outpath + '/results/SMC.txt', np.array(self.SMC), fmt='%.3f', delimiter=',')
 
         return score
 
