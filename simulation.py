@@ -55,7 +55,7 @@ def plot(flows, regions, beta, K):
     #print(ny)
     ny = np.array([-2.74954513,-1.98675937,-2.81374532,-2.22458175,-2.03047404,-1.38728483,-1.94625147,
                     -1.66228986,-2.00819296,-2.55600734])
-    l2 = plt.scatter(x, ny, 15, 'red', label='with noise')
+    l2 = plt.scatter(x, ny, 15, 'red', label='observed')
     nm, nb = np.polyfit(x, ny, 1)
     plt.plot(lx, nm * lx + nb, linewidth=2, color='red')
     plt.xlim(1.4, 2.8)
