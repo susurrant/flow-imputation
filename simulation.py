@@ -45,17 +45,17 @@ def plot(flows, regions, beta, K):
     font2 = {'family': 'Arial', 'weight': 'normal', 'size': 14}
     sns.set_style('whitegrid')
     m, b = np.polyfit(x, y, 1)
-    l1 = plt.scatter(x, y, 15, 'green', label='ideal')
+    l1 = plt.scatter(x, y, 18, 'green', label='ideal')
     lx = np.arange(1.4,2.9,0.1)
-    plt.plot(lx, m * lx + b, linewidth=2, color='green')
+    plt.plot(lx, m * lx + b, linewidth=1, color='green')
 
     #ny = np.random.normal(0, 0.1, y.shape[0]) + y
     #print(ny)
     ny = np.array([-2.74954513,-1.98675937,-2.81374532,-2.22458175,-2.03047404,-1.38728483,-1.94625147,
                     -1.66228986,-2.00819296,-2.55600734])
-    l2 = plt.scatter(x, ny, 15, 'red', label='observed')
+    l2 = plt.scatter(x, ny, 18, 'red', label='observed')
     nm, nb = np.polyfit(x, ny, 1)
-    plt.plot(lx, nm * lx + nb, linewidth=2, color='red')
+    plt.plot(lx, nm * lx + nb, linewidth=1, color='red')
     plt.xlim(1.4, 2.8)
     plt.ylim(-3, -1.2)
     x_ticks = np.arange(1.4, 3, 0.2)

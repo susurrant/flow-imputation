@@ -99,7 +99,7 @@ class Scorer:
             if self.iter < 10051:
                 self.RMSE.append(np.sqrt(np.mean(np.square(np.array(real)-np.array(pred)))))
                 self.SMC.append(stats.spearmanr(np.array(real), np.array(pred))[0])
-            elif self.iter == 10050:
+            if self.iter == 10050:
                 np.savetxt('GCN_RMSE.txt', np.array(self.RMSE), fmt='%.3f', delimiter=',')
                 np.savetxt('GCN_SMC.txt', np.array(self.SMC), fmt='%.3f', delimiter=',')
 

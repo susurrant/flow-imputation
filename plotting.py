@@ -5,7 +5,7 @@ import seaborn as sns
 
 
 def iter_error():
-    sns.set_style('darkgrid')
+    sns.set_style('whitegrid')
     gnn_rmse = np.loadtxt('GNN_RMSE.txt')/100
     gnn_smc = np.loadtxt('GNN_SMC.txt')
     print(min(gnn_rmse), max(gnn_rmse))
