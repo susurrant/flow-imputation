@@ -96,7 +96,7 @@ class Scorer:
         score = AccuracyScore(pred, real)
 
         if verbose:
-            self.iter += 1
+            self.iter += 50
             if self.iter < 10000:
                 self.RMSE.append(np.sqrt(np.mean(np.square(np.array(real)-np.array(pred)))))
                 self.SMC.append(stats.spearmanr(np.array(real), np.array(pred))[0])
