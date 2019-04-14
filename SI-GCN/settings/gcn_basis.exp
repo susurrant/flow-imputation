@@ -26,7 +26,7 @@
 	ReportTrainLossEvery=500
 
 	[EarlyStopping]
-		CheckEvery=500
+		CheckEvery=50
 		BurninPhaseDuration=40000
 
 	[Algorithm]
