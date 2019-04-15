@@ -97,7 +97,7 @@ class Scorer:
         if verbose:
             self.iter += 500
             #data = np.concatenate((pred, np.array(real)))
-            #np.savetxt('./output/d_'+str(self.iter)+'.txt', data, delimiter=',')
+            #np.savetxt('../output/d_'+str(self.iter)+'.txt', data, delimiter=',')
             '''
             self.iter += 50
             if self.iter < 10051:
