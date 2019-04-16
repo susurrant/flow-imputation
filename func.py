@@ -44,7 +44,7 @@ def evaluate(p, r):
 
     print(np.sum(p != 0) / p.shape[0])
 
-    print('\nMAE\t', round(np.mean(np.abs(r - p)),3))
+    #print('\nMAE\t', round(np.mean(np.abs(r - p)),3))
 
     c1 = 0
     mape = 0
@@ -59,19 +59,19 @@ def evaluate(p, r):
             c2 += 1
     print('MAPE:', round(mape / c1, 3))
 
-    print('MSE:', round(np.mean(np.square(r - p)), 3))
+    #print('MSE:', round(np.mean(np.square(r - p)), 3))
     print('RMSE:', round(np.sqrt(np.mean(np.square(r - p))), 3))
 
     stack = np.column_stack((p, r))
     print('CPC:', round(2 * np.sum(np.min(stack, axis=1)) / np.sum(stack), 3))
 
-    print('SSI:', round(ssi * 2 / (c2 ^ 2), 3))
+    #print('SSI:', round(ssi * 2 / (c2 ^ 2), 3))
 
     smc = stats.spearmanr(r, p)
     print('SMC: correlation =', round(smc[0], 3), ', p-value =', round(smc[1], 3))
 
     llr = stats.linregress(r, p)
-    print('LLR: R =', round(llr[2], 3), ', p-value =', round(llr[3], 3))
+    #print('LLR: R =', round(llr[2], 3), ', p-value =', round(llr[3], 3))
 
     #p1 = plt.scatter(p, r, marker='.', color='green', s=10)
     #plt.show()
