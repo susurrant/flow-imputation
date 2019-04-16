@@ -96,8 +96,7 @@ class Scorer:
 
         if verbose:
             self.iter += 500
-            #data = np.concatenate((pred, np.array(real)))
-            #np.savetxt('../data/output/d_'+str(self.iter)+'.txt', data, delimiter=',')
+            #np.savetxt('../data/output/d_'+str(self.iter)+'.txt', pred, delimiter=',')
 
             '''
             self.iter += 50   # change the corresponding self.iter

@@ -47,7 +47,7 @@ if __name__ == '__main__':
     train_X, train_y, test_X, test_y = read_data(path, normalization=True)
 
     learn_rate = 0.005
-    num_of_hidden_units = 30
+    num_of_hidden_units = 10
 
     xs = tf.placeholder(tf.float32, shape = (None, 3))
     ys = tf.placeholder(tf.float32, shape = (None, 1))
@@ -73,8 +73,9 @@ if __name__ == '__main__':
                 #RMSE.append(np.sqrt(np.mean(np.square(np.array(real) - np.array(pred)))))
                 #SMC.append(stats.spearmanr(np.array(real), np.array(pred))[0])
 
-        #np.savetxt('data/GNN_RMSE_'+str(num_of_hidden_units)+'.txt', np.array(RMSE), fmt='%.3f', delimiter=',')
-        #np.savetxt('data/GNN_SMC_'+str(num_of_hidden_units)+'.txt', np.array(SMC), fmt='%.3f', delimiter=',')
+        #np.savetxt('data/GNN_'+str(num_of_hidden_units)+'_RMSE.txt', np.array(RMSE), fmt='%.3f', delimiter=',')
+        #np.savetxt('data/GNN_'+str(num_of_hidden_units)+'_SMC.txt', np.array(SMC), fmt='%.3f', delimiter=',')
 
         pred = sess.run(prediction, feed_dict={xs:test_X})
+        np.savetxt('data/pred_gnn_'+str(num_of_hidden_units)+'.txt', pred, delimiter=',')
         evaluate(pred.flatten().tolist(), test_y.flatten().tolist())
