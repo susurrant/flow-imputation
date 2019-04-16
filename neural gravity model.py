@@ -4,14 +4,19 @@ import numpy as np
 from func import *
 from scipy import stats
 
-def read_data(path, normalization=False):
+
+def read_data(path, normalization=False, mode='positive'):
     train_X = []
     train_y = []
     test_X = []
     test_y = []
 
     tr_f = read_flows(path + 'train.txt')
-    te_f = read_flows(path + 'test.txt')
+    if mode == 'positive':
+        te_f = read_flows(path + 'test.txt')
+    else:
+        te_f = read_flows(path + 'test_n.txt')
+
     if normalization:
         features = read_features(path + 'entities.dict', path + 'features.txt')
     else:
@@ -42,40 +47,40 @@ def add_layer(inputs, in_size, out_size, activation_function=None):
     return outputs
 
 
-if __name__ == '__main__':
-    path = 'SI-GCN/data/taxi/'
-    train_X, train_y, test_X, test_y = read_data(path, normalization=True)
+def gravity_neural_model(path, learning_rate, num_of_hidden_units, iterations, mode='positive', save_pred=False):
+    train_X, train_y, test_X, test_y = read_data(path, normalization=True, mode=mode)
 
-    learn_rate = 0.005
-    num_of_hidden_units = 10
-
-    xs = tf.placeholder(tf.float32, shape = (None, 3))
-    ys = tf.placeholder(tf.float32, shape = (None, 1))
+    xs = tf.placeholder(tf.float32, shape=(None, 3))
+    ys = tf.placeholder(tf.float32, shape=(None, 1))
 
     hidden_layer = add_layer(xs, 3, num_of_hidden_units, activation_function=tf.nn.sigmoid)
     prediction = add_layer(hidden_layer, num_of_hidden_units, 1, activation_function=None)
 
     loss = tf.losses.mean_squared_error(ys, prediction)
-    train_step = tf.train.GradientDescentOptimizer(learn_rate).minimize(loss)
+    train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
 
     RMSE = []
     SMC = []
-    MAPE = []
     real = np.array(test_y.flatten().tolist())
     with tf.Session() as sess:
         init = tf.global_variables_initializer()
         sess.run(init)
-        for i in range(40000):
+        for i in range(iterations):
             sess.run(train_step, feed_dict={xs: train_X, ys: train_y})
-            #if i and i % 50 == 0:
-                #print('iteration', i, ':', sess.run(loss, feed_dict={xs: train_X, ys: train_y}))
-                #pred = sess.run(prediction, feed_dict={xs: test_X}).flatten().tolist()
-                #RMSE.append(np.sqrt(np.mean(np.square(np.array(real) - np.array(pred)))))
-                #SMC.append(stats.spearmanr(np.array(real), np.array(pred))[0])
+            # if i and i % 50 == 0:
+            # print('iteration', i, ':', sess.run(loss, feed_dict={xs: train_X, ys: train_y}))
+            # pred = sess.run(prediction, feed_dict={xs: test_X}).flatten().tolist()
+            # RMSE.append(np.sqrt(np.mean(np.square(np.array(real) - np.array(pred)))))
+            # SMC.append(stats.spearmanr(np.array(real), np.array(pred))[0])
 
-        #np.savetxt('data/GNN_'+str(num_of_hidden_units)+'_RMSE.txt', np.array(RMSE), fmt='%.3f', delimiter=',')
-        #np.savetxt('data/GNN_'+str(num_of_hidden_units)+'_SMC.txt', np.array(SMC), fmt='%.3f', delimiter=',')
+        # np.savetxt('data/GNN_'+str(num_of_hidden_units)+'_RMSE.txt', np.array(RMSE), fmt='%.3f', delimiter=',')
+        # np.savetxt('data/GNN_'+str(num_of_hidden_units)+'_SMC.txt', np.array(SMC), fmt='%.3f', delimiter=',')
 
-        pred = sess.run(prediction, feed_dict={xs:test_X})
-        np.savetxt('data/pred_gnn_'+str(num_of_hidden_units)+'.txt', pred, delimiter=',')
-        evaluate(pred.flatten().tolist(), test_y.flatten().tolist())
+        pred = sess.run(prediction, feed_dict={xs: test_X})
+        evaluate(pred.flatten().tolist(), test_y.flatten().tolist(), mode)
+        if save_pred:
+            np.savetxt('data/pred_GNN_'+str(num_of_hidden_units)+'.txt', pred, delimiter=',')
+
+if __name__ == '__main__':
+    path = 'SI-GCN/data/taxi/'
+    gravity_neural_model(path, 0.005, 30, 40000, mode='negative', save_pred=False)

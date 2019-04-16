@@ -41,7 +41,7 @@ def iter_rmse_scc():
     ax2.plot(x, gcn_scc, color=colors[3], linestyle='--', linewidth=lw, alpha=1)
 
     ax2.set_xlabel('Iterations')
-    ax2.set_ylabel('SCC(%)')
+    ax2.set_ylabel('SCC')
     #ax2.set_xlim(0, 10000)
     #ax2.set_ylim(0.2, 0.7)
 
@@ -70,8 +70,10 @@ def var_threshold():
     sns.set_style('whitegrid')
     real = np.loadtxt('SI-GCN/data/taxi/test.txt', dtype=np.uint32, delimiter='\t')[:, 3]
     gcn = np.loadtxt('SI-GCN/data/output/d_39000.txt')[:1427]
-    gnn_10 = np.loadtxt('data/pred_gnn_10.txt')
-    gnn_20 = np.loadtxt('data/pred_gnn_20.txt')
+    #gnn_10 = np.loadtxt('data/pred_gnn_10.txt')
+    #gnn_20 = np.loadtxt('data/pred_gnn_20.txt')
+    gm_p = np.loadtxt('data/pred_GM_P.txt')
+    rm = np.loadtxt('data/pred_RM.txt')
     gnn_30 = np.loadtxt('data/pred_gnn_30.txt')
 
     ts = [30, 40, 50, 60, 70, 80, 90, 100]
@@ -79,22 +81,33 @@ def var_threshold():
     gnn_10_rmse = []
     gnn_20_rmse = []
     gnn_30_rmse = []
+    gm_p_rmse = []
+    rm_rmse = []
     for t in ts:
         idx = np.where(real >= t)
-        gcn_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - gcn[idx]))), 3))
-        gnn_10_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - gnn_10[idx]))), 3))
-        gnn_20_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - gnn_20[idx]))), 3))
-        gnn_30_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - gnn_30[idx]))), 3))
+        gcn_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - gcn[idx])))/t, 3))
+        #gnn_10_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - gnn_10[idx]))), 3))
+        #gnn_20_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - gnn_20[idx]))), 3))
+        gnn_30_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - gnn_30[idx])))/t, 3))
+        gm_p_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - gm_p[idx])))/t, 3))
+        rm_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - rm[idx])))/t, 3))
 
     fig, ax1 = plt.subplots()
     lw = 1
     colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
-    l1, = ax1.plot(ts, gnn_10_rmse, color=colors[0], linewidth=lw, alpha=0.7, label='GNN_10')
-    l2, = ax1.plot(ts, gnn_20_rmse, color=colors[1], linewidth=lw, alpha=0.7, label='GNN_20')
+    #l1, = ax1.plot(ts, gnn_10_rmse, color=colors[0], linewidth=lw, alpha=0.7, label='GNN_10')
+    #l2, = ax1.plot(ts, gnn_20_rmse, color=colors[1], linewidth=lw, alpha=0.7, label='GNN_20')
+    l1, = ax1.plot(ts, rm_rmse, color=colors[0], linewidth=lw, alpha=1, label='RM')
+    l2, = ax1.plot(ts, gm_p_rmse, color=colors[1], linewidth=lw, alpha=1, label='GM_P')
     l3, = ax1.plot(ts, gnn_30_rmse, color=colors[2], linewidth=lw, alpha=0.7, label='GNN_30')
     l4, = ax1.plot(ts, gcn_rmse, color=colors[3], linewidth=lw, alpha=1, label='SI-GCN')
-    ax1.set_xlabel('Iterations')
-    ax1.set_ylabel('RMSE')
+
+    ax1.set_xlabel('Intensity threshold')
+    ax1.set_ylabel('Relative RMSE')
+    ax1.set_xlim(30, 100)
+    #ax1.set_ylim(20, 110)
+    ax1.legend([l1, l2, l3, l4], labels=['RM', 'GM_P', 'GNN_30', 'SI-GCN'], loc='upper right', #bbox_to_anchor=(0.97, 0.61),
+               borderaxespad=0.1, ncol=1)
     plt.show()
 
 

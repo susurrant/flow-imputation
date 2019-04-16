@@ -36,4 +36,5 @@ if __name__ == '__main__':
     path = 'SI-GCN/data/taxi/'
     flows, features = read_data(path, False)
     pred, real = predict(flows, features)
+    np.savetxt('data/pred_RM_.txt', pred, delimiter=',')
     evaluate(pred, real)
