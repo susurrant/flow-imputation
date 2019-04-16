@@ -68,14 +68,13 @@ if __name__ == '__main__':
         for i in range(40000):
             sess.run(train_step, feed_dict={xs: train_X, ys: train_y})
             #if i and i % 50 == 0:
-                #pass
                 #print('iteration', i, ':', sess.run(loss, feed_dict={xs: train_X, ys: train_y}))
                 #pred = sess.run(prediction, feed_dict={xs: test_X}).flatten().tolist()
                 #RMSE.append(np.sqrt(np.mean(np.square(np.array(real) - np.array(pred)))))
                 #SMC.append(stats.spearmanr(np.array(real), np.array(pred))[0])
 
-        #np.savetxt('./GNN_RMSE_'+str(num_of_hidden_units)+'.txt', np.array(RMSE), fmt='%.3f', delimiter=',')
-        #np.savetxt('./GNN_SMC_'+str(num_of_hidden_units)+'.txt', np.array(SMC), fmt='%.3f', delimiter=',')
+        #np.savetxt('data/GNN_RMSE_'+str(num_of_hidden_units)+'.txt', np.array(RMSE), fmt='%.3f', delimiter=',')
+        #np.savetxt('data/GNN_SMC_'+str(num_of_hidden_units)+'.txt', np.array(SMC), fmt='%.3f', delimiter=',')
 
         pred = sess.run(prediction, feed_dict={xs:test_X})
         evaluate(pred.flatten().tolist(), test_y.flatten().tolist())

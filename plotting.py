@@ -53,5 +53,16 @@ def iter_rmse_scc():
 
     plt.show()
 
+
+def check():
+    path = 'SI-GCN/data/output/'
+    data = np.loadtxt()
+
+
+def var_threshold():
+    path = 'SI-GCN/data/output/'
+
+
+
 if __name__ == '__main__':
-    iter_rmse_scc()
+    #iter_rmse_scc()

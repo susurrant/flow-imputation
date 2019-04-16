@@ -97,9 +97,10 @@ class Scorer:
         if verbose:
             self.iter += 500
             #data = np.concatenate((pred, np.array(real)))
-            #np.savetxt('../output/d_'+str(self.iter)+'.txt', data, delimiter=',')
+            #np.savetxt('../data/output/d_'+str(self.iter)+'.txt', data, delimiter=',')
+
             '''
-            self.iter += 50
+            self.iter += 50   # change the corresponding self.iter
             if self.iter < 10051:
                 self.RMSE.append(np.sqrt(np.mean(np.square(np.array(real)-np.array(pred)))))
                 self.SMC.append(stats.spearmanr(np.array(real), np.array(pred))[0])
