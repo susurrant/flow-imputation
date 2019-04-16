@@ -41,10 +41,11 @@ if __name__ == '__main__':
     test_triplets = io.read_triplets_as_list(test_path, entities_path, relations_path)
     features = io.read_features_as_list(feature_path)
 
+    threshold = 0 #np.min(train_triplets[:, 3])
     train_triplets = np.array(train_triplets)
-    train_triplets[:, 3] -= np.min(train_triplets[:, 3])
+    train_triplets[:, 3] -= threshold
     valid_triplets = np.array(valid_triplets)
-    valid_triplets[:, 3] -= np.min(train_triplets[:, 3])
+    valid_triplets[:, 3] -= threshold
     test_triplets = np.array(test_triplets)
     features = np.array(features)
 
@@ -89,7 +90,7 @@ if __name__ == '__main__':
     opp = optimizer_parameter_parser.Parser(optimizer_settings)
     opp.set_save_function(model.save)
 
-    scorer = evaluation.Scorer(evaluation_settings, model)
+    scorer = evaluation.Scorer(evaluation_settings, model, threshold)
 
     def score_validation_data(validation_data):
         score_summary = scorer.compute_scores(validation_data, verbose=False).get_summary()

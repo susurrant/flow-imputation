@@ -49,6 +49,7 @@ def add_layer(inputs, in_size, out_size, activation_function=None):
 
 def gravity_neural_model(path, learning_rate, num_of_hidden_units, iterations, mode='positive', save_pred=False):
     train_X, train_y, test_X, test_y = read_data(path, normalization=True, mode=mode)
+    print(train_X[0], test_X[0], test_y[0])
 
     xs = tf.placeholder(tf.float32, shape=(None, 3))
     ys = tf.placeholder(tf.float32, shape=(None, 1))
@@ -80,6 +81,7 @@ def gravity_neural_model(path, learning_rate, num_of_hidden_units, iterations, m
         evaluate(pred.flatten().tolist(), test_y.flatten().tolist(), mode)
         if save_pred:
             np.savetxt('data/pred_GNN_'+str(num_of_hidden_units)+'.txt', pred, delimiter=',')
+
 
 if __name__ == '__main__':
     path = 'SI-GCN/data/taxi/'
