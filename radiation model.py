@@ -32,15 +32,13 @@ def predict(flows, features):
             if gid != ogid and gid != dgid:
                 if dis(features[ogid][0], features[ogid][1], features[gid][0], features[gid][1]) <= d:
                     s += features[gid][3]+features[gid][2]
-        if f[0] == 497 and f[1] == 607:
-            print(opop, dpop, d, s)
         pred.append(features[ogid][3]*opop*dpop/((opop+s)*(opop+dpop+s)))
 
     return pred, real
 
 if __name__ == '__main__':
     path = 'SI-GCN/data/taxi/'
-    mode = 'negative'
+    mode = 'positive'
     flows, features = read_data(path, False, mode)
     pred, real = predict(flows, features)
     np.savetxt('data/pred_RM_negative.txt', pred, delimiter=',')

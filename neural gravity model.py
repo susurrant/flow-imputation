@@ -85,4 +85,4 @@ def gravity_neural_model(path, learning_rate, num_of_hidden_units, iterations, m
 
 if __name__ == '__main__':
     path = 'SI-GCN/data/taxi/'
-    gravity_neural_model(path, 0.005, 30, 40000, mode='negative', save_pred=False)
+    gravity_neural_model(path, 0.005, 30, 40000, mode='positive', save_pred=False)
