@@ -48,7 +48,7 @@ class AccuracySummary:
 
     def pretty_print(self):
         print("----------Evaluating accuracy for test triplets----------")
-        print('ratio of non-zeros', round(np.sum(self.p != 0) / self.p.shape[0]), 3)
+        print('ratio of non-zeros', round(np.sum(self.p != 0) / self.p.shape[0], 3))
         print('real_min:', min(self.r), ', real_max:', max(self.r))
         print('pred_min:', int(min(self.p)), ', pred_max:', int(max(self.p)))
         print('real:', list(self.r[:20]))
