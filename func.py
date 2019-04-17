@@ -72,7 +72,7 @@ def evaluate(p, r, mode='positive'):
         llr = stats.linregress(r, p)
         #print('LLR: R =', round(llr[2], 3), ', p-value =', round(llr[3], 3))
     elif mode == 'negative':
-        print('Proportion of non-zeros', round(np.sum(p != 0) / p.shape[0], 3))
+        print('Proportion of zeros:', round(np.sum(p < 0.5) / p.shape[0], 3))
         print('MAE:', round(np.mean(np.abs(r - p)), 3))
         print('RMSE:', round(np.sqrt(np.mean(np.square(r - p))), 3))
 

@@ -80,8 +80,8 @@ def read_features(entity_dict, feature_file):
     return features
 
 
-# add negative samples to test.txt
-def sample_negatives(flow_file, output_path):
+# generate negative samples to test_n.txt
+def sample_negatives_weighted(flow_file, output_path):
     p_data = np.loadtxt(flow_file, dtype=np.uint16, delimiter='\t', skiprows=1)
     grids = list(set(p_data[:, 0]) | set(p_data[:, 2]))
     sample_size = 0
@@ -103,6 +103,29 @@ def sample_negatives(flow_file, output_path):
     np.random.shuffle(negatives)
     n_idx = np.random.choice(negatives.shape[0], size=sample_size, replace=False, p=negatives[:, 4] / np.sum(negatives[:, 4]))
     np.savetxt(output_path + 'test_n.txt', negatives[n_idx][:, :4], fmt='%d', delimiter='\t')
+
+
+def sample_negatives(flow_file, output_path):
+    p_data = np.loadtxt(flow_file, dtype=np.uint16, delimiter='\t', skiprows=1)
+    grids = list(set(p_data[:, 0]) | set(p_data[:, 2]))
+    sample_size = 0
+    with open(output_path+'test.txt', 'r') as f:
+        for _ in f:
+            sample_size += 1
+    p_dict = set(map(tuple, p_data[:, [0, 2]]))
+    n_dict = set()
+    negatives = []
+    for i in range(len(grids)):
+        for j in range(len(grids)):
+            if j != i:
+                n_dict.add((grids[i], grids[j]))
+    n_dict -= p_dict
+    for g in n_dict:
+        negatives.append([g[0], 0, g[1], 0])  # 只考虑一种关系，第二项值为0
+    negatives = np.array(negatives)
+    np.random.shuffle(negatives)
+    n_idx = np.random.choice(negatives.shape[0], size=sample_size, replace=False)
+    np.savetxt(output_path + 'test_n.txt', negatives[n_idx], fmt='%d', delimiter='\t')
 
 
 def gen_data(flow_file, output_path, r):
@@ -187,9 +210,9 @@ if __name__ == '__main__':
     col_num = 30
     path = 'SI-GCN/data/taxi/'
 
-    classification('data/taxi_1km.txt', class_num, threshold)
+    #classification('data/taxi_1km.txt', class_num, threshold)
     flow_file = 'data/taxi_1km_c'+str(class_num)+'_t'+str(threshold)+'.txt'
-    gen_data(flow_file, path, [0.6, 0.2, 0.2])
-    gen_features(flow_file, path, colnum=col_num, normalizaed=True)
+    #gen_data(flow_file, path, [0.6, 0.2, 0.2])
+    #gen_features(flow_file, path, colnum=col_num, normalizaed=True)
     sample_negatives(flow_file, path)
 

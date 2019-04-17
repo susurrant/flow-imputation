@@ -96,8 +96,8 @@ if __name__ == '__main__':
     #v_f = read_flows(path + 'valid.txt')
     features = read_features(path + 'entities.dict', path + 'features_raw.txt')
 
-    beta, K = gravity_model(tr_f, features)
-    pred, real = predict(te_f, features, beta, K)
+    beta, K = gravity_model_linear(tr_f, features)
+    pred, real = predict_linear(te_f, features, beta, K)
     print('beta =', beta, ', K =', K)
     #np.savetxt('data/pred_GM_P.txt', pred, delimiter=',')
     evaluate(pred, real, 'negative')
