@@ -18,7 +18,7 @@ class AccuracySummary:
         p = np.array(p)
         r = np.array(r)
 
-        self.results['MAE'] = np.mean(np.abs(r-p))
+        #self.results['MAE'] = np.mean(np.abs(r-p))
 
         c1 = 0
         mape = 0
@@ -31,16 +31,16 @@ class AccuracySummary:
             if r[i]+p[i]:
                 ssi += min(r[i], p[i])/(r[i]+p[i])
                 c2 += 1
-        #self.results['MAPE'] = mape/c1
+        self.results['MAPE'] = mape/c1
         #self.results['SSI'] = ssi*2/(c2^2)
 
-        self.results['MSE'] = np.mean(np.square(r-p))
-        self.results['RMSE'] = np.sqrt(self.results['MSE'])
+        #self.results['MSE'] = np.mean(np.square(r-p))
+        self.results['RMSE'] = np.sqrt(np.mean(np.square(r-p)))
 
-        #stack = np.column_stack((p, r))
-        #self.results['CPC'] = 2 * np.sum(np.min(stack, axis=1)) / np.sum(stack)
+        stack = np.column_stack((p, r))
+        self.results['CPC'] = 2 * np.sum(np.min(stack, axis=1)) / np.sum(stack)
 
-        #self.results['SMC'] = stats.spearmanr(r, p)
+        self.results['SMC'] = stats.spearmanr(r, p)
         #self.results['LLR'] = stats.linregress(r, p)
 
     def accuracy_string(self):
