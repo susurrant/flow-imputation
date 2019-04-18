@@ -41,8 +41,8 @@ if __name__ == '__main__':
     test_triplets = io.read_triplets_as_list(test_path, entities_path, relations_path)
     features = io.read_features_as_list(feature_path)
 
-    threshold = np.min(train_triplets[:, 3])
     train_triplets = np.array(train_triplets)
+    threshold = np.min(train_triplets[:, 3])
     train_triplets[:, 3] -= threshold
     valid_triplets = np.array(valid_triplets)
     valid_triplets[:, 3] -= threshold
