@@ -43,7 +43,6 @@ if __name__ == '__main__':
 
     train_triplets = np.array(train_triplets)
     threshold = np.min(train_triplets[:, 3])
-    print('threshold', threshold)
     train_triplets[:, 3] -= threshold
     valid_triplets = np.array(valid_triplets)
     valid_triplets[:, 3] -= threshold
