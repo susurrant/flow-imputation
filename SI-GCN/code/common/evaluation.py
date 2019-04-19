@@ -44,7 +44,7 @@ class AccuracySummary:
         #self.results['LLR'] = stats.linregress(r, p)
 
     def accuracy_string(self):
-        return 'MSE'
+        return 'RMSE'
 
     def pretty_print(self):
         print("----------Evaluating accuracy for test triplets----------")
@@ -99,7 +99,9 @@ class Scorer:
         score = AccuracyScore(pred, real)
 
         if verbose:
-            self.iter += 500
+            pass
+
+            #self.iter += 500
             #np.savetxt('../data/output/d_'+str(self.iter)+'.txt', pred, delimiter=',')
 
             '''

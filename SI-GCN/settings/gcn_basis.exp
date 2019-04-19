@@ -27,7 +27,7 @@
 
 	[EarlyStopping]
 		CheckEvery=500
-		BurninPhaseDuration=1000
+		BurninPhaseDuration=40000
 
 	[Algorithm]
 		Name=Adam
