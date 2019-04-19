@@ -5,7 +5,7 @@ import tensorflow as tf
 '''
 Optimizer interface:
 '''
-class IOptimizer():
+class IOptimizer:
 
     next_component = None
     

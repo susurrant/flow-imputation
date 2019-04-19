@@ -139,7 +139,7 @@ if __name__ == '__main__':
 
     def sample_edge_neighborhood(triplets, sample_size):
 
-        edges = np.zeros((sample_size), dtype=np.int32)
+        edges = np.zeros(sample_size, dtype=np.int32)
 
         #initialize
         sample_counts = np.array([d for d in degrees])
