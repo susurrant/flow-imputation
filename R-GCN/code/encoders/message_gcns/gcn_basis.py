@@ -75,6 +75,7 @@ class BasisGcn(MessageGcn):
 
 
     def combine_messages(self, forward_messages, backward_messages, self_loop_messages, previous_code, mode='train'):
+        '''
         mtr_f = self.get_graph().forward_incidence_matrix(normalization=('global', 'recalculated'))
         mtr_b = self.get_graph().backward_incidence_matrix(normalization=('global', 'recalculated'))
 
@@ -87,6 +88,11 @@ class BasisGcn(MessageGcn):
             activated = tf.nn.relu(updated_vertex_embeddings + self_loop_messages)
         else:
             activated = updated_vertex_embeddings + self_loop_messages
+        '''
+        if self.use_nonlinearity:
+            activated = tf.nn.relu(self_loop_messages)
+        else:
+            activated = self_loop_messages
 
         return activated
 
