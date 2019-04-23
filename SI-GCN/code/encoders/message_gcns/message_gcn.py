@@ -49,7 +49,7 @@ class MessageGcn(Model):
         return collected_messages, None, collected_messages
 
     def compute_vertex_embeddings(self, mode='train'):
-        if self.vertex_embedding_function[mode] is None:
+        if True: #self.vertex_embedding_function[mode] is None:
             sender_features = self.get_vertex_features(senders=True, mode=mode)
             receiver_features = self.get_vertex_features(senders=False, mode=mode)
 

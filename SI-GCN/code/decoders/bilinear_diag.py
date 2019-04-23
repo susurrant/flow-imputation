@@ -11,8 +11,8 @@ class BilinearDiag(Model):
         self.regularization_parameter = float(self.settings['RegularizationParameter'])
 
     def compute_codes(self, mode='train'):
-        if self.encoder_cache[mode] is not None:
-            return self.encoder_cache[mode]
+        #if self.encoder_cache[mode] is not None:
+        #    return self.encoder_cache[mode]
 
         subject_codes, relation_codes, object_codes = self.next_component.get_all_codes(mode=mode)
         e1s = tf.nn.embedding_lookup(subject_codes, self.X[:, 0])
@@ -28,7 +28,7 @@ class BilinearDiag(Model):
         energies = tf.reduce_sum(e1s * rs * e2s, 1)
         #weight = int(self.settings['NegativeSampleRate'])
         weight = 1
-        #return tf.reduce_mean(tf.losses.absolute_difference(self.Y, energies, weight))  # 损失函数修改
+        #return tf.reduce_mean(tf.losses.absolute_difference(self.Y, energies, weight))  # change loss function
         return tf.losses.mean_squared_error(self.Y, energies, weight)
 
 
