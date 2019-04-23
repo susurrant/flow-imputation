@@ -43,13 +43,12 @@ class MessageGcn(Model):
             return vertex_codes
 
     def get_all_codes(self, mode='train'):
-        #print('-------GCN_ID:', self.gcn_id, ', MessageGcn.get_all_codes', self.onehot_input)
         collected_messages = self.compute_vertex_embeddings(mode=mode)
 
         return collected_messages, None, collected_messages
 
     def compute_vertex_embeddings(self, mode='train'):
-        if True: #self.vertex_embedding_function[mode] is None:
+        if self.vertex_embedding_function[mode] is None:
             sender_features = self.get_vertex_features(senders=True, mode=mode)
             receiver_features = self.get_vertex_features(senders=False, mode=mode)
 

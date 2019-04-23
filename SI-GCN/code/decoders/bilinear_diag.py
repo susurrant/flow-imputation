@@ -11,8 +11,8 @@ class BilinearDiag(Model):
         self.regularization_parameter = float(self.settings['RegularizationParameter'])
 
     def compute_codes(self, mode='train'):
-        #if self.encoder_cache[mode] is not None:
-        #    return self.encoder_cache[mode]
+        if self.encoder_cache[mode] is not None:
+            return self.encoder_cache[mode]
 
         subject_codes, relation_codes, object_codes = self.next_component.get_all_codes(mode=mode)
         e1s = tf.nn.embedding_lookup(subject_codes, self.X[:, 0])
@@ -42,7 +42,6 @@ class BilinearDiag(Model):
     def local_get_test_input_variables(self):
         return [self.X]
 
-    #--------------------------以下函数去掉激活函数--------------------
     def predict(self):
         e1s, rs, e2s = self.compute_codes(mode='test')
         energies = tf.reduce_sum(e1s * rs * e2s, 1) # sum by row
