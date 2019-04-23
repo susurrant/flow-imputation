@@ -197,6 +197,6 @@ if __name__ == '__main__':
 
     #classification('data/taxi_1km.txt', class_num, threshold)
     flow_file = 'data/taxi_1km_c'+str(class_num)+'_t'+str(threshold)+'.txt'
-    gen_data(flow_file, path, [0.8, 0.1, 0.1])
+    gen_data(flow_file, path, [0.6, 0.2, 0.2])
     gen_features(flow_file, path, colnum=col_num, normalizaed=True)
     #sample_negatives(flow_file, path)
