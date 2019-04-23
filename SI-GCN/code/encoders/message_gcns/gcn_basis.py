@@ -85,6 +85,7 @@ class BasisGcn(MessageGcn):
         else:
             activated = updated_vertex_embeddings + self_loop_messages
         '''
+        print('combine_messages')
         if self.use_nonlinearity:
             activated = tf.nn.relu(self_loop_messages)
         else:
