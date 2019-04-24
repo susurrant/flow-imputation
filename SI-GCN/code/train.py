@@ -68,6 +68,7 @@ if __name__ == '__main__':
     general_settings.put('FeatureCount', len(features[0]))
     general_settings.put('EdgeCount', len(train_triplets))
     general_settings.put('GraphBatchSize', train_triplets.shape[0])
+    print('Graph batch size:', train_triplets.shape[0])
 
     encoder_settings.merge(shared_settings)
     encoder_settings.merge(general_settings)

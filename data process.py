@@ -193,7 +193,7 @@ if __name__ == '__main__':
     class_num = 1
     threshold = 30
     col_num = 30
-    path = 'SI-GCN/data/taxi_0.8/'
+    path = 'SI-GCN/data/taxi_0.6/'
 
     #classification('data/taxi_1km.txt', class_num, threshold)
     flow_file = 'data/taxi_1km_c'+str(class_num)+'_t'+str(threshold)+'.txt'
