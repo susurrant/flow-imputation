@@ -5,6 +5,7 @@ import seaborn as sns
 import os
 from scipy import stats
 
+
 def iter_rmse_scc():
     iv = 2
     gnn_10_rmse = np.loadtxt('data/GNN_10_RMSE.txt')[::iv]
@@ -54,6 +55,7 @@ def iter_rmse_scc():
     plt.show()
 
 
+# determine which output produces the best prediction accuracy
 def check():
     r = np.loadtxt('SI-GCN/data/taxi/test.txt', dtype=np.uint32, delimiter='\t')[:, 3]
     path = 'SI-GCN/data/output/'
@@ -111,7 +113,230 @@ def var_threshold():
     plt.show()
 
 
+def training_size():
+    ticks = ['RMSE', 'MAPE', 'SCC', 'CPC']
+    RMSE = [[27.122, 27.293, 27.498, 28.772, 28.869, 28.107, 27.311, 28.663, 27.937, 27.914],
+            [24.512, 25.531, 25.367, 25.322, 25.531, 25.367, 25.394, 25.242, 25.288, 25.296],
+            [20.516, 20.62, 20.854, 20.191, 21.055, 20.826, 20.546, 21.049, 20.893],
+            [18.398, 18.505, 18.66, 18.56, 18.405, 18.419, 18.315, 18.556, 18.503, 18.583]]
+
+    MAPE = [[29.1, 29.1, 28.6, 28.1, 27.7, 28.9, 27.9, 28.1, 27.8, 28.1],
+            [25.4, 25.3, 24.8, 25.1, 25.3, 24.8, 25.4, 25.6, 24.8, 26.4],
+            [23.4, 23.1, 22.5, 22.6, 22.6, 22.9, 23.6, 22.5, 23.7],
+            [22.8, 21.6, 22.6, 22.3, 22.1, 22.8, 22.8, 22.5, 23.4, 23.2]]
+
+    SCC = [[0.558, 0.555, 0.549, 0.526, 0.53, 0.534, 0.55, 0.526, 0.546, 0.546],
+           [0.636, 0.628, 0.639, 0.625, 0.628, 0.639, 0.635, 0.638, 0.631, 0.632],
+           [0.709, 0.708, 0.716, 0.715, 0.713, 0.701, 0.703, 0.702, 0.712],
+           [0.718, 0.722, 0.723, 0.725, 0.728, 0.719, 0.718, 0.719, 0.72, 0.727]]
+
+    CPC = [[0.846, 0.845, 0.844, 0.839, 0.839, 0.841, 0.844, 0.838, 0.842, 0.842],
+           [0.866, 0.863, 0.863, 0.863, 0.863, 0.863, 0.863, 0.863, 0.863, 0.864],
+           [0.884, 0.883, 0.884, 0.886, 0.884, 0.882, 0.883, 0.882, 0.882],
+           [0.888, 0.889, 0.889, 0.889, 0.889, 0.889, 0.889, 0.888, 0.887, 0.888]]
+
+    p20 = [[27.122, 27.293, 27.498, 28.772, 28.869, 28.107, 27.311, 28.663, 27.937, 27.914],
+           [29.1, 29.1, 28.6, 28.1, 27.7, 28.9, 27.9, 28.1, 27.8, 28.1],
+           [0.558, 0.555, 0.549, 0.526, 0.53, 0.534, 0.55, 0.526, 0.546, 0.546],
+           [0.846, 0.845, 0.844, 0.839, 0.839, 0.841, 0.844, 0.838, 0.842, 0.842]]
+
+    p40 = [[24.512, 25.531, 25.367, 25.322, 25.531, 25.367, 25.394, 25.242, 25.288, 25.296],
+           [25.4, 25.3, 24.8, 25.1, 25.3, 24.8, 25.4, 25.6, 24.8, 26.4],
+           [0.636, 0.628, 0.639, 0.625, 0.628, 0.639, 0.635, 0.638, 0.631, 0.632],
+           [0.866, 0.863, 0.863, 0.863, 0.863, 0.863, 0.863, 0.863, 0.863, 0.864]]
+
+    p60 = [[20.516, 20.62, 20.854, 20.191, 21.055, 20.826, 20.546, 21.049, 20.893],
+           [23.4, 23.1, 22.5, 22.6, 22.6, 22.9, 23.6, 22.5, 23.7],
+           [0.709, 0.708, 0.716, 0.715, 0.713, 0.701, 0.703, 0.702, 0.712],
+           [0.884, 0.883, 0.884, 0.886, 0.884, 0.882, 0.883, 0.882, 0.882]]
+
+    p80 = [[18.398, 18.505, 18.66, 18.56, 18.405, 18.419, 18.315, 18.556, 18.503, 18.583],
+           [22.8, 21.6, 22.6, 22.3, 22.1, 22.8, 22.8, 22.5, 23.4, 23.2],
+           [0.718, 0.722, 0.723, 0.725, 0.728, 0.719, 0.718, 0.719, 0.72, 0.727],
+           [0.888, 0.889, 0.889, 0.889, 0.889, 0.889, 0.889, 0.888, 0.887, 0.888]]
+
+    #t = [p20, p40, p60, p80]
+    t = [RMSE, MAPE, SCC, CPC]
+    #fs1 = 10
+    #fs2 = 8
+
+    fig, ax = plt.subplots(figsize=(6, 3))
+    colors = ['#fdae61', '#1b7837', '#7fbf7b', '#762a83']
+
+    ax.set_xlabel('Training set size') #fontsize=fs1
+    ax.set_ylabel('Performance')
+    xs = np.array([0.5, 1.5, 2.5, 3.5])
+    #xs = np.array([-3, -1, 1, 3])
+
+    def set_box_color(bp, color):
+        plt.setp(bp['boxes'], color=color)
+        plt.setp(bp['whiskers'], color=color)
+        plt.setp(bp['caps'], color=color)
+        plt.setp(bp['medians'], color=color)
+
+    bw = 0.1
+    margin = 0.05
+
+    bp = ax.boxplot(t[0], positions=[0.35, 0.45, 0.55, 0.65], sym='', widths=bw)
+    set_box_color(bp, colors[0])
+
+    bp = ax.boxplot(t[1], positions=[1.35, 1.45, 1.55, 1.65], sym='', widths=bw)
+    set_box_color(bp, colors[1])
+
+    #for n, i in enumerate([0.5, 1.5]):
+    #    bp = ax.boxplot(t[n], positions=0.5 + (bw + margin / 2) * xs / 2, sym='', widths=bw)
+    #    set_box_color(bp, colors[n])
+
+    ax.set_xlim(0, 4)
+    ax.set_xticks(xs)
+    ax.xaxis.set_ticklabels(ticks)
+
+    ax.set_ylim(18, 30)
+    #ys = [0, 5, 10, 15, 20, 25, 30, 35]
+    #ax.set_yticks(ys)
+    #ylabels = [str(item) for item in ys]
+    #ax.yaxis.set_ticklabels(ylabels, fontsize=fs2)
+
+    ax1 = ax.twinx()
+    bp = ax1.boxplot(t[2], positions=[2.35, 2.45, 2.55, 2.65], sym='', widths=bw)
+    set_box_color(bp, colors[2])
+    bp = ax1.boxplot(t[3], positions=[3.35, 3.45, 3.55, 3.65], sym='', widths=bw)
+    set_box_color(bp, colors[3])
+    #for n, i in enumerate([1, 3]):
+    #    bp = ax1.boxplot(t[n+2], positions=xs + (bw + margin / 2) * i / 2, sym='', widths=bw)
+    #    set_box_color(bp, colors[n+2])
+    ax.set_xlim(0, 4)
+    ax1.set_xticks(xs)
+    ax1.xaxis.set_ticklabels(ticks)
+    ax1.set_ylim(0.5, 1)
+
+    pc = ['20%', '40%', '60%', '80%']
+    for i in range(4):
+        ax.plot([], c=colors[i], label=pc[i])
+    ax.legend()
+
+    plt.show()
+
+
+def tt():
+    RMSE = [[27.122, 27.293, 27.498, 28.772, 28.869, 28.107, 27.311, 28.663, 27.937, 27.914],
+                     [24.512, 25.531, 25.367, 25.322, 25.531, 25.367, 25.394, 25.242, 25.288, 25.296],
+                     [20.516, 20.620, 20.854, 20.191, 21.055, 20.826, 20.546, 21.049, 20.893, 20.728],
+                     [18.398, 18.505, 18.660, 18.560, 18.405, 18.419, 18.315, 18.556, 18.503, 18.583]]
+
+    MAPE = [[29.1, 29.1, 28.6, 28.1, 27.7, 28.9, 27.9, 28.1, 27.8, 28.1],
+                     [25.4, 25.3, 24.8, 25.1, 25.3, 24.8, 25.4, 25.6, 24.8, 26.4],
+                     [23.4, 23.1, 22.5, 22.6, 22.6, 22.9, 23.6, 22.5, 23.7, 23.0],
+                     [22.8, 21.6, 22.6, 22.3, 22.1, 22.8, 22.8, 22.5, 23.4, 23.2]]
+
+    SCC = [[0.558, 0.555, 0.549, 0.526, 0.530, 0.534, 0.550, 0.526, 0.546, 0.546],
+                    [0.636, 0.628, 0.639, 0.625, 0.628, 0.639, 0.635, 0.638, 0.631, 0.632],
+                    [0.709, 0.708, 0.716, 0.715, 0.713, 0.701, 0.703, 0.702, 0.712, 0.709],
+                    [0.718, 0.722, 0.723, 0.725, 0.728, 0.719, 0.718, 0.719, 0.720, 0.727]]
+
+    CPC = [[0.846, 0.845, 0.844, 0.839, 0.839, 0.841, 0.844, 0.838, 0.842, 0.842],
+                    [0.866, 0.863, 0.863, 0.863, 0.863, 0.863, 0.863, 0.863, 0.863, 0.864],
+                    [0.884, 0.883, 0.884, 0.886, 0.884, 0.882, 0.883, 0.882, 0.882, 0.883],
+                    [0.888, 0.889, 0.889, 0.889, 0.889, 0.889, 0.889, 0.888, 0.887, 0.888]]
+
+    def set_box_color(bp, color):
+        plt.setp(bp['boxes'], color=color)
+        plt.setp(bp['whiskers'], color=color)
+        plt.setp(bp['caps'], color=color)
+        plt.setp(bp['medians'], color=color)
+
+    xs = [1, 2, 3, 4]
+
+    lw = 1
+    colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
+    colors = ['gray']*4
+    plt.figure()
+
+    plt.subplot(1, 4, 1)
+    bp = plt.boxplot(RMSE, sym='', widths=0.5)
+    set_box_color(bp, colors[0])
+    plt.ylim(18, 30)
+    plt.ylabel('RMSE')
+
+    plt.subplot(1, 4, 2)
+    bp = plt.boxplot(MAPE, sym='', widths=0.5)
+    set_box_color(bp, colors[1])
+    plt.ylim(22, 30)
+    plt.ylabel('MAPE')
+
+    plt.subplot(1, 4, 3)
+    bp = plt.boxplot(SCC, sym='', widths=0.5)
+    set_box_color(bp, colors[2])
+    plt.ylim(0.5, 0.75)
+    plt.ylabel('SCC')
+
+    plt.subplot(1, 4, 4)
+    bp = plt.boxplot(CPC, sym='', widths=0.5)
+    set_box_color(bp, colors[3])
+    plt.ylim(0.83, 0.89)
+    plt.ylabel('CPC')
+
+    plt.show()
+
+
+def tt1():
+    RMSE = np.array([[27.122, 27.293, 27.498, 28.772, 28.869, 28.107, 27.311, 28.663, 27.937, 27.914],
+                     [24.512, 25.531, 25.367, 25.322, 25.531, 25.367, 25.394, 25.242, 25.288, 25.296],
+                     [20.516, 20.620, 20.854, 20.191, 21.055, 20.826, 20.546, 21.049, 20.893, 20.728],
+                     [18.398, 18.505, 18.660, 18.560, 18.405, 18.419, 18.315, 18.556, 18.503, 18.583]])
+
+    MAPE = np.array([[29.1, 29.1, 28.6, 28.1, 27.7, 28.9, 27.9, 28.1, 27.8, 28.1],
+                     [25.4, 25.3, 24.8, 25.1, 25.3, 24.8, 25.4, 25.6, 24.8, 26.4],
+                     [23.4, 23.1, 22.5, 22.6, 22.6, 22.9, 23.6, 22.5, 23.7, 23.0],
+                     [22.8, 21.6, 22.6, 22.3, 22.1, 22.8, 22.8, 22.5, 23.4, 23.2]])
+
+    SCC = np.array([[0.558, 0.555, 0.549, 0.526, 0.530, 0.534, 0.550, 0.526, 0.546, 0.546],
+                    [0.636, 0.628, 0.639, 0.625, 0.628, 0.639, 0.635, 0.638, 0.631, 0.632],
+                    [0.709, 0.708, 0.716, 0.715, 0.713, 0.701, 0.703, 0.702, 0.712, 0.709],
+                    [0.718, 0.722, 0.723, 0.725, 0.728, 0.719, 0.718, 0.719, 0.720, 0.727]])
+
+    CPC = np.array([[0.846, 0.845, 0.844, 0.839, 0.839, 0.841, 0.844, 0.838, 0.842, 0.842],
+                    [0.866, 0.863, 0.863, 0.863, 0.863, 0.863, 0.863, 0.863, 0.863, 0.864],
+                    [0.884, 0.883, 0.884, 0.886, 0.884, 0.882, 0.883, 0.882, 0.882, 0.883],
+                    [0.888, 0.889, 0.889, 0.889, 0.889, 0.889, 0.889, 0.888, 0.887, 0.888]])
+
+    RMSE = np.mean(RMSE, axis=1)
+    MAPE = np.mean(MAPE, axis=1)
+    SCC = np.mean(SCC, axis=1)
+    CPC = np.mean(CPC, axis=1)
+
+    xs = [1, 2, 3, 4]
+
+    lw = 0.8
+    ms = 6
+    colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
+    fig, ax1 = plt.subplots()
+    l1, = ax1.plot(xs, RMSE, '--', marker='<', markersize=ms, color=colors[0], linewidth=lw, alpha=0.5, label='RMSE')
+    l2, = ax1.plot(xs, MAPE, '--', marker='s', markersize=ms, color=colors[1], linewidth=lw, alpha=0.5, label='MAPE')
+    l3, = ax1.plot(0, 0, '--', marker='D', markersize=ms, color=colors[2], linewidth=lw, alpha=0.5, label='SCC')
+    l4, = ax1.plot(0, 0, '--', marker='o', markersize=ms, color=colors[3], linewidth=lw, alpha=0.5, label='CPC')
+    ax1.set_ylabel('RMSE & MAPE(%)', fontname = 'Arial')
+    ax1.set_ylim(18, 30)
+    ax1.set_xlabel('Training set size', fontname='Arial')
+    ax2 = ax1.twinx()
+    l3, = ax2.plot(xs, SCC, '--', marker='D', markersize=ms, color=colors[2], linewidth=lw, alpha=0.5, label='SCC')
+    l4, = ax2.plot(xs, CPC, '--', marker='o', markersize=ms, color=colors[3], linewidth=lw, alpha=0.5, label='CPC')
+
+    ax2.set_ylabel('SCC & CPC', fontname = 'Arial')
+    ax2.set_xticks(xs)
+    ax2.xaxis.set_ticklabels(['20%', '40%', '60%', '80%'])
+    ax2.set_yticks([0.5, 0.6, 0.7, 0.8, 0.9])
+    ax2.set_ylim(0.5, 0.9)
+    ax2.set_xlim(0.9, 4.1)
+
+    ax1.legend([l1, l2, l3, l4], labels=['RMSE', 'MAPE', 'SCC', 'CPC'], bbox_to_anchor=(0.22, 0.61), borderaxespad=0.1, ncol=1)
+    #.legend([l3, l4], labels=['SCC', 'CPC'], bbox_to_anchor=(0.2, 0.55), borderaxespad=0.1, ncol=1)
+
+    plt.show()
+
 if __name__ == '__main__':
     #iter_rmse_scc()
     #check()
-    var_threshold()
+    #var_threshold()
+    #training_size()
+    tt1()
