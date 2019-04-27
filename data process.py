@@ -5,7 +5,7 @@ import csv
 import pysal as ps
 import random
 
-# 出租车数据处理
+# taxi data process
 def taxi_data(data_file, out_file):
     flows = {}
     flow_count = 0
@@ -32,7 +32,7 @@ def taxi_data(data_file, out_file):
             sheet.writerow([g[0], g[1], m])
 
 
-# 自然间断点
+# compute natural breaks of data
 def fisher_jenks(d, cNum):
     X = np.array(d).reshape((-1, 1))
     fj = ps.esda.mapclassify.Fisher_Jenks(X, cNum)
@@ -42,7 +42,7 @@ def fisher_jenks(d, cNum):
     return fj.bins, meanV
 
 
-# 数据分级
+# data classfication
 def classification(filename, class_num, threshold):
     data = []
     flows = {}
@@ -132,7 +132,7 @@ def gen_data(flow_file, output_path, r):
     p_data = np.loadtxt(flow_file, dtype=np.uint16, delimiter='\t', skiprows=1)
     grids = list(set(p_data[:, 0]) | set(p_data[:, 2]))
 
-    # 生成训练、测试、验证数据集
+    # generate training, validation and test data set
     # positive triplets
     t = set(range(p_data.shape[0]))
     train_set = set(random.sample(range(p_data.shape[0]), int(r[0] * p_data.shape[0])))
@@ -147,7 +147,7 @@ def gen_data(flow_file, output_path, r):
     np.savetxt(output_path + 'test.txt', test_data, fmt='%d', delimiter='\t')
     np.savetxt(output_path + 'valid.txt', valid_data, fmt='%d', delimiter='\t')
 
-    # 生成数据字典
+    # generate geographical unit and spatial relation dicts
     with open(output_path + 'entities.dict', 'w', newline='') as f:
         for i, gid in enumerate(grids):
             f.write(str(i)+'\t'+ str(gid) + '\r\n')
@@ -158,8 +158,8 @@ def gen_data(flow_file, output_path, r):
             f.write(str(i) + '\t' + str(r) + '\r\n')
 
 
-# 生成节点特征
-def gen_features(flow_file, output_path, colnum, normalizaed=False):
+# generate the features of geographical units
+def gen_features(flow_file, output_path, colnum):
     features = [] # [row, col, attract, pull]
     node_list = []
     with open(output_path + 'entities.dict', 'r') as f:
@@ -182,9 +182,9 @@ def gen_features(flow_file, output_path, colnum, normalizaed=False):
     features = np.array(features, dtype=np.float)
 
     np.savetxt(output_path + 'features_raw.txt', features, fmt='%d', delimiter='\t')
-    if normalizaed:
-        features = (features - np.min(features, axis=0)) / (np.max(features, axis=0) - np.min(features, axis=0))
 
+    # save normalized features
+    features = (features - np.min(features, axis=0)) / (np.max(features, axis=0) - np.min(features, axis=0))
     np.savetxt(output_path + 'features.txt', features, fmt='%.3f', delimiter='\t')
 
 
@@ -198,5 +198,5 @@ if __name__ == '__main__':
     #classification('data/taxi_1km.txt', class_num, threshold)
     flow_file = 'data/taxi_1km_c'+str(class_num)+'_t'+str(threshold)+'.txt'
     gen_data(flow_file, path, [0.6, 0.2, 0.2])
-    gen_features(flow_file, path, colnum=col_num, normalizaed=True)
+    gen_features(flow_file, path, colnum=col_num)
     #sample_negatives(flow_file, path)
