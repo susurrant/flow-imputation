@@ -188,15 +188,35 @@ def gen_features(flow_file, output_path, colnum):
     np.savetxt(output_path + 'features.txt', features, fmt='%.3f', delimiter='\t')
 
 
+# generate features including coordinates only
+def gen_features_co(output_path, colnum):
+    features = [] # [row, col]
+    node_list = []
+    with open(output_path + 'entities.dict', 'r') as f:
+        line = f.readline().strip()
+        while line:
+            s = line.split('\t')
+            features.append([int(s[1])//colnum, int(s[1])%colnum])
+            node_list.append(s[1])
+            line = f.readline().strip()
+
+    features = np.array(features, dtype=np.float)
+
+    np.savetxt(output_path + 'features_raw.txt', features, fmt='%d', delimiter='\t')
+
+    # save normalized features
+    features = (features - np.min(features, axis=0)) / (np.max(features, axis=0) - np.min(features, axis=0))
+    np.savetxt(output_path + 'features.txt', features, fmt='%.3f', delimiter='\t')
+
+
 if __name__ == '__main__':
     #taxi_data('data/taxi_sj_1km_05.txt', 'data/taxi_1km.txt')
     class_num = 1
     threshold = 30
     col_num = 30
-    path = 'SI-GCN/data/taxi_0.6/'
+    path = 'SI-GCN/data/taxi/'
 
     #classification('data/taxi_1km.txt', class_num, threshold)
     flow_file = 'data/taxi_1km_c'+str(class_num)+'_t'+str(threshold)+'.txt'
     gen_data(flow_file, path, [0.6, 0.2, 0.2])
     gen_features(flow_file, path, colnum=col_num)
-    #sample_negatives(flow_file, path)
