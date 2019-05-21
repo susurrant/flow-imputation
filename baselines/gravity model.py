@@ -4,6 +4,7 @@ from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 from func import *
 
+
 def gravity_model_linear(flows, features):
     Y = []
     X = []
