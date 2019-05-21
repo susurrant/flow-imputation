@@ -334,9 +334,66 @@ def tt1():
 
     plt.show()
 
+
+def tt2():
+    RMSE = np.array([[27.122, 27.293, 27.498, 28.772, 28.869, 28.107, 27.311, 28.663, 27.937, 27.914],
+                     [24.512, 25.531, 25.367, 25.322, 25.531, 25.367, 25.394, 25.242, 25.288, 25.296],
+                     [20.516, 20.620, 20.854, 20.191, 21.055, 20.826, 20.546, 21.049, 20.893, 20.728],
+                     [18.398, 18.505, 18.660, 18.560, 18.405, 18.419, 18.315, 18.556, 18.503, 18.583]])
+
+    MAPE = np.array([[29.1, 29.1, 28.6, 28.1, 27.7, 28.9, 27.9, 28.1, 27.8, 28.1],
+                     [25.4, 25.3, 24.8, 25.1, 25.3, 24.8, 25.4, 25.6, 24.8, 26.4],
+                     [23.4, 23.1, 22.5, 22.6, 22.6, 22.9, 23.6, 22.5, 23.7, 23.0],
+                     [22.8, 21.6, 22.6, 22.3, 22.1, 22.8, 22.8, 22.5, 23.4, 23.2]])
+
+    SCC = np.array([[0.558, 0.555, 0.549, 0.526, 0.530, 0.534, 0.550, 0.526, 0.546, 0.546],
+                    [0.636, 0.628, 0.639, 0.625, 0.628, 0.639, 0.635, 0.638, 0.631, 0.632],
+                    [0.709, 0.708, 0.716, 0.715, 0.713, 0.701, 0.703, 0.702, 0.712, 0.709],
+                    [0.718, 0.722, 0.723, 0.725, 0.728, 0.719, 0.718, 0.719, 0.720, 0.727]])
+
+    CPC = np.array([[0.846, 0.845, 0.844, 0.839, 0.839, 0.841, 0.844, 0.838, 0.842, 0.842],
+                    [0.866, 0.863, 0.863, 0.863, 0.863, 0.863, 0.863, 0.863, 0.863, 0.864],
+                    [0.884, 0.883, 0.884, 0.886, 0.884, 0.882, 0.883, 0.882, 0.882, 0.883],
+                    [0.888, 0.889, 0.889, 0.889, 0.889, 0.889, 0.889, 0.888, 0.887, 0.888]])
+
+    RMSE_mean = np.mean(RMSE, axis=1)
+    MAPE_mean = np.mean(MAPE, axis=1)
+    SCC_mean = np.mean(SCC, axis=1)
+    CPC_mean = np.mean(CPC, axis=1)
+
+    RMSE_err = np.std(RMSE, axis=1)
+    SCC_err = np.std(SCC, axis=1)
+
+    xs = [1, 2, 3, 4]
+
+    lw = 0.6
+    colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
+    fig, ax1 = plt.subplots()
+    l1 = ax1.errorbar(xs, RMSE_mean, yerr=RMSE_err, ecolor=colors[0], elinewidth=1, linewidth=lw, linestyle='--',
+                 color=colors[0], capsize=2)
+    l3 = ax1.errorbar(xs, SCC_mean, yerr=SCC_err, ecolor=colors[2], elinewidth=1, linewidth=lw, linestyle='--',
+                      color=colors[2], capsize=2)
+    ax1.set_ylabel('RMSE', fontname = 'Arial')
+    ax1.set_ylim(18, 29)
+    ax1.set_xlabel('Training set size', fontname='Arial')
+    ax2 = ax1.twinx()
+    l3 = ax2.errorbar(xs, SCC_mean, yerr=SCC_err, ecolor=colors[2], elinewidth=1, linewidth=lw, linestyle='--',
+                 color=colors[2], capsize=2)
+    ax2.set_ylabel('SCC', fontname = 'Arial')
+    ax2.set_xticks(xs)
+    ax2.xaxis.set_ticklabels(['20%', '40%', '60%', '80%'])
+    ax2.set_yticks([0.5, 0.55, 0.6, 0.65, 0.7, 0.75])
+    ax2.set_ylim(0.5, 0.75)
+    ax2.set_xlim(0.9, 4.1)
+
+    ax1.legend([l1, l3], labels=['RMSE', 'SCC'], bbox_to_anchor=(0.22, 0.61), borderaxespad=0.1, ncol=1)
+
+    plt.show()
+
+
 if __name__ == '__main__':
     #iter_rmse_scc()
     #check()
     #var_threshold()
     #training_size()
-    tt1()
+    tt2()
