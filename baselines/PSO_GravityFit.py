@@ -197,61 +197,47 @@ def InitSize(InterData, PointNum):
 #主调函数
 def gravityFit(points, flows):
     InterData, PointNum, ValidPair, PointName = preprocessData(points, flows)
-    print(PointName)
+    print('grid num:', PointNum)
+
     Sizes = InitSize(InterData, PointNum)
     maxSize = max(Sizes)
     for i in range(0, PointNum):
         Sizes[i] = Sizes[i] / maxSize * 1000
+
     bestScoreResult = 0
     estSizeResult = []
     bestBeta = 0.1
-    for beta in range(1, 30, 1):
-        bs, estSize = PSOSearch(InterData, PointNum, ValidPair, Sizes, float(beta/10.0), 1000, 1000, 1, 2.0, 2.0)
-        print('bestscore:', bs)
-        print("------------"+str(float(beta/10.0))+"------------")
+    for beta in range(50, 180, 5):
+        bs, estSize = PSOSearch(InterData, PointNum, ValidPair, Sizes, beta/100, 1000, 1000, 1, 2.0, 2.0)
+        print('beta:', beta/100, 'score:', bs)
         #for bp in estSize:
         #    print(bp)
         if bs > bestScoreResult:
             bestScoreResult = bs
-            bestBeta = float(beta/10.0)
+            bestBeta = beta/100.0
             estSizeResult = copy.deepcopy(estSize)
-    
-    result = []
-    result.append(['beta', bestBeta])
+
+    print('best beta:', bestBeta)
+    result = {}
     for i in range(0, PointNum):
-        result.append([PointName[i], estSizeResult[i]])
-    
+        result[PointName[i]] =  estSizeResult[i]
     return result
 
 
 def read_data(path):
     features = read_features(path + 'entities.dict', path + 'features_raw.txt')
-    points = []
+    pts = []
     for k, c in features.items():
-        points.append([k, c[0], c[1]])
+        pts.append([k, c[0], c[1]])
 
     tr_f = read_flows(path + 'train.txt')
+    return pts, tr_f
 
 
 if __name__ == '__main__':
     path = './SI-GCN/data/taxi/'
 
-
-    points = []
-    k = 0
-    with open('points.txt', 'r') as f:
-        lines = f.readlines()
-        for line in lines:
-            id, x, y = line.strip().split(' ')
-            points.append([id, float(x), float(y)])    # 添加 (id, x, y)
-            k = k + 1
-
-    flows = []
-    with open('flows.txt', 'r') as f:
-        lines = f.readlines()
-        for line in lines:
-            id1, id2, val = line.strip().split(' ')
-            flows.append([id1, id2, float(val)])        # 添加 (id1, id2, value)
+    points, flows = read_data(path)
 
     res = gravityFit(points, flows)
     for r in res:
