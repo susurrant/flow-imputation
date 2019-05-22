@@ -157,6 +157,37 @@ def gen_data(flow_file, output_path, r):
         for i, r in enumerate(relations):
             f.write(str(i) + '\t' + str(r) + '\r\n')
 
+# 根据权重采样生成训练集
+def gen_data_weighted(flow_file, output_path, r, mode=0):
+    p_data = np.loadtxt(flow_file, dtype=np.uint16, delimiter='\t', skiprows=1)
+    grids = list(set(p_data[:, 0]) | set(p_data[:, 2]))
+
+    # generate training, validation and test data set
+    # positive triplets
+    t = set(range(p_data.shape[0]))
+    train_set = set(random.sample(range(p_data.shape[0]), int(r[0] * p_data.shape[0])))
+    train_data = p_data[list(train_set)]
+    s = t - train_set
+    test_set = set(random.sample(s, int(r[1] * p_data.shape[0])))
+    test_data = p_data[list(test_set)]
+    valid_data = p_data[list(s - test_set)]
+
+    np.random.shuffle(train_data)
+    np.savetxt(output_path + 'train.txt', train_data, fmt='%d', delimiter='\t')
+    np.savetxt(output_path + 'test.txt', test_data, fmt='%d', delimiter='\t')
+    np.savetxt(output_path + 'valid.txt', valid_data, fmt='%d', delimiter='\t')
+
+    # generate geographical unit and spatial relation dicts
+    with open(output_path + 'entities.dict', 'w', newline='') as f:
+        for i, gid in enumerate(grids):
+            f.write(str(i)+'\t'+ str(gid) + '\r\n')
+
+    with open(output_path + 'relations.dict', 'w', newline='') as f:
+        relations = set(p_data[:, 1])
+        for i, r in enumerate(relations):
+            f.write(str(i) + '\t' + str(r) + '\r\n')
+
+
 
 # generate the features of geographical units
 def gen_features(flow_file, output_path, colnum):
