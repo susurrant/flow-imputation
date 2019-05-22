@@ -74,15 +74,15 @@ def gravity_neural_model(path, learning_rate, num_of_hidden_units, iterations, m
             # RMSE.append(np.sqrt(np.mean(np.square(np.array(real) - np.array(pred)))))
             # SMC.append(stats.spearmanr(np.array(real), np.array(pred))[0])
 
-        # np.savetxt('./data/GNN_'+str(num_of_hidden_units)+'_RMSE.txt', np.array(RMSE), fmt='%.3f', delimiter=',')
-        # np.savetxt('./data/GNN_'+str(num_of_hidden_units)+'_SMC.txt', np.array(SMC), fmt='%.3f', delimiter=',')
+        # np.savetxt('../data/GNN_'+str(num_of_hidden_units)+'_RMSE.txt', np.array(RMSE), fmt='%.3f', delimiter=',')
+        # np.savetxt('../data/GNN_'+str(num_of_hidden_units)+'_SMC.txt', np.array(SMC), fmt='%.3f', delimiter=',')
 
         pred = sess.run(prediction, feed_dict={xs: test_X})
         evaluate(pred.flatten().tolist(), test_y.flatten().tolist(), mode)
         if save_pred:
-            np.savetxt('./data/pred_GNN_'+str(num_of_hidden_units)+'.txt', pred, delimiter=',')
+            np.savetxt('../data/pred_GNN_'+str(num_of_hidden_units)+'.txt', pred, delimiter=',')
 
 
 if __name__ == '__main__':
-    path = './SI-GCN/data/taxi/'
+    path = '../SI-GCN/data/taxi/'
     gravity_neural_model(path, 0.005, 30, 40000, mode='positive', save_pred=False)

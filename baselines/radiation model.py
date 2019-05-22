@@ -1,5 +1,4 @@
 
-import numpy as np
 from func import *
 
 
@@ -37,9 +36,9 @@ def predict(flows, features):
     return pred, real
 
 if __name__ == '__main__':
-    path = './SI-GCN/data/taxi/'
+    path = '../SI-GCN/data/taxi/'
     mode = 'positive'
     flows, features = read_data(path, False, mode)
     pred, real = predict(flows, features)
-    #np.savetxt('./data/pred_RM_negative.txt', pred, delimiter=',')
+    #np.savetxt('../data/pred_RM_negative.txt', pred, delimiter=',')
     evaluate(pred, real, mode)

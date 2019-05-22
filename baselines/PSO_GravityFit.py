@@ -235,7 +235,7 @@ def read_data(path):
 
 
 if __name__ == '__main__':
-    path = './SI-GCN/data/taxi/'
+    path = '../SI-GCN/data/taxi/'
 
     points, flows = read_data(path)
 
