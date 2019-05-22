@@ -185,6 +185,7 @@ def PSOSearch(InterData, PointNum, ValidPair, InitialSizes, beta, ParticleNum, S
 
 
 def InitSize(InterData, PointNum):
+    print('init size...')
     Size = [0.0] * PointNum
     for i in range(0, PointNum):
         for j in range(i+1, PointNum):
@@ -206,10 +207,11 @@ def gravityFit(points, flows):
 
     bestScoreResult = 0
     estSizeResult = []
-    bestBeta = 0.1
+    bestBeta = 0.05
+    print('start PSO...')
     for beta in range(50, 180, 5):
         bs, estSize = PSOSearch(InterData, PointNum, ValidPair, Sizes, beta/100, 1000, 1000, 1, 2.0, 2.0)
-        print('beta:', beta/100, 'score:', bs)
+        print('  beta:', beta/100, 'score:', bs)
         #for bp in estSize:
         #    print(bp)
         if bs > bestScoreResult:
