@@ -4,10 +4,10 @@ import random
 import copy
 import math
 from func import *
-import numpy as np
 
 
-#预处理数据函数
+
+# 数据预处理函数
 def preprocessData(points, flows):
     PointName = []
 
@@ -210,13 +210,13 @@ def gravityFit(points, flows):
     bestBeta = 0.05
     print('start PSO...')
     for beta in range(50, 180, 5):
-        bs, estSize = PSOSearch(InterData, PointNum, ValidPair, Sizes, beta/100, 1000, 1000, 1, 2.0, 2.0)
-        print('  beta:', beta/100, 'score:', bs)
+        bs, estSize = PSOSearch(InterData, PointNum, ValidPair, Sizes, beta/100, 100, 1000, 1, 2.0, 2.0)
+        #print('  beta:', beta / 100, 'score:', bs)
         #for bp in estSize:
         #    print(bp)
         if bs > bestScoreResult:
             bestScoreResult = bs
-            bestBeta = beta/100.0
+            bestBeta = beta/100
             estSizeResult = copy.deepcopy(estSize)
 
     print('best beta:', bestBeta)
@@ -236,11 +236,50 @@ def read_data(path):
     return pts, tr_f
 
 
+class Region:
+    def __init__(self, name, x, y, a, p):
+        self.name = name
+        self.x = x
+        self.y = y
+        self.a = a
+        self.p = p
+
+
+def gravity_model(A, B, beta, K):
+    d = dis(A.x, A.y, B.x, B.y)
+    return K * (A.p+A.a) * (B.p+B.a) / d**beta
+
+
+def region_init():
+    A = Region('A', 1, 12, 10, 10)
+    B = Region('B', 13, 12, 15, 10)
+    C = Region('C', 6, 10, 15, 20)
+    D = Region('D', 0, 6, 15, 25)
+    E = Region('E', 8, 6, 30, 40)
+    F = Region('F', 15, 8, 40, 20)
+    G = Region('G', 10, 1, 10, 20)
+
+    return {'A': A, 'B': B, 'C': C, 'D': D, 'E': E, 'F': F, 'G': G}
+
+
 if __name__ == '__main__':
     path = '../SI-GCN/data/taxi/'
 
-    points, flows = read_data(path)
+    points = []
+    flows = []
+    regions = region_init()
+    for r in regions:
+        points.append([regions[r].name, regions[r].x, regions[r].y])
+        print(r, regions[r].p+regions[r].a)
+
+    cflows = [('A', 'F'), ('B', 'E'), ('D', 'F'), ('E', 'A'), ('E', 'B'), ('E', 'C'), ('E', 'D'), ('E', 'G'),
+             ('F', 'G'), ('G', 'D')]
+    for f in cflows:
+        g = int(gravity_model(regions[f[0]], regions[f[1]], 1, 1))
+        flows.append([f[0], f[1], g])
+
+    #points, flows = read_data(path)
 
     res = gravityFit(points, flows)
-    for r in res:
-        print('%s   %f' % (r[0], r[1]))
+    for r in regions:
+        print(r, res[r])
