@@ -210,7 +210,7 @@ def gravityFit(points, flows):
     bestBeta = 0.05
     print('start PSO...')
     for beta in range(50, 180, 5):
-        bs, estSize = PSOSearch(InterData, PointNum, ValidPair, Sizes, beta/100, 100, 1000, 1, 2.0, 2.0)
+        bs, estSize = PSOSearch(InterData, PointNum, ValidPair, Sizes, beta/100, 50, 1000, 1, 2.0, 2.0)
         #print('  beta:', beta / 100, 'score:', bs)
         #for bp in estSize:
         #    print(bp)
@@ -264,7 +264,7 @@ def region_init():
 
 if __name__ == '__main__':
     path = '../SI-GCN/data/taxi/'
-
+    '''
     points = []
     flows = []
     regions = region_init()
@@ -277,9 +277,9 @@ if __name__ == '__main__':
     for f in cflows:
         g = int(gravity_model(regions[f[0]], regions[f[1]], 1, 1))
         flows.append([f[0], f[1], g])
-
-    #points, flows = read_data(path)
+    '''
+    points, flows = read_data(path)
 
     res = gravityFit(points, flows)
-    for r in regions:
+    for r in res:
         print(r, res[r])
