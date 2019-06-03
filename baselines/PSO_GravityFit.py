@@ -6,7 +6,6 @@ import math
 from func import *
 
 
-
 # 数据预处理函数
 def preprocessData(points, flows):
     PointName = []
@@ -33,15 +32,15 @@ def preprocessData(points, flows):
     for rcd in flows:
         n1 = PointName.index(rcd[0])
         for p in points:
-            if p[0] == rcd[0]:
-                lon1 = p[1]
-                lat1 = p[2]
+            if points[p][0] == rcd[0]:
+                lon1 = points[p][1]
+                lat1 = points[p][2]
                 break
         n2 = PointName.index(rcd[1])
         for p in points:
-            if p[0] == rcd[1]:
-                lon2 = p[1]
-                lat2 = p[2]
+            if points[p][0] == rcd[1]:
+                lon2 = points[p][1]
+                lat2 = points[p][2]
                 break
 
         if n1 > n2:
@@ -60,7 +59,7 @@ def CreateFlows(CitySize, PointNum, beta, InterData):
     for i in range(0, PointNum):
         for j in range(0,i):
             if InterData[i][j] > 0:  #valid pair
-                InterData[j][i] = CitySize[i]*CitySize[j]/pow(InterData[i][j],beta)
+                InterData[j][i] = CitySize[i]*CitySize[j]/pow(InterData[i][j],beta) #gravity model
             else:
                 InterData[j][i] = -1
 
@@ -133,7 +132,7 @@ def PSOSearch(InterData, PointNum, ValidPair, InitialSizes, beta, ParticleNum, S
     pBestParticleScore = [0.0]*ParticleNum
     pBestParticle = [[0.0 for a in range(PointNum)] for b in range(ParticleNum)]
 
-    RealFlowData = ExtractFlowData(InterData,ValidPair, PointNum)
+    RealFlowData = ExtractFlowData(InterData, ValidPair, PointNum)
     
     InterDataTemp = copy.deepcopy(InterData)
     IterCount = 0
@@ -219,67 +218,90 @@ def gravityFit(points, flows):
             bestBeta = beta/100
             estSizeResult = copy.deepcopy(estSize)
 
-    print('best beta:', bestBeta)
     result = {}
     for i in range(0, PointNum):
         result[PointName[i]] =  estSizeResult[i]
-    return result
+    return bestBeta, result
 
 
 def read_data(path):
     features = read_features(path + 'entities.dict', path + 'features_raw.txt')
-    pts = []
+    pts = {}
     for k, c in features.items():
-        pts.append([k, c[0], c[1]])
+        pts[k] = [k, c[0], c[1]]
 
     tr_f = read_flows(path + 'train.txt')
     return pts, tr_f
 
 
-class Region:
-    def __init__(self, name, x, y, a, p):
-        self.name = name
-        self.x = x
-        self.y = y
-        self.a = a
-        self.p = p
+def test(test_data, points, beta, res):
+    pred = []
+    real = []
+
+    for flow in test_data:
+        pred.append(flow[2])
+        real.append(gravity_model(points[flow[0]], points[flow[0]], res[flow[0]], res[flow[1]], beta))
+
+    print('best beta:', beta)
+    evaluate(pred, real, 'positive')
 
 
-def gravity_model(A, B, beta, K):
-    d = dis(A.x, A.y, B.x, B.y)
-    return K * (A.p+A.a) * (B.p+B.a) / d**beta
+def gravity_model(co_A, co_B, f_A, f_B, beta, K=1):
+    d = dis(co_A[1], co_A[2], co_B[1], co_B[2])
+    return K * f_A * f_B / d**beta
 
 
-def region_init():
-    A = Region('A', 1, 12, 10, 10)
-    B = Region('B', 13, 12, 15, 10)
-    C = Region('C', 6, 10, 15, 20)
-    D = Region('D', 0, 6, 15, 25)
-    E = Region('E', 8, 6, 30, 40)
-    F = Region('F', 15, 8, 40, 20)
-    G = Region('G', 10, 1, 10, 20)
+def PSO_simulation():
+    class Region:
+        def __init__(self, name, x, y, a, p):
+            self.name = name
+            self.x = x
+            self.y = y
+            self.a = a
+            self.p = p
 
-    return {'A': A, 'B': B, 'C': C, 'D': D, 'E': E, 'F': F, 'G': G}
+    def gravity_model(A, B, beta, K):
+        d = dis(A.x, A.y, B.x, B.y)
+        return K * (A.p + A.a) * (B.p + B.a) / d ** beta
 
+    def region_init():
+        A = Region('A', 1, 12, 10, 10)
+        B = Region('B', 13, 12, 15, 10)
+        C = Region('C', 6, 10, 15, 20)
+        D = Region('D', 0, 6, 15, 25)
+        E = Region('E', 8, 6, 30, 40)
+        F = Region('F', 15, 8, 40, 20)
+        G = Region('G', 10, 1, 10, 20)
 
-if __name__ == '__main__':
-    path = '../SI-GCN/data/taxi/'
-    '''
+        return {'A': A, 'B': B, 'C': C, 'D': D, 'E': E, 'F': F, 'G': G}
+
     points = []
     flows = []
     regions = region_init()
     for r in regions:
         points.append([regions[r].name, regions[r].x, regions[r].y])
-        print(r, regions[r].p+regions[r].a)
+        print(r, regions[r].p + regions[r].a)
 
     cflows = [('A', 'F'), ('B', 'E'), ('D', 'F'), ('E', 'A'), ('E', 'B'), ('E', 'C'), ('E', 'D'), ('E', 'G'),
-             ('F', 'G'), ('G', 'D')]
+              ('F', 'G'), ('G', 'D')]
     for f in cflows:
         g = int(gravity_model(regions[f[0]], regions[f[1]], 1, 1))
         flows.append([f[0], f[1], g])
-    '''
-    points, flows = read_data(path)
 
-    res = gravityFit(points, flows)
+    beta, res = gravityFit(points, flows)
+
     for r in res:
         print(r, res[r])
+
+
+if __name__ == '__main__':
+    path = '../SI-GCN/data/taxi/'
+
+    points, flows = read_data(path)
+    beta, res = gravityFit(points, flows)
+
+    test_flows = read_flows(path + 'test.txt')
+    test(test_flows, points, beta, res)
+
+    #for r in res:
+    #    print(r, res[r])
