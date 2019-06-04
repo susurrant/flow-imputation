@@ -8,14 +8,7 @@ from func import *
 
 # 数据预处理函数
 def preprocessData(points, flows):
-    PointName = []
-
-    for rcd in flows:
-        if rcd[0] not in PointName:
-            PointName.append(rcd[0])
-        if rcd[1] not in PointName:
-            PointName.append(rcd[1])
-            
+    PointName = list(points.keys())
         
     PointNum = len(PointName)
         
@@ -234,13 +227,13 @@ def read_data(path):
     return pts, tr_f
 
 
-def test(test_data, points, beta, res):
+def PSO_evaluate(test_data, points, beta, res):
     pred = []
     real = []
 
     for flow in test_data:
         pred.append(flow[2])
-        real.append(gravity_model(points[flow[0]], points[flow[0]], res[flow[0]], res[flow[1]], beta))
+        real.append(gravity_model(points[flow[0]], points[flow[1]], res[flow[0]], res[flow[1]], beta))
 
     print('best beta:', beta)
     evaluate(pred, real, 'positive')
@@ -298,10 +291,11 @@ if __name__ == '__main__':
     path = '../SI-GCN/data/taxi/'
 
     points, flows = read_data(path)
+
     beta, res = gravityFit(points, flows)
 
     test_flows = read_flows(path + 'test.txt')
-    test(test_flows, points, beta, res)
+    PSO_evaluate(test_flows, points, beta, res)
 
     #for r in res:
     #    print(r, res[r])
