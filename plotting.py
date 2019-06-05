@@ -267,7 +267,7 @@ def limited_attributes():
     bp = ax4.boxplot(CPC, sym='', widths=0.5)
     set_box_color(bp, colors[3])
     ax4.set_ylabel('CPC', fontname='Arial')
-    plt.figtext(0.15, 0.05, '1:SI-GCNs with limited attributes, 2:GNN_30 with entire attributes',
+    plt.figtext(0.15, 0.05, '1:SI-GCNs with partial attributes, 2:GNN_30 with entire attributes',
                 fontdict={'family':'Arial', 'size':12})
     plt.figtext(0.35, 0.005, '3:SI-GCNs with entire attributes', fontdict={'family':'Arial', 'size':12})
     plt.show()
