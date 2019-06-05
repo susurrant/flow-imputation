@@ -28,7 +28,7 @@ def iter_rmse_scc():
     l2, = ax1.plot(x, gnn_20_rmse, color=colors[1], linewidth=lw, alpha=0.7, label='GNN_20')
     l3, = ax1.plot(x, gnn_30_rmse, color=colors[2], linewidth=lw, alpha=0.7, label='GNN_30')
     l4, = ax1.plot(x, gcn_rmse, color=colors[3], linewidth=lw, alpha=1, label='SI-GCN')
-    ax1.set_xlabel('Iterations')
+    ax1.set_xlabel('Iteration')
     ax1.set_ylabel('RMSE')
     #ax1.set_xlim(0, 10000)
     #ax1.set_ylim(22, 36)
@@ -245,26 +245,31 @@ def limited_attributes():
         plt.setp(bp['medians'], color=color)
 
     colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
+    colors = ['grey']*4
 
     fig = plt.figure()
     ax1 = fig.add_subplot(141)
     bp = ax1.boxplot(RMSE, sym='', widths=0.5)
     set_box_color(bp, colors[0])
+    ax1.set_ylabel('RMSE', fontname = 'Arial')
 
     ax2 = fig.add_subplot(142)
     bp = ax2.boxplot(MAPE, sym='', widths=0.5)
     set_box_color(bp, colors[1])
+    ax2.set_ylabel('MAPE(%)', fontname='Arial')
 
     ax3 = fig.add_subplot(143)
     bp = ax3.boxplot(SCC, sym='', widths=0.5)
     set_box_color(bp, colors[2])
+    ax3.set_ylabel('SCC', fontname='Arial')
 
     ax4 = fig.add_subplot(144)
     bp = ax4.boxplot(CPC, sym='', widths=0.5)
     set_box_color(bp, colors[3])
-
-
-
+    ax4.set_ylabel('CPC', fontname='Arial')
+    plt.figtext(0.15, 0.05, '1:SI-GCNs with limited attributes, 2:GNN_30 with entire attributes',
+                fontdict={'family':'Arial', 'size':12})
+    plt.figtext(0.35, 0.005, '3:SI-GCNs with entire attributes', fontdict={'family':'Arial', 'size':12})
     plt.show()
 
 
