@@ -219,17 +219,16 @@ def training_size():
 
 
 def limited_attributes():
-    # GCN_limited, GNN_30. GCN
+    # GCN_limited, GNN_30, GCN
 
-    RMSE = np.array([[25.326,25.361,25.523,25.644,25.632,25.488,25.543,25.43,25.953,25.332],
-                    [25.154,25.107,25.116,25.105,25.071,25.055,24.992,24.936,25.137,25.147],
-                    [20.516,20.62,20.854,20.191,21.055,20.826,20.546,21.049,20.893]])
+    RMSE = [[25.326,25.361,25.523,25.644,25.632,25.488,25.543,25.43,25.953,25.332],
+            [25.154,25.107,25.116,25.105,25.071,25.055,24.992,24.936,25.137,25.147],
+            [20.516,20.62,20.854,20.191,21.055,20.826,20.546,21.049,20.893]]
 
-    MAPE = np.array([[0.306,0.294,0.305,0.319,0.329,0.321,0.313,0.311,0.303,0.301],
-                     [0.279,0.277,0.277,0.276,0.276,0.277,0.276,0.276,0.277,0.277],
-                     [0.234,0.231,0.225,0.226,0.226,0.229,0.236,0.225,0.237]])
+    MAPE = [np.array([0.306,0.294,0.305,0.319,0.329,0.321,0.313,0.311,0.303,0.301])*100,
+            np.array([0.279,0.277,0.277,0.276,0.276,0.277,0.276,0.276,0.277,0.277])*100,
+            np.array([0.234,0.231,0.225,0.226,0.226,0.229,0.236,0.225,0.237])*100]
 
-    print(100*MAPE)
     SCC = [[0.621,0.614,0.612,0.613,0.616,0.621,0.613,0.616,0.612,0.612],
            [0.647,0.654,0.649,0.649,0.648,0.653,0.653,0.659,0.646,0.648],
            [0.709,0.708,0.716,0.715,0.713,0.701,0.703,0.702,0.712]]
@@ -245,17 +244,26 @@ def limited_attributes():
         plt.setp(bp['caps'], color=color)
         plt.setp(bp['medians'], color=color)
 
-    xs = np.array([1, 2, 3])
-    bw = 0.1
-    margin = 0.05
-
     colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
 
-    fig, ax = plt.subplots(figsize=(6, 3))
-    bp = ax.boxplot(RMSE, positions=xs + (bw + margin / 2) * (-3) / 2, sym='', widths=bw)
+    fig = plt.figure()
+    ax1 = fig.add_subplot(141)
+    bp = ax1.boxplot(RMSE, sym='', widths=0.5)
     set_box_color(bp, colors[0])
-    bp = ax.boxplot(MAPE, positions=xs + (bw + margin / 2) * (-1) / 2, sym='', widths=bw)
+
+    ax2 = fig.add_subplot(142)
+    bp = ax2.boxplot(MAPE, sym='', widths=0.5)
     set_box_color(bp, colors[1])
+
+    ax3 = fig.add_subplot(143)
+    bp = ax3.boxplot(SCC, sym='', widths=0.5)
+    set_box_color(bp, colors[2])
+
+    ax4 = fig.add_subplot(144)
+    bp = ax4.boxplot(CPC, sym='', widths=0.5)
+    set_box_color(bp, colors[3])
+
+
 
     plt.show()
 
