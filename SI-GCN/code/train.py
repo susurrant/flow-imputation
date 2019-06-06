@@ -180,7 +180,7 @@ if __name__ == '__main__':
 
     if 'NegativeSampleRate' in general_settings:
         ns = auxilliaries.NegativeSampler(int(general_settings['NegativeSampleRate']), general_settings['EntityCount'],
-                                          entities.values(), 0) #np.min(train_triplets[:, 3])
+                                          entities.values())
         ns.set_positives(train_triplets)
         ns.set_negatives()
 

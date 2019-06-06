@@ -7,7 +7,7 @@ class NegativeSampler:
     negative_sample_rate = None
     n_entities = None
     
-    def __init__(self, negative_sample_rate, n_entities, gids, threshold):
+    def __init__(self, negative_sample_rate, n_entities, gids, threshold=0):
         self.negative_sample_rate = negative_sample_rate
         self.n_entities = n_entities
         self.gids = list(gids)
