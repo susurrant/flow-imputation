@@ -23,92 +23,87 @@ from extras.dropover import DropoverLayer
 
 
 def build_encoder(encoder_settings, triples, features):
-    if encoder_settings['Name'] == "gcn_basis":
+    # Define graph representation:
+    graph = Representation(triples, encoder_settings)
 
-        # Define graph representation:
-        graph = Representation(triples, encoder_settings)
+    # Define shapes:
+    feature_shape = [int(encoder_settings['EntityCount']),
+                     int(encoder_settings['FeatureCount'])]
+    input_shape = [int(encoder_settings['FeatureCount']),
+                   int(encoder_settings['InternalEncoderDimension'])]
+    internal_shape = [int(encoder_settings['InternalEncoderDimension']),
+                      int(encoder_settings['InternalEncoderDimension'])]
+    projection_shape = [int(encoder_settings['InternalEncoderDimension']),
+                        int(encoder_settings['CodeDimension'])]
+    relation_shape = [int(encoder_settings['EntityCount']),
+                      int(encoder_settings['CodeDimension'])]
+    layers = int(encoder_settings['NumberOfLayers'])
+    print('---------------------------------------------------------------')
+    print('common/model_builder.build_encoder: gcn_basis')
+    print('  input shape:', input_shape)
+    print('  internal shape:', internal_shape)
+    print('  projection shape:', projection_shape)
+    print('  relation shape:', relation_shape)
+    print('  layers:', layers)
+    print('---------------------------------------------------------------')
 
-        # Define shapes:
-        feature_shape = [int(encoder_settings['EntityCount']),
-                         int(encoder_settings['FeatureCount'])]
-        input_shape = [int(encoder_settings['FeatureCount']),
-                       int(encoder_settings['InternalEncoderDimension'])]
-        internal_shape = [int(encoder_settings['InternalEncoderDimension']),
-                          int(encoder_settings['InternalEncoderDimension'])]
-        projection_shape = [int(encoder_settings['InternalEncoderDimension']),
-                            int(encoder_settings['CodeDimension'])]
-        relation_shape = [int(encoder_settings['EntityCount']),
-                          int(encoder_settings['CodeDimension'])]
-        layers = int(encoder_settings['NumberOfLayers'])
-        print('---------------------------------------------------------------')
-        print('common/model_builder.build_encoder: gcn_basis')
-        print('  input shape:', input_shape)
-        print('  internal shape:', internal_shape)
-        print('  projection shape:', projection_shape)
-        print('  relation shape:', relation_shape)
-        print('  layers:', layers)
-        print('---------------------------------------------------------------')
+    encoding = SpatialRepresentation(feature_shape,
+                                     encoder_settings,
+                                     features,
+                                     next_component=graph)  # graph_representations.Representation
 
-        encoding = SpatialRepresentation(feature_shape,
-                                         encoder_settings,
-                                         features,
-                                         next_component=graph)  # graph_representations.Representation
-
-        # Initial embedding:
-        if encoder_settings['UseInputTransform'] == "Yes":
-            # AffineTransform object inheriting from Model
-            encoding = AffineTransform(input_shape,
-                                       encoder_settings,
-                                       next_component=encoding, # SpatialRepresentation
-                                       onehot_input=False,   # set to False. disable onehot
-                                       use_bias=True,
-                                       use_nonlinearity=True)
-        elif encoder_settings['RandomInput'] == 'Yes':
-            encoding = RandomEmbedding(input_shape,
-                                       encoder_settings,
-                                       next_component=graph)
-        elif encoder_settings['PartiallyRandomInput'] == 'Yes':
-            encoding1 = AffineTransform(input_shape,
-                                       encoder_settings,
-                                       next_component=graph,
-                                       onehot_input=True,
-                                       use_bias=True,
-                                       use_nonlinearity=False)
-            encoding2 = RandomEmbedding(input_shape,
-                                       encoder_settings,
-                                       next_component=graph)
-            encoding = DropoverLayer(input_shape,
-                                     next_component=encoding1,
-                                     next_component_2=encoding2)
-        else:
-            encoding = graph
-
-        # Hidden layers:
-        encoding = apply_basis_gcn(encoder_settings, encoding, internal_shape, layers)
-        
-        print('---------------------------------------------------------------')
-        print('common/model_builder.build_encoder: gcn_basis')
-        encoding.print()
-        print('---------------------------------------------------------------')
-        
-        # Output transform if chosen:
-        if encoder_settings['UseOutputTransform'] == "Yes":
-            encoding = AffineTransform(projection_shape,
-                                       encoder_settings,
-                                       next_component=encoding,
-                                       onehot_input=False,
-                                       use_nonlinearity=False,
-                                       use_bias=True)
-
-        # Encode relations:
-        full_encoder = RelationEmbedding(relation_shape,
-                                         encoder_settings,
-                                         next_component=encoding)
-        
-        return full_encoder
-
+    # Initial embedding:
+    if encoder_settings['UseInputTransform'] == "Yes":
+        # AffineTransform object inheriting from Model
+        encoding = AffineTransform(input_shape,
+                                   encoder_settings,
+                                   next_component=encoding, # SpatialRepresentation
+                                   onehot_input=False,   # set to False. disable onehot
+                                   use_bias=True,
+                                   use_nonlinearity=True)
+    elif encoder_settings['RandomInput'] == 'Yes':
+        encoding = RandomEmbedding(input_shape,
+                                   encoder_settings,
+                                   next_component=graph)
+    elif encoder_settings['PartiallyRandomInput'] == 'Yes':
+        encoding1 = AffineTransform(input_shape,
+                                   encoder_settings,
+                                   next_component=graph,
+                                   onehot_input=True,
+                                   use_bias=True,
+                                   use_nonlinearity=False)
+        encoding2 = RandomEmbedding(input_shape,
+                                   encoder_settings,
+                                   next_component=graph)
+        encoding = DropoverLayer(input_shape,
+                                 next_component=encoding1,
+                                 next_component_2=encoding2)
     else:
-        return None
+        encoding = graph
+
+    # Hidden layers:
+    encoding = apply_basis_gcn(encoder_settings, encoding, internal_shape, layers)
+
+    print('---------------------------------------------------------------')
+    print('common/model_builder.build_encoder: gcn_basis')
+    encoding.print()
+    print('---------------------------------------------------------------')
+
+    # Output transform if chosen:
+    if encoder_settings['UseOutputTransform'] == "Yes":
+        encoding = AffineTransform(projection_shape,
+                                   encoder_settings,
+                                   next_component=encoding,
+                                   onehot_input=False,
+                                   use_nonlinearity=False,
+                                   use_bias=True)
+
+    # Encode relations:
+    full_encoder = RelationEmbedding(relation_shape,
+                                     encoder_settings,
+                                     next_component=encoding)
+
+    return full_encoder
 
 
 def apply_basis_gcn(encoder_settings, encoding, internal_shape, layers):
