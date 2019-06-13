@@ -9,8 +9,6 @@ from extras.spatial_representations import SpatialRepresentation
 from decoders.nonlinear_transform import NonlinearTransform
 from decoders.complex import Complex
 
-from encoders.bipartite_gcn import BipartiteGcn
-from encoders.message_gcns.gcn_diag import DiagGcn
 from encoders.message_gcns.gcn_basis import BasisGcn
 from encoders.message_gcns.gcn_basis_concat import ConcatGcn
 from encoders.message_gcns.gcn_basis_stored import BasisGcnStore
@@ -23,11 +21,10 @@ from extras.residual_layer import ResidualLayer
 from extras.highway_layer import HighwayLayer
 from extras.dropover import DropoverLayer
 
-from extras.variational_encoding import VariationalEncoding
 
 
 def build_encoder(encoder_settings, triples, features):
-    if encoder_settings['Name'] == "embedding":
+    if encoder_settings['Name'] == "embedding": # without graph convolution
         input_shape = [int(encoder_settings['EntityCount']),
                        int(encoder_settings['CodeDimension'])]
 
@@ -42,85 +39,6 @@ def build_encoder(encoder_settings, triples, features):
                                          next_component=embedding)
 
         return full_encoder
-
-    elif encoder_settings['Name'] == "variational_embedding":
-        input_shape = [int(encoder_settings['EntityCount']),
-                       int(encoder_settings['CodeDimension'])]
-
-        mu_embedding = AffineTransform(input_shape,
-                                    encoder_settings,
-                                    onehot_input=True,
-                                    use_bias=False,
-                                    use_nonlinearity=False)
-
-
-        sigma_embedding = AffineTransform(input_shape,
-                                    encoder_settings,
-                                    onehot_input=True,
-                                    use_bias=False,
-                                    use_nonlinearity=False)
-
-        z = VariationalEncoding(input_shape,
-                                encoder_settings,
-                                mu_network=mu_embedding,
-                                sigma_network=sigma_embedding)
-
-        full_encoder = RelationEmbedding(input_shape,
-                                         encoder_settings,
-                                         next_component=z)
-
-        return full_encoder
-
-    elif encoder_settings['Name'] == "gcn_diag":
-        # Define graph representation:
-        graph = Representation(triples, encoder_settings)
-
-        # Define shapes:
-        input_shape = [int(encoder_settings['EntityCount']),
-                       int(encoder_settings['InternalEncoderDimension'])]
-        internal_shape = [int(encoder_settings['InternalEncoderDimension']),
-                            int(encoder_settings['InternalEncoderDimension'])]
-        projection_shape = [int(encoder_settings['InternalEncoderDimension']),
-                            int(encoder_settings['CodeDimension'])]
-
-        relation_shape = [int(encoder_settings['EntityCount']),
-                          int(encoder_settings['CodeDimension'])]
-
-        layers = int(encoder_settings['NumberOfLayers'])
-
-        # Initial embedding:
-        encoding = AffineTransform(input_shape,
-                                    encoder_settings,
-                                    next_component=graph,
-                                    onehot_input=True,
-                                    use_bias=True,
-                                    use_nonlinearity=True)
-
-        # Hidden layers:
-        for layer in range(layers):
-            use_nonlinearity = layer < layers - 1
-            encoding = DiagGcn(internal_shape,
-                               encoder_settings,
-                               next_component=encoding,
-                               onehot_input=False,
-                               use_nonlinearity=use_nonlinearity)
-
-        # Output transform if chosen:
-        if encoder_settings['UseOutputTransform'] == "Yes":
-            encoding = AffineTransform(projection_shape,
-                                       encoder_settings,
-                                       next_component=encoding,
-                                       onehot_input=False,
-                                       use_nonlinearity=False,
-                                       use_bias=True)
-
-        # Encode relations:
-        full_encoder = RelationEmbedding(relation_shape,
-                                         encoder_settings,
-                                         next_component=encoding)
-
-        return full_encoder
-
     elif encoder_settings['Name'] == "gcn_basis":
 
         # Define graph representation:
@@ -204,91 +122,7 @@ def build_encoder(encoder_settings, triples, features):
                                          next_component=encoding)
         
         return full_encoder
-
-    elif encoder_settings['Name'] == "variational_gcn_basis":
-        #graph = Representation(triples, encoder_settings)  # edit error?
-
-        # Define graph representation:
-        graph = Representation(triples, encoder_settings)
-
-        # Define shapes:
-        input_shape = [int(encoder_settings['EntityCount']),
-                       int(encoder_settings['InternalEncoderDimension'])]
-        internal_shape = [int(encoder_settings['InternalEncoderDimension']),
-                          int(encoder_settings['InternalEncoderDimension'])]
-        projection_shape = [int(encoder_settings['InternalEncoderDimension']),
-                            int(encoder_settings['CodeDimension'])]
-
-        relation_shape = [int(encoder_settings['EntityCount']),
-                          int(encoder_settings['CodeDimension'])]
-
-        layers = int(encoder_settings['NumberOfLayers'])
-
-        # Initial embedding:
-        if encoder_settings['UseInputTransform'] == "Yes":
-            encoding = AffineTransform(input_shape,
-                                       encoder_settings,
-                                       next_component=graph,
-                                       onehot_input=True,
-                                       use_bias=True,
-                                       use_nonlinearity=True)
-        else:
-            encoding = graph
-
-        # Hidden layers:
-        encoding = apply_basis_gcn(encoder_settings, encoding, internal_shape, layers)
-
-        mu_encoding = AffineTransform(projection_shape,
-                                       encoder_settings,
-                                       next_component=encoding,
-                                       onehot_input=False,
-                                       use_nonlinearity=False,
-                                       use_bias=True)
-
-        sigma_encoding = AffineTransform(projection_shape,
-                                       encoder_settings,
-                                       next_component=encoding,
-                                       onehot_input=False,
-                                       use_nonlinearity=False,
-                                       use_bias=True)
-        #mu_encoding = apply_basis_gcn(encoder_settings, encoding, internal_shape, layers)
-        #sigma_encoding = apply_basis_gcn(encoder_settings, encoding, internal_shape, layers)
-
-        encoding = VariationalEncoding(input_shape,
-                                encoder_settings,
-                                mu_network=mu_encoding,
-                                sigma_network=sigma_encoding)
-
-        # Output transform if chosen:
-        if encoder_settings['UseOutputTransform'] == "Yes":
-            encoding = AffineTransform(projection_shape,
-                                       encoder_settings,
-                                       next_component=encoding,
-                                       onehot_input=False,
-                                       use_nonlinearity=False,
-                                       use_bias=True)
-
-        # Encode relations:
-        full_encoder = RelationEmbedding(relation_shape,
-                                         encoder_settings,
-                                         next_component=encoding)
-
-        return full_encoder
-
     else:
-        '''
-        elif encoder_settings['Name'] == "bipartite_gcn":
-            graph = Representation(triples, encoder_settings, bipartite=True)
-
-            first_layer = BipartiteGcn(encoder_settings, graph)
-            second_layer = BipartiteGcn(encoder_settings, graph, next_component=first_layer)
-            third_layer = BipartiteGcn(encoder_settings, graph, next_component=second_layer)
-            fourth_layer = BipartiteGcn(encoder_settings, graph, next_component=third_layer)
-
-            transform = AffineTransform(fourth_layer, encoder_settings)
-
-            return RelationEmbedding(transform, encoder_settings)
-        '''
         return None
 
 
@@ -329,7 +163,7 @@ def apply_basis_gcn(encoder_settings, encoding, internal_shape, layers):
         else:
             encoding = new_encoding
 
-    return encoding  #嵌套的BasisGcn，最里层的next_component为 AffineTransform object
+    return encoding
 
 
 def build_decoder(encoder, decoder_settings):
