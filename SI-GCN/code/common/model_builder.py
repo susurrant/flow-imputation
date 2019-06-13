@@ -329,7 +329,7 @@ def apply_basis_gcn(encoder_settings, encoding, internal_shape, layers):
         else:
             encoding = new_encoding
 
-    return encoding  #嵌套的BasisGcn，最里层的next_component为 AffineTransform object
+    return encoding
 
 
 def build_decoder(encoder, decoder_settings):
