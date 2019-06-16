@@ -26,7 +26,6 @@ class BilinearDiag(Model):
     def get_loss(self, mode='train'):
         e1s, rs, e2s = self.compute_codes(mode=mode)
         energies = tf.reduce_sum(e1s * rs * e2s, 1)
-        #weight = int(self.settings['NegativeSampleRate'])
         weight = 1
         #return tf.reduce_mean(tf.losses.absolute_difference(self.Y, energies, weight))  # change loss function
         return tf.losses.mean_squared_error(self.Y, energies, weight)
@@ -46,21 +45,18 @@ class BilinearDiag(Model):
         e1s, rs, e2s = self.compute_codes(mode='test')
         energies = tf.reduce_sum(e1s * rs * e2s, 1) # sum by row
         return tf.nn.relu(energies)
-        #return energies
 
     def predict_all_subject_scores(self):
         e1s, rs, e2s = self.compute_codes(mode='test')
         all_subject_codes = self.next_component.get_all_subject_codes(mode='test')
         all_energies = tf.transpose(tf.matmul(all_subject_codes, tf.transpose(rs * e2s)))
         return tf.nn.relu(all_energies)
-        #return all_energies
 
     def predict_all_object_scores(self):
         e1s, rs, e2s = self.compute_codes(mode='test')
         all_object_codes = self.next_component.get_all_object_codes(mode='test')
         all_energies = tf.matmul(e1s * rs, tf.transpose(all_object_codes))
         return tf.nn.relu(all_energies)
-        #return all_energies
 
     def local_get_regularization(self):
         e1s, rs, e2s = self.compute_codes(mode='train')

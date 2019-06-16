@@ -241,5 +241,3 @@ if __name__ == '__main__':
     optimizer.set_session(model.session)
     print('fit...')
     optimizer.fit(train_triplets, validation_data=valid_triplets)
-    #scorer.dump_all_scores(valid_triplets, 'dumps/subjects.valid', 'dumps/objects.valid')
-    #scorer.dump_all_scores(test_triplets, 'dumps/subjects.test', 'dumps/objects.test')
