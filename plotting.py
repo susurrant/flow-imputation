@@ -292,6 +292,7 @@ def fisher_jenks(d, cNum):
 
 
 def var_dis():
+    # --------------------data process----------------------
     real = np.loadtxt('SI-GCN/data/taxi/test.txt', dtype=np.uint32, delimiter='\t')
     dis_list = []
     for d in real:
@@ -303,18 +304,56 @@ def var_dis():
     for i, dis in enumerate(dis_list):
         x = np.where(dis <= nk)[0]
         dis_idx.append(x.min() if x.size > 0 else len(nk) - 1)
-    print(dis_list[:10])
-    print(dis_idx[:10])
+    dis_idx = np.array(dis_idx)
     
     gcn = np.loadtxt('SI-GCN/data/output/iter_39000.txt')
     gm_p = np.loadtxt('data/pred_GM_P.txt')
     rm = np.loadtxt('data/pred_RM.txt')
     gnn_30 = np.loadtxt('data/pred_gnn_30.txt')
-    gcn_rmse = round(np.sqrt(np.mean(np.square(real[:, 3] - gcn))), 3)
-    gnn_30_rmse = round(np.sqrt(np.mean(np.square(real[:, 3] - gnn_30))), 3)
-    gm_p_rmse = round(np.sqrt(np.mean(np.square(real[:, 3] - gm_p))), 3)
-    rm_rmse = round(np.sqrt(np.mean(np.square(real[:, 3] - rm))), 3)
 
+    # short, medium, long;
+    gcn_rmse = []
+    gnn_30_rmse = []
+    gm_p_rmse = []
+    rm_rmse = []
+    for i in range(3):
+        idx = np.where(dis_idx == i)
+        gcn_rmse.append(round(np.sqrt(np.mean(np.square(real[:, 3][idx] - gcn[idx]))), 3))
+        gnn_30_rmse.append(round(np.sqrt(np.mean(np.square(real[:, 3][idx] - gnn_30[idx]))), 3))
+        gm_p_rmse.append(round(np.sqrt(np.mean(np.square(real[:, 3][idx] - gm_p[idx]))), 3))
+        rm_rmse.append(round(np.sqrt(np.mean(np.square(real[:, 3][idx] - rm[idx]))), 3))
+    rmse = [gcn_rmse, gnn_30_rmse, gm_p_rmse, rm_rmse]
+    print(rmse)
+
+    # ------------------------draw----------------------------
+    colors = ['skyblue', 'limegreen', 'hotpink', 'orangered']
+    labels = ['SI-GCN', 'GNN_30', 'GM_P', 'RM']
+    sns.set(style="whitegrid")
+
+    x = np.array([0.5, 1.5, 2.5])
+
+    fig, ax = plt.subplots(figsize=(6, 3))
+    ax.set_xlabel('Distance')
+    ax.set_ylabel('RMSE')
+
+    bw = 0.11
+    ll = []
+    for n, i in enumerate([-3, -1, 1, 3]):
+        ll.append(ax.bar(x + i * bw / 2, rmse[n], facecolor=colors[n], width=bw, label=labels[n]))
+
+    ax.set_ylim(0, 65)
+
+    ax.set_xlim(0, 3)
+    xs = [0.5, 1.5, 2.5]
+    ax.set_xticks(xs)
+    xlabels = ['Short', 'Medium', 'Long']
+    ax.xaxis.set_ticklabels(xlabels)
+
+    leg = plt.legend(handles=ll)
+    for l in leg.get_texts():
+        l.set_fontsize(10)
+        l.set_fontname('Arial')
+    plt.show()
 
 
 if __name__ == '__main__':
