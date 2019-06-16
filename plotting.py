@@ -305,7 +305,7 @@ def var_dis():
         dis_idx.append(x.min() if x.size > 0 else len(nk) - 1)
     print(dis_list[:10])
     print(dis_idx[:10])
-
+    
     gcn = np.loadtxt('SI-GCN/data/output/iter_39000.txt')
     gm_p = np.loadtxt('data/pred_GM_P.txt')
     rm = np.loadtxt('data/pred_RM.txt')
