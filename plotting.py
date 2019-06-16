@@ -296,6 +296,7 @@ def var_dis():
     dis_list = []
     for d in real:
         dis_list.append(grid_dis(d[0], d[2], 30))
+    
     nk, nl = fisher_jenks(dis_list, 3)
     print(nk, nl)
     dis_idx = []
@@ -313,7 +314,7 @@ def var_dis():
     gnn_30_rmse = round(np.sqrt(np.mean(np.square(real[:, 3] - gnn_30))), 3)
     gm_p_rmse = round(np.sqrt(np.mean(np.square(real[:, 3] - gm_p))), 3)
     rm_rmse = round(np.sqrt(np.mean(np.square(real[:, 3] - rm))), 3)
-    
+
 
 
 if __name__ == '__main__':
