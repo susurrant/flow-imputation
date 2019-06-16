@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 from scipy import stats
-
+from baselines.func import grid_dis
+import pysal as ps
 
 def iter_rmse_scc():
     iv = 2
@@ -61,7 +62,7 @@ def check():
     path = 'SI-GCN/data/output/'
     files = os.listdir(path)
     for filename in files:
-        p = np.loadtxt(path + filename)[:1427]
+        p = np.loadtxt(path + filename, delimiter=',')
         smc = stats.spearmanr(r, p)
         scc = round(smc[0], 3)
         rmse = round(np.sqrt(np.mean(np.square(r - p))), 3)
@@ -71,7 +72,7 @@ def check():
 def var_threshold():
     sns.set_style('whitegrid')
     real = np.loadtxt('SI-GCN/data/taxi/test.txt', dtype=np.uint32, delimiter='\t')[:, 3]
-    gcn = np.loadtxt('SI-GCN/data/output/d_39000.txt')[:1427]
+    gcn = np.loadtxt('SI-GCN/data/output/iter_39000.txt', delimiter=',')
     #gnn_10 = np.loadtxt('data/pred_gnn_10.txt')
     #gnn_20 = np.loadtxt('data/pred_gnn_20.txt')
     gm_p = np.loadtxt('data/pred_GM_P.txt')
@@ -87,12 +88,12 @@ def var_threshold():
     rm_rmse = []
     for t in ts:
         idx = np.where(real >= t)
-        gcn_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - gcn[idx])))/t, 3))
+        gcn_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - gcn[idx]))), 3))
         #gnn_10_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - gnn_10[idx]))), 3))
         #gnn_20_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - gnn_20[idx]))), 3))
-        gnn_30_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - gnn_30[idx])))/t, 3))
-        gm_p_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - gm_p[idx])))/t, 3))
-        rm_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - rm[idx])))/t, 3))
+        gnn_30_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - gnn_30[idx]))), 3))
+        gm_p_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - gm_p[idx]))), 3))
+        rm_rmse.append(round(np.sqrt(np.mean(np.square(real[idx] - rm[idx]))), 3))
 
     fig, ax1 = plt.subplots()
     lw = 1
@@ -105,10 +106,10 @@ def var_threshold():
     l4, = ax1.plot(ts, gcn_rmse, color=colors[3], linewidth=lw, alpha=1, label='SI-GCN')
 
     ax1.set_xlabel('Intensity threshold')
-    ax1.set_ylabel('Relative RMSE')
+    ax1.set_ylabel('RMSE')
+    ax1.set_ylim(20, 110)
     ax1.set_xlim(30, 100)
-    #ax1.set_ylim(20, 110)
-    ax1.legend([l1, l2, l3, l4], labels=['RM', 'GM_P', 'GNN_30', 'SI-GCN'], loc='upper right', #bbox_to_anchor=(0.97, 0.61),
+    ax1.legend([l1, l2, l3, l4], labels=['RM', 'GM_P', 'GNN_30', 'SI-GCN'], loc='upper left', #bbox_to_anchor=(0.97, 0.61),
                borderaxespad=0.1, ncol=1)
     plt.show()
 
@@ -280,9 +281,39 @@ def sampling_effect():
     plt.show()
 
 
+# compute natural breaks of data
+def fisher_jenks(d, cNum):
+    X = np.array(d).reshape((-1, 1))
+    fj = ps.esda.mapclassify.Fisher_Jenks(X, cNum)
+    meanV = []
+    for i in range(cNum):
+        meanV.append(np.mean(X[np.where(i == fj.yb)]))
+    return fj.bins, meanV
+
+
+def var_dis():
+    real = np.loadtxt('SI-GCN/data/taxi/test.txt', dtype=np.uint32, delimiter='\t')
+    dis_list = []
+    for d in real:
+        dis_list.append(grid_dis(d[0], d[2], 30))
+    nk, nl = fisher_jenks(dis_list, 3)
+    print(nk, nl)
+    dis_idx = []
+    for i, dis in enumerate(dis_list):
+        x = np.where(dis <= nk)[0]
+        dis_idx.append(x.min() if x.size > 0 else len(nk) - 1)
+    print(dis_list[:10])
+    print(dis_idx[:10])
+    #gcn = np.loadtxt('SI-GCN/data/output/iter_39000.txt')
+
+
+
+
 if __name__ == '__main__':
     #iter_rmse_scc()
     #check()
-    #var_threshold()
+    var_threshold()
     #sampling_effect()
-    limited_attributes()
+    #limited_attributes()
+    #var_dis()
+

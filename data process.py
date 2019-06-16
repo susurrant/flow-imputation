@@ -127,7 +127,7 @@ def sample_negatives(flow_file, output_path):
     n_idx = np.random.choice(negatives.shape[0], size=sample_size, replace=False)
     np.savetxt(output_path + 'test_n.txt', negatives[n_idx], fmt='%d', delimiter='\t')
 
-
+'''
 def gen_data_old(flow_file, output_path, r, mode = 'random'):
     p_data = np.loadtxt(flow_file, dtype=np.uint16, delimiter='\t', skiprows=1)
     grids = list(set(p_data[:, 0]) | set(p_data[:, 2]))
@@ -165,7 +165,7 @@ def gen_data_old(flow_file, output_path, r, mode = 'random'):
         relations = set(p_data[:, 1])
         for i, r in enumerate(relations):
             f.write(str(i) + '\t' + str(r) + '\r\n')
-
+'''
 
 def gen_data(flow_file, output_path, r, mode = 'random'):
     p_data = np.loadtxt(flow_file, dtype=np.uint16, delimiter='\t', skiprows=1)
@@ -237,7 +237,7 @@ def gen_features(flow_file, output_path, colnum):
     np.savetxt(output_path + 'features.txt', features, fmt='%.3f', delimiter='\t')
 
 
-# generate features including coordinates only
+# generate features including only coordinates
 def gen_features_co(output_path, colnum):
     features = [] # [row, col]
     node_list = []
