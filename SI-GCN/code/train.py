@@ -96,15 +96,11 @@ if __name__ == '__main__':
 
     def score_validation_data(validation_data):
         score_summary = scorer.compute_scores(validation_data, verbose=False).get_summary()
-        #score_summary.dump_degrees('dumps/degrees.in', 'dumps/degrees.out')
-        #score_summary.dump_frequencies('dumps/near.freq', 'dumps/target.freq')
         #score_summary.pretty_print()
 
         lookup_string = score_summary.accuracy_string()
-
         early_stopping = score_summary.results[lookup_string]
-
-        score_summary = scorer.compute_scores(test_triplets, verbose=True).get_summary()
+        score_summary = scorer.compute_scores(test_triplets, verbose=True).get_summary() # True: output estimations
         score_summary.pretty_print()
 
         return early_stopping
@@ -183,34 +179,6 @@ if __name__ == '__main__':
                                           entities.values())
         ns.set_positives(train_triplets)
         ns.set_negatives()
-
-        def t_func_abadoned(x): #horrible hack!!!
-            arr = np.array(x)
-            if not encoder.needs_graph():
-                return ns.transform(arr)
-            else:
-                if 'GraphBatchSize' in general_settings:
-                    graph_batch_size = int(general_settings['GraphBatchSize'])
-                    #graph_batch_ids = sample_TIES(arr, 1000)
-                    graph_batch_ids = sample_edge_neighborhood(arr, graph_batch_size)
-                else:
-                    graph_batch_size = arr.shape[0]
-                    graph_batch_ids = np.arange(graph_batch_size)
-
-                graph_batch = np.array(train_triplets)[graph_batch_ids]
-
-                # Apply dropouts:
-                graph_percentage = float(general_settings['GraphSplitSize'])
-                split_size = int(graph_percentage * graph_batch.shape[0])
-                graph_split_ids = np.random.choice(graph_batch_ids, size=split_size, replace=False)
-                graph_split = np.array(train_triplets)[graph_split_ids]
-
-                t = ns.transform(graph_batch)
-
-                if 'StoreEdgeData' in encoder_settings and encoder_settings['StoreEdgeData'] == "Yes":
-                    return (graph_split, graph_split_ids, t[0], t[1])
-                else:
-                    return (graph_split, t[0], t[1])
 
         def t_func(x):
             arr = np.array(x)
