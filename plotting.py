@@ -304,7 +304,7 @@ def var_dis():
         dis_idx.append(x.min() if x.size > 0 else len(nk) - 1)
     print(dis_list[:10])
     print(dis_idx[:10])
-
+    
     gcn = np.loadtxt('SI-GCN/data/output/iter_39000.txt')
     gm_p = np.loadtxt('data/pred_GM_P.txt')
     rm = np.loadtxt('data/pred_RM.txt')
@@ -313,7 +313,7 @@ def var_dis():
     gnn_30_rmse = round(np.sqrt(np.mean(np.square(real[:, 3] - gnn_30))), 3)
     gm_p_rmse = round(np.sqrt(np.mean(np.square(real[:, 3] - gm_p))), 3)
     rm_rmse = round(np.sqrt(np.mean(np.square(real[:, 3] - rm))), 3)
-    
+
 
 
 if __name__ == '__main__':
