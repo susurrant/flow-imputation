@@ -45,7 +45,7 @@ class MessageGraph:
 
             return tensor
         elif normalization[0] == "global":
-            mtr_values = tf.to_float(tf.ones_like(self.receiver_indices))  # mtr_values can be distance weight values
+            mtr_values = tf.to_float(tf.ones_like(self.receiver_indices)) # mtr_values can be normalized weights, eg. intensities
             message_indices = tf.range(self.edge_count)
 
             mtr_indices = tf.to_int64(tf.transpose(tf.stack([self.receiver_indices, message_indices])))
