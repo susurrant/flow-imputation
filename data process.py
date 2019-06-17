@@ -2,7 +2,6 @@
 
 import numpy as np
 import csv
-import pysal as ps
 import random
 
 # taxi data process
@@ -32,41 +31,21 @@ def taxi_data(data_file, out_file):
             sheet.writerow([g[0], g[1], m])
 
 
-# compute natural breaks of data
-def fisher_jenks(d, cNum):
-    X = np.array(d).reshape((-1, 1))
-    fj = ps.esda.mapclassify.Fisher_Jenks(X, cNum)
-    meanV = []
-    for i in range(cNum):
-        meanV.append(np.mean(X[np.where(i == fj.yb)]))
-    return fj.bins, meanV
-
-
 # data classfication
-def classification(filename, class_num, threshold):
-    data = []
-    flows = {}
-    with open(filename, 'r') as f:
-        f.readline()
-        line = f.readline()
-        while line:
-            d = line.strip().split('\t')
-            if d[0] == d[1] or int(d[-1]) < threshold: # 不考虑自身到自身 且 交互强度大于等于阈值
-                line = f.readline()
-                continue
-            data.append(int(d[-1]))
-            flows[(d[0], d[1])] = int(d[-1])
-            line = f.readline()
-    nk, nl = fisher_jenks(data, class_num)
-    print(nk, nl)
-
-    with open(filename[:-4]+'_c'+str(class_num)+'_t'+str(threshold)+filename[-4:], 'w', newline='') as rf:
+def data_filter(filename, threshold):
+    with open(filename[:-4] + '_t' + str(threshold) + filename[-4:], 'w', newline='') as rf:
         sheet = csv.writer(rf, delimiter='\t')
         sheet.writerow(['ogrid', 'relation', 'dgrid', 'm'])
-        for g, m in flows.items():
-            x = np.where(m <= nk)[0]
-            i = x.min() if x.size > 0 else len(nk) - 1
-            sheet.writerow([g[0], i, g[1], m])
+        with open(filename, 'r') as f:
+            f.readline()
+            line = f.readline()
+            while line:
+                d = line.strip().split('\t')
+                if d[0] == d[1] or int(d[-1]) < threshold: # 不考虑自身到自身 且 交互强度大于等于阈值
+                    line = f.readline()
+                    continue
+                sheet.writerow([d[0], 0, d[1], d[-1]])
+                line = f.readline()
 
 
 def read_features(entity_dict, feature_file):
@@ -259,13 +238,13 @@ def gen_features_co(output_path, colnum):
 
 
 if __name__ == '__main__':
-    #taxi_data('data/taxi_sj_1km_05.txt', 'data/taxi_1km.txt')
+    #taxi_data('data/taxi_sj_1km_051317.txt', 'data/taxi_1km.txt')
     class_num = 1
     threshold = 30
     col_num = 30
     path = 'SI-GCN/data/taxi/'
 
-    #classification('data/taxi_1km.txt', class_num, threshold)
-    flow_file = 'data/taxi_1km_c'+str(class_num)+'_t'+str(threshold)+'.txt'
-    gen_data(flow_file, path, [0.6, 0.2, 0.2], mode='small weight')
+    #data_filter('data/taxi_1km.txt', threshold)
+    flow_file = 'data/taxi_1km'+'_t'+str(threshold)+'.txt'
+    gen_data(flow_file, path, [0.6, 0.2, 0.2], mode='random') # random, small weight large weight
     gen_features(flow_file, path, colnum=col_num)
