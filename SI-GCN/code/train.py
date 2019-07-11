@@ -178,7 +178,6 @@ if __name__ == '__main__':
         ns = auxilliaries.NegativeSampler(int(general_settings['NegativeSampleRate']), general_settings['EntityCount'],
                                           entities.values())
         ns.set_positives(train_triplets)
-        ns.set_negatives()
 
         def t_func(x):
             arr = np.array(x)

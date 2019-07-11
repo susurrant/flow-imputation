@@ -239,7 +239,6 @@ def gen_features_co(output_path, colnum):
 
 if __name__ == '__main__':
     #taxi_data('data/taxi_sj_1km_051317.txt', 'data/taxi_1km.txt')
-    class_num = 1
     threshold = 30
     col_num = 30
     path = 'SI-GCN/data/taxi/'
