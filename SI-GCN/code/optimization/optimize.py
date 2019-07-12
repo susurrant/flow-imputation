@@ -1,6 +1,6 @@
 
-import tensorflow_backend.algorithms as tensorflow_algorithms
-import shared.algorithms as shared_algorithms
+import tensorflow_algorithms
+import shared_algorithms
 from abstract import BaseOptimizer
 import tensorflow as tf
 
