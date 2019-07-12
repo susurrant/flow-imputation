@@ -1,5 +1,4 @@
 
-from theano import tensor as T
 import tensorflow as tf
 
 '''
@@ -20,9 +19,6 @@ class IOptimizer:
             
     def process_loss_function(self, loss_function):
         return self.next_component.process_loss_function(loss_function)
-
-    def theano_process_update_function(self, parameters, loss_function):
-        return self.next_component.theano_process_update_function(parameters, loss_function)
 
     def process_data(self, data):
         return self.next_component.process_data(data)
@@ -95,9 +91,6 @@ class BaseOptimizer(IOptimizer):
     
     def process_loss_function(self, loss_function):
         return loss_function
-
-    def theano_process_update_function(self, parameters, loss_function):
-        return []
     
     def process_update_function(self, gradient_function):
         pass

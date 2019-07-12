@@ -46,14 +46,21 @@ class Model:
     '''
 
     def score(self, triplets):
+        print('----------------------------------------score print------------------------------------')
+        print('----------------------------------------score print------------------------------------')
+        print('----------------------------------------score print------------------------------------')
+        print(self.get_train_input_variables()[0])
+        print(self.get_train_input_variables()[1])
+        print(self.get_test_input_variables()[1])
+
         if self.score_graph is None:
             self.score_graph = self.predict()
 
         if self.needs_graph():
             d = {self.get_train_input_variables()[0]: self.train_triplets[:,:3],
-                 self.get_train_input_variables()[1]: triplets}
+                 self.get_train_input_variables()[1]: triplets[:,:3]}
         else:
-            d = {self.get_test_input_variables()[0]: triplets}
+            d = {self.get_test_input_variables()[0]: triplets[:,:3]}
 
         return self.session.run(self.score_graph, feed_dict=d)
 
@@ -64,9 +71,9 @@ class Model:
 
         if self.needs_graph():
             d = {self.get_train_input_variables()[0]: self.test_graph[:,:3],
-                 self.get_train_input_variables()[1]: triplets}
+                 self.get_train_input_variables()[1]: triplets[:,:3]}
         else:
-            d = {self.get_test_input_variables()[0]: triplets}
+            d = {self.get_test_input_variables()[0]: triplets[:,:3]}
 
         return self.session.run(self.score_all_subjects_graph, feed_dict=d)
 
@@ -76,9 +83,9 @@ class Model:
 
         if self.needs_graph():
             d = {self.get_train_input_variables()[0]: self.test_graph[:,:3],
-                 self.get_train_input_variables()[1]: triplets}
+                 self.get_train_input_variables()[1]: triplets[:,:3]}
         else:
-            d = {self.get_test_input_variables()[0]: triplets}
+            d = {self.get_test_input_variables()[0]: triplets[:,:3]}
 
         return self.session.run(self.score_all_objects_graph, feed_dict=d)
 

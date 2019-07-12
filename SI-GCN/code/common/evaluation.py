@@ -94,7 +94,7 @@ class Scorer:
         self.model = model
 
     def compute_accuracy_scores(self, triples, output=False):
-        pred = self.model.score(triples[:,:3]) + self.threshold
+        pred = self.model.score(triples) + self.threshold
         real = triples[:,3]
         score = AccuracyScore(pred, real)
 
