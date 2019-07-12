@@ -50,8 +50,8 @@ class Model:
             self.score_graph = self.predict()
 
         if self.needs_graph():
-            d = {self.get_test_input_variables()[0]: self.train_triplets[:,:3],
-                 self.get_test_input_variables()[1]: triplets}
+            d = {self.get_train_input_variables()[0]: self.train_triplets[:,:3],
+                 self.get_train_input_variables()[1]: triplets}
         else:
             d = {self.get_test_input_variables()[0]: triplets}
 
@@ -63,8 +63,8 @@ class Model:
             self.score_all_subjects_graph = self.predict_all_subject_scores()
 
         if self.needs_graph():
-            d = {self.get_test_input_variables()[0]: self.test_graph[:,:3],
-                 self.get_test_input_variables()[1]: triplets}
+            d = {self.get_train_input_variables()[0]: self.test_graph[:,:3],
+                 self.get_train_input_variables()[1]: triplets}
         else:
             d = {self.get_test_input_variables()[0]: triplets}
 
@@ -75,15 +75,12 @@ class Model:
             self.score_all_objects_graph = self.predict_all_object_scores()
 
         if self.needs_graph():
-            d = {self.get_test_input_variables()[0]: self.test_graph[:,:3],
-                 self.get_test_input_variables()[1]: triplets}
+            d = {self.get_train_input_variables()[0]: self.test_graph[:,:3],
+                 self.get_train_input_variables()[1]: triplets}
         else:
             d = {self.get_test_input_variables()[0]: triplets}
 
         return self.session.run(self.score_all_objects_graph, feed_dict=d)
-
-    '''
-    '''
 
     def register_for_test(self, triplets):
         self.test_graph = triplets
