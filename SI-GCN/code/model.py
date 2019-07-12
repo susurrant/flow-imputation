@@ -49,6 +49,7 @@ class Model:
         print('----------------------------------------score print------------------------------------')
         print(self.get_train_input_variables()[0])
         print(self.get_train_input_variables()[1])
+        print(self.get_test_input_variables()[0])
         print(self.get_test_input_variables()[1])
 
         if self.score_graph is None:
