@@ -46,13 +46,13 @@ class Model:
     '''
 
     def score(self, triplets):
-        #self.get_train_input_variables()[0] -> Tensor("graph_edges:0", shape=(?, 3), dtype = int32)
-        #self.get_train_input_variables()[1] -> Tensor("X:0", shape=(?, 3), dtype = int32)
-        #self.get_test_input_variables()[0] -> Tensor("graph_edges:0", shape=(?, 3), dtype = int32)
-        #self.get_test_input_variables()[0] -> Tensor("X:0", shape=(?, 3), dtype = int32)
+        # refer to train.py: print(optimizer_input)
+        # self.get_test_input_variables()[0] -> Tensor("graph_edges:0", shape=(?, 3), dtype = int32)
+        # self.get_test_input_variables()[0] -> Tensor("BiDiag_X:0", shape=(?, 3), dtype = int32)
+        # self.get_test_input_variables() is same to the above
 
         if self.score_graph is None:
-            self.score_graph = self.predict()
+            self.score_graph = self.predict()  # BiDiag_Y is not required in prediction
 
         if self.needs_graph():
             d = {self.get_test_input_variables()[0]: self.train_triplets[:,:3],

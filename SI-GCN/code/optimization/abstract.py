@@ -94,9 +94,6 @@ class BaseOptimizer(IOptimizer):
     
     def process_update_function(self, gradient_function):
         pass
-
-    def compute_gradient_function(self, parameters, loss_function):
-        return T.grad(loss_function, wrt=parameters)
     
     def next_batch(self):
         return self.training_data

@@ -203,17 +203,20 @@ if __name__ == '__main__':
 
     optimizer_parameters = opp.get_parametrization()
 
-    print('optimizer weights:')
+    print('---------------optimizer weights---------------')
     print(optimizer_weights)
-    print('optimizer input:')
-    print(optimizer_input)
-    print('optimizer parameters:')
+    print('---------------optimizer input---------------')
+    print(optimizer_input)  #[<tf.Tensor 'graph_edges:0' shape=(?, 3) dtype=int32>,
+                            # <tf.Tensor 'BiDiag_X:0' shape=(?, 3) dtype=int32>,
+                            # <tf.Tensor 'BiDiag_Y:0' shape=(?,) dtype=float32>]
+    print('---------------optimizer parameters---------------')
     print(optimizer_parameters)
 
 
     '''
     7. Train with Converge:
     '''
+    # when trainning the model, SampleTransformer in optimization generates triplets and labels to feed the model
     model.session = tf.Session()
     print('build tensorflow...')
     optimizer = build_tensorflow(loss, optimizer_weights, optimizer_parameters, optimizer_input)

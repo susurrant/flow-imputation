@@ -133,8 +133,8 @@ def __construct_optimizer(settings):
     if not optimizer.verify():
         print("Construction failed.")
 
-
     return TensorflowOptimizer(optimizer)
+
 
 def build_tensorflow(loss_function, parameters_to_optimize, settings, placeholders):
     optimizer = __construct_optimizer(settings)
