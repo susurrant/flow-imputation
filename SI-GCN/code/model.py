@@ -47,8 +47,6 @@ class Model:
 
     def score(self, triplets):
         print('----------------------------------------score print------------------------------------')
-        print('----------------------------------------score print------------------------------------')
-        print('----------------------------------------score print------------------------------------')
         print(self.get_train_input_variables()[0])
         print(self.get_train_input_variables()[1])
         print(self.get_test_input_variables()[1])
