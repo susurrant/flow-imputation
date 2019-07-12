@@ -19,8 +19,10 @@ def make_tf_variable(mean, variance, shape, var_name='', init='normal'):
     elif init == "uniform":
         initializer = np.random.uniform(mean, variance, size=shape).astype(np.float32)
 
-    return tf.Variable(initializer, name=var_name)
-
+    if var_name:
+        return tf.Variable(initializer, name=var_name)
+    else:
+        return tf.Variable(initializer)
 
 def make_tf_bias(shape, init=0):
     if init == 0:
