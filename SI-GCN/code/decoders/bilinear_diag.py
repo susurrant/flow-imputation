@@ -32,8 +32,8 @@ class BilinearDiag(Model):
 
 
     def local_initialize_train(self):
-        self.Y = tf.placeholder(tf.float32, shape=[None], name='Y')
-        self.X = tf.placeholder(tf.int32, shape=[None, 3], name='X')
+        self.Y = tf.placeholder(tf.float32, shape=[None], name='BD_Y')
+        self.X = tf.placeholder(tf.int32, shape=[None, 3], name='BD_X')
 
     def local_get_train_input_variables(self):
         return [self.X, self.Y]

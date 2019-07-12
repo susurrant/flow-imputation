@@ -46,18 +46,17 @@ class Model:
     '''
 
     def score(self, triplets):
-        print('----------------------------------------score print------------------------------------')
-        print(self.get_train_input_variables()[0])
-        print(self.get_train_input_variables()[1])
-        print(self.get_test_input_variables()[0])
-        print(self.get_test_input_variables()[1])
+        #self.get_train_input_variables()[0] -> Tensor("graph_edges:0", shape=(?, 3), dtype = int32)
+        #self.get_train_input_variables()[1] -> Tensor("X:0", shape=(?, 3), dtype = int32)
+        #self.get_test_input_variables()[0] -> Tensor("graph_edges:0", shape=(?, 3), dtype = int32)
+        #self.get_test_input_variables()[0] -> Tensor("X:0", shape=(?, 3), dtype = int32)
 
         if self.score_graph is None:
             self.score_graph = self.predict()
 
         if self.needs_graph():
-            d = {self.get_train_input_variables()[0]: self.train_triplets[:,:3],
-                 self.get_train_input_variables()[1]: triplets[:,:3]}
+            d = {self.get_test_input_variables()[0]: self.train_triplets[:,:3],
+                 self.get_test_input_variables()[1]: triplets[:,:3]}
         else:
             d = {self.get_test_input_variables()[0]: triplets[:,:3]}
 
@@ -69,8 +68,8 @@ class Model:
             self.score_all_subjects_graph = self.predict_all_subject_scores()
 
         if self.needs_graph():
-            d = {self.get_train_input_variables()[0]: self.test_graph[:,:3],
-                 self.get_train_input_variables()[1]: triplets[:,:3]}
+            d = {self.get_test_input_variables()[0]: self.test_graph[:,:3],
+                 self.get_test_input_variables()[1]: triplets[:,:3]}
         else:
             d = {self.get_test_input_variables()[0]: triplets[:,:3]}
 
@@ -81,8 +80,8 @@ class Model:
             self.score_all_objects_graph = self.predict_all_object_scores()
 
         if self.needs_graph():
-            d = {self.get_train_input_variables()[0]: self.test_graph[:,:3],
-                 self.get_train_input_variables()[1]: triplets[:,:3]}
+            d = {self.get_test_input_variables()[0]: self.test_graph[:,:3],
+                 self.get_test_input_variables()[1]: triplets[:,:3]}
         else:
             d = {self.get_test_input_variables()[0]: triplets[:,:3]}
 
