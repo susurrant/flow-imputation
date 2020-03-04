@@ -4,7 +4,6 @@ by Xin Yao (https://github.com/susurrant)
 
 import argparse
 import sys
-import time
 sys.path.append('./optimization')
 
 import tensorflow as tf
@@ -101,8 +100,7 @@ if __name__ == '__main__':
 
         lookup_string = score_summary.accuracy_string()
         early_stopping = score_summary.results[lookup_string]
-        # verbose = True: output estimations
-        score_summary = scorer.compute_scores(test_triplets, verbose=False).get_summary()
+        score_summary = scorer.compute_scores(test_triplets, verbose=True).get_summary() # True: output estimations
         score_summary.pretty_print()
 
         return early_stopping
@@ -237,11 +235,9 @@ if __name__ == '__main__':
     '''
     7. Train with Converge:
     '''
-    start_time = time.clock()
     model.session = tf.Session()
     print('build tensorflow...')
     optimizer = build_tensorflow(loss, optimizer_weights, optimizer_parameters, optimizer_input)
     optimizer.set_session(model.session)
     print('fit...')
     optimizer.fit(train_triplets, validation_data=valid_triplets)
-    print('Total running time: %.2f' % ((time.clock() - start_time) / 60.0), 'mins')

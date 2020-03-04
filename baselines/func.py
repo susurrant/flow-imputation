@@ -69,7 +69,7 @@ def evaluate(p, r, mode='positive'):
         smc = stats.spearmanr(r, p)
         print('SMC: correlation =', round(smc[0], 3), ', p-value =', round(smc[1], 3))
 
-        llr = stats.linregress(r, p)
+        #llr = stats.linregress(r, p)
         #print('LLR: R =', round(llr[2], 3), ', p-value =', round(llr[3], 3))
     elif mode == 'negative':
         print('Proportion of zeros:', round(np.sum(p < 0.5) / p.shape[0], 3))

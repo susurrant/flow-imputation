@@ -46,14 +46,19 @@ class Model:
     '''
 
     def score(self, triplets):
+        # refer to train.py: print(optimizer_input)
+        # self.get_test_input_variables()[0] -> Tensor("graph_edges:0", shape=(?, 3), dtype = int32)
+        # self.get_test_input_variables()[0] -> Tensor("BiDiag_X:0", shape=(?, 3), dtype = int32)
+        # self.get_test_input_variables() is same to the above
+
         if self.score_graph is None:
-            self.score_graph = self.predict()
+            self.score_graph = self.predict()  # BiDiag_Y is not required in prediction
 
         if self.needs_graph():
             d = {self.get_test_input_variables()[0]: self.train_triplets[:,:3],
-                 self.get_test_input_variables()[1]: triplets}
+                 self.get_test_input_variables()[1]: triplets[:,:3]}
         else:
-            d = {self.get_test_input_variables()[0]: triplets}
+            d = {self.get_test_input_variables()[0]: triplets[:,:3]}
 
         return self.session.run(self.score_graph, feed_dict=d)
 
@@ -64,9 +69,9 @@ class Model:
 
         if self.needs_graph():
             d = {self.get_test_input_variables()[0]: self.test_graph[:,:3],
-                 self.get_test_input_variables()[1]: triplets}
+                 self.get_test_input_variables()[1]: triplets[:,:3]}
         else:
-            d = {self.get_test_input_variables()[0]: triplets}
+            d = {self.get_test_input_variables()[0]: triplets[:,:3]}
 
         return self.session.run(self.score_all_subjects_graph, feed_dict=d)
 
@@ -76,14 +81,11 @@ class Model:
 
         if self.needs_graph():
             d = {self.get_test_input_variables()[0]: self.test_graph[:,:3],
-                 self.get_test_input_variables()[1]: triplets}
+                 self.get_test_input_variables()[1]: triplets[:,:3]}
         else:
-            d = {self.get_test_input_variables()[0]: triplets}
+            d = {self.get_test_input_variables()[0]: triplets[:,:3]}
 
         return self.session.run(self.score_all_objects_graph, feed_dict=d)
-
-    '''
-    '''
 
     def register_for_test(self, triplets):
         self.test_graph = triplets

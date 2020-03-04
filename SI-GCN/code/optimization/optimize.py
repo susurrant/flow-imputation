@@ -1,15 +1,14 @@
-import tensorflow_backend.algorithms as tensorflow_algorithms
-import theano_backend.algorithms as theano_algorithms
-import shared.algorithms as shared_algorithms
-import theano
+
+import tensorflow_algorithms
+import shared_algorithms
 from abstract import BaseOptimizer
 import tensorflow as tf
 
 '''
-Partial class for shared architecture between theano/tensorflow optimizers.
+Partial class for shared architecture between tensorflow optimizers.
 '''
 
-class Optimizer():
+class Optimizer:
 
     def __init__(self, stack):
         self.stack = stack
@@ -84,40 +83,11 @@ class TensorflowOptimizer(Optimizer):
 
         return upd[1]
 
-class TheanoOptimizer(Optimizer):
 
-    __loss__ = None
-    __update__ = None
-    __parameters__ = None
-    
-    def __init__(self, stack):
-        self.stack = stack
-
-    def set_loss_function(self, loss_function):
-        self.__loss__ = self.stack.process_loss_function(loss_function)
-        
-    def set_parameters_to_optimize(self, parameters_to_optimize):
-        self.__parameters__ = parameters_to_optimize
-        
-    def compute_update_function(self, input_params):
-        raw_update = self.stack.theano_process_update_function(self.__parameters__, self.__loss__)
-        self.__update__ = theano.function(inputs=input_params, outputs=self.__loss__, updates=raw_update)
-        
-        self.__loss__ = theano.function(inputs=input_params, outputs=self.__loss__)
-
-    def initialize_for_fitting(self):
-        pass
-    
-    def update_from_batch(self, processed_batch):
-        return self.__update__(*tuple(processed_batch))
-
-def __from_component(component_name, backend='theano'):
+def __from_component(component_name):
     print('    ', component_name)
     if component_name == "GradientDescent":
-        if backend == 'theano':
-            return theano_algorithms.GradientDescent
-        elif backend == 'tensorflow':
-            return tensorflow_algorithms.GradientDescent
+        return tensorflow_algorithms.GradientDescent
     
     if component_name == "Minibatches":
         return shared_algorithms.Minibatches
@@ -129,31 +99,19 @@ def __from_component(component_name, backend='theano'):
         return shared_algorithms.SampleTransformer
 
     if component_name == "GradientClipping":
-        if backend == 'theano':
-            return theano_algorithms.GradientClipping
-        elif backend == 'tensorflow':
-            return tensorflow_algorithms.GradientClipping
+        return tensorflow_algorithms.GradientClipping
 
     if component_name == "EarlyStopper":
         return shared_algorithms.EarlyStopper
         
     if component_name == "AdaGrad":
-        if backend == 'theano':
-            return theano_algorithms.AdaGrad
-        elif backend == 'tensorflow':
-            return tensorflow_algorithms.AdaGrad
+        return tensorflow_algorithms.AdaGrad
 
     if component_name == "RmsProp":
-        if backend == 'theano':
-            return theano_algorithms.RmsProp
-        elif backend == 'tensorflow':
-            return tensorflow_algorithms.RmsProp
+        return tensorflow_algorithms.RmsProp
 
     if component_name == "Adam":
-        if backend == 'theano':
-            return theano_algorithms.Adam
-        elif backend == 'tensorflow':
-            return tensorflow_algorithms.Adam
+        return tensorflow_algorithms.Adam
 
     if component_name == "ModelSaver":
         return shared_algorithms.ModelSaver
@@ -165,32 +123,21 @@ def __from_component(component_name, backend='theano'):
         return tensorflow_algorithms.AdditionalOp
         
     
-def __construct_optimizer(settings, backend='theano'):
+def __construct_optimizer(settings):
     optimizer = BaseOptimizer()
     print('optimizer components:')
     for component, parameters in settings:  # recursive construction
-        optimizer = __from_component(component, backend=backend)(optimizer, parameters)
+        optimizer = __from_component(component)(optimizer, parameters)
 
     #TODO: Better error handling
     if not optimizer.verify():
         print("Construction failed.")
 
-    if backend == 'theano':
-        return TheanoOptimizer(optimizer)
-    elif backend == 'tensorflow':
-        return TensorflowOptimizer(optimizer)
+    return TensorflowOptimizer(optimizer)
 
-def build_theano(loss_function, parameters_to_optimize, settings, input_params):
-    optimizer = __construct_optimizer(settings, backend='theano')
-    
-    optimizer.set_loss_function(loss_function)
-    optimizer.set_parameters_to_optimize(parameters_to_optimize)
-    optimizer.compute_update_function(input_params)
-    
-    return optimizer
 
 def build_tensorflow(loss_function, parameters_to_optimize, settings, placeholders):
-    optimizer = __construct_optimizer(settings, backend='tensorflow')
+    optimizer = __construct_optimizer(settings)
     
     optimizer.compute_functions(loss_function, parameters_to_optimize)
     optimizer.set_placeholders(placeholders)

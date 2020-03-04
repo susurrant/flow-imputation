@@ -93,19 +93,19 @@ class Scorer:
     def register_model(self, model):  #model_builder.build_decoder: BilinearDiag object inheriting from Model
         self.model = model
 
-    def compute_accuracy_scores(self, triples, verbose=False):
-        pred = self.model.score(triples[:,:3]) + self.threshold
+    def compute_accuracy_scores(self, triples, output=False):
+        pred = self.model.score(triples) + self.threshold
         real = triples[:,3]
         score = AccuracyScore(pred, real)
 
-        if verbose:
+        if output:
             self.dump_all_scores(pred)
 
         return score
 
-    def compute_scores(self, triples, verbose=False):
+    def compute_scores(self, triples, output=False):
         if self.settings['Metric'] == 'Accuracy':
-            return self.compute_accuracy_scores(triples, verbose=verbose)
+            return self.compute_accuracy_scores(triples, output)
 
     def dump_all_scores(self, pred):
         self.iter += 500

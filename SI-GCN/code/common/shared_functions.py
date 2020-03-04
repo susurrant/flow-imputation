@@ -13,14 +13,16 @@ def glorot_variance(shape):
     return 3 / np.sqrt(shape[0] + shape[1])
 
 
-def make_tf_variable(mean, variance, shape, init="normal"):
+def make_tf_variable(mean, variance, shape, var_name='', init='normal'):
     if init == "normal":
         initializer = np.random.normal(mean, variance, size=shape).astype(np.float32)
     elif init == "uniform":
         initializer = np.random.uniform(mean, variance, size=shape).astype(np.float32)
 
-    return tf.Variable(initializer)
-
+    if var_name:
+        return tf.Variable(initializer, name=var_name)
+    else:
+        return tf.Variable(initializer)
 
 def make_tf_bias(shape, init=0):
     if init == 0:
