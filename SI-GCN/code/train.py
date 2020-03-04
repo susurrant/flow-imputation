@@ -4,6 +4,7 @@ by Xin Yao (https://github.com/susurrant)
 
 import argparse
 import sys
+import time
 sys.path.append('./optimization')
 
 import tensorflow as tf
@@ -219,6 +220,7 @@ if __name__ == '__main__':
     '''
     7. Train with Converge:
     '''
+    start_time = time.clock()
     # when trainning the model, SampleTransformer in optimization generates triplets and labels to feed the model
     model.session = tf.Session()
     print('\nbuild tensorflow...')
@@ -226,3 +228,4 @@ if __name__ == '__main__':
     optimizer.set_session(model.session)
     print('\nfit...')
     optimizer.fit(train_triplets, validation_data=valid_triplets)
+    print('Total running time: %.2f' % ((time.clock()-start_time)/60.0), 'mins')

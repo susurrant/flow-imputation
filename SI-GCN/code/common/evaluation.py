@@ -54,7 +54,7 @@ class AccuracySummary:
         print('real:', list(self.r[:20]))
         print('pred:', list(map(int, self.p[:20])))
         for item in self.results.items():
-            if item[1] == None:
+            if not item[1]:
                 continue
 
             if item[0] == 'SMC':
