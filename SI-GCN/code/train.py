@@ -95,12 +95,12 @@ if __name__ == '__main__':
     scorer = evaluation.Scorer(evaluation_settings, model, threshold)
 
     def score_validation_data(validation_data):
-        score_summary = scorer.compute_scores(validation_data, verbose=False).get_summary()
+        score_summary = scorer.compute_scores(validation_data, output=False).get_summary()
         #score_summary.pretty_print()
 
         lookup_string = score_summary.accuracy_string()
         early_stopping = score_summary.results[lookup_string]
-        score_summary = scorer.compute_scores(test_triplets, verbose=True).get_summary() # True: output estimations
+        score_summary = scorer.compute_scores(test_triplets, output=False).get_summary() # True: output estimations
         score_summary.pretty_print()
 
         return early_stopping
@@ -114,26 +114,6 @@ if __name__ == '__main__':
 
     degrees = np.array([len(a) for a in adj_list])
     adj_list = [np.array(a) for a in adj_list]
-
-
-    def sample_TIES(triplets, n_target_vertices):
-        vertex_set = set([])
-
-        edge_indices = np.arange(triplets.shape[0])
-        while len(vertex_set) < n_target_vertices:
-            edge = triplets[np.random.choice(edge_indices)]
-            new_vertices = [edge[0], edge[1]]
-            vertex_set = vertex_set.union(new_vertices)
-
-        sampled = [False]*triplets.shape[0]
-
-        for i in edge_indices:
-            edge = triplets[i]
-            if edge[0] in vertex_set and edge[2] in vertex_set:
-                sampled[i] = True
-
-        return edge_indices[sampled]
-
 
     def sample_edge_neighborhood(triplets, sample_size):
 
@@ -178,7 +158,6 @@ if __name__ == '__main__':
         ns = auxilliaries.NegativeSampler(int(general_settings['NegativeSampleRate']), general_settings['EntityCount'],
                                           entities.values())
         ns.set_positives(train_triplets)
-        ns.set_negatives()
 
         def t_func(x):
             arr = np.array(x)
@@ -224,20 +203,26 @@ if __name__ == '__main__':
 
     optimizer_parameters = opp.get_parametrization()
 
-    print('optimizer weights:')
+    print('---------------optimizer weights---------------')
     print(optimizer_weights)
-    print('optimizer input:')
-    print(optimizer_input)
-    print('optimizer parameters:')
+    print('-----------------------------------------------')
+    print('----------------optimizer input----------------')
+    print(optimizer_input)  #[<tf.Tensor 'graph_edges:0' shape=(?, 3) dtype=int32>,
+                            # <tf.Tensor 'BiDiag_X:0' shape=(?, 3) dtype=int32>,
+                            # <tf.Tensor 'BiDiag_Y:0' shape=(?,) dtype=float32>]
+    print('---------------optimizer weights---------------')
+    print('--------------optimizer parameters-------------')
     print(optimizer_parameters)
+    print('-----------------------------------------------')
 
 
     '''
     7. Train with Converge:
     '''
+    # when trainning the model, SampleTransformer in optimization generates triplets and labels to feed the model
     model.session = tf.Session()
-    print('build tensorflow...')
+    print('\nbuild tensorflow...')
     optimizer = build_tensorflow(loss, optimizer_weights, optimizer_parameters, optimizer_input)
     optimizer.set_session(model.session)
-    print('fit...')
+    print('\nfit...')
     optimizer.fit(train_triplets, validation_data=valid_triplets)
