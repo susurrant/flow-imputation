@@ -17,6 +17,7 @@
 [Decoder]
 	Name=bilinear-diag
 	RegularizationParameter=0.05
+	Output=True
 
 [Shared]
 	CodeDimension=500

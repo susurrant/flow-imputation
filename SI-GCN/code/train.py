@@ -3,8 +3,7 @@ by Xin Yao (https://github.com/susurrant)
 '''
 
 import argparse
-import sys
-import time
+import sys, shutil, os, time
 sys.path.append('./optimization')
 
 import tensorflow as tf
@@ -79,6 +78,9 @@ if __name__ == '__main__':
     optimizer_settings.merge(general_settings)
     evaluation_settings.merge(general_settings)
 
+    if decoder_settings['Output']:
+        shutil.rmtree('../data/output')
+        os.mkdir('../data/output')
 
     '''
     3. Construct the encoder-decoder pair:
@@ -101,7 +103,8 @@ if __name__ == '__main__':
 
         lookup_string = score_summary.accuracy_string()
         early_stopping = score_summary.results[lookup_string]
-        score_summary = scorer.compute_scores(test_triplets, output=True).get_summary() # True: output estimations
+        # True: output estimations
+        score_summary = scorer.compute_scores(test_triplets, output=decoder_settings['Output']).get_summary()
         score_summary.pretty_print()
 
         return early_stopping
