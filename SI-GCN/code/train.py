@@ -101,7 +101,7 @@ if __name__ == '__main__':
 
         lookup_string = score_summary.accuracy_string()
         early_stopping = score_summary.results[lookup_string]
-        score_summary = scorer.compute_scores(test_triplets, output=False).get_summary() # True: output estimations
+        score_summary = scorer.compute_scores(test_triplets, output=True).get_summary() # True: output estimations
         score_summary.pretty_print()
 
         return early_stopping
