@@ -79,8 +79,8 @@ if __name__ == '__main__':
     evaluation_settings.merge(general_settings)
 
     if decoder_settings['Output']:
-        shutil.rmtree('../../data/output')
-        os.mkdir('../../data/output')
+        shutil.rmtree('../data/output')
+        os.mkdir('../data/output')
 
     '''
     3. Construct the encoder-decoder pair:
