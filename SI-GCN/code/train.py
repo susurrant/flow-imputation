@@ -158,7 +158,7 @@ if __name__ == '__main__':
 
         return edges
 
-    if  general_settings['NegativeSampleRate']:
+    if general_settings['NegativeSampleRate']:
         ns = auxilliaries.NegativeSampler(int(general_settings['NegativeSampleRate']), general_settings['EntityCount'],
                                           entities.values())
         ns.set_positives(train_triplets)
