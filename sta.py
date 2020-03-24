@@ -6,7 +6,7 @@ from scipy import stats
 
 
 r = np.loadtxt('SI-GCN/data/taxi/test.txt', dtype=np.uint32, delimiter='\t')[:, 3]
-path = 'SI-GCN/data/output/'
+path = 'data/output_SI-GCN/output/'
 files = os.listdir(path)
 for filename in files:
     p = np.loadtxt(path + filename, delimiter=',')
