@@ -1,5 +1,5 @@
 import numpy as np
-import random
+import random, math
 
 
 class NegativeSampler:
@@ -30,6 +30,7 @@ class NegativeSampler:
 
             self.subs[triplet[2]].append((triplet[1], triplet[0]))
 
+    # !!! need to be modified as transform_exclusive  !!!
     def transform(self, triplets):
         size_of_batch = len(triplets)
         number_to_generate = int(size_of_batch*self.negative_sample_rate)
@@ -59,11 +60,21 @@ class NegativeSampler:
             number_to_generate = int(size_of_batch * self.negative_sample_rate)
 
             new_labels = np.zeros((size_of_batch * (self.negative_sample_rate + 1))).astype(np.uint16) + self.threshold
-            new_indexes = np.tile(triplets, (self.negative_sample_rate + 1, 1)).astype(np.uint16)
             new_labels[:size_of_batch] = triplets[:, 3]
 
-            choices = np.random.binomial(1, 0.5, number_to_generate)
+            #new_indexes = np.tile(triplets, (self.negative_sample_rate + 1, 1)).astype(np.uint16)
+            xs, zs = math.modf(self.negative_sample_rate)
+            rand_num = int(size_of_batch * xs)
+            idx = random.sample(range(0, size_of_batch), rand_num)
+            if int(zs) >= 1:
+                new_indexes = triplets.copy()
+                for i in range(int(zs) - 1):
+                    new_indexes = np.concatenate((new_indexes, triplets), axis=0)
+                new_indexes = np.concatenate((new_indexes, triplets[idx]), axis=0)
+            else:
+                new_indexes = triplets[idx]
 
+            choices = np.random.binomial(1, 0.5, number_to_generate)
             for i in range(number_to_generate):
                 index = i + size_of_batch
                 if choices[i]:

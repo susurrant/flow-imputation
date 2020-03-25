@@ -170,16 +170,16 @@ if __name__ == '__main__':
             else:
                 graph_batch_size = int(general_settings['GraphBatchSize'])
                 graph_batch_ids = sample_edge_neighborhood(arr, graph_batch_size)
-                graph_batch = np.array(train_triplets)[graph_batch_ids]
+                graph_batch = train_triplets[graph_batch_ids]
 
                 # Apply dropouts:
                 graph_percentage = float(general_settings['GraphSplitSize'])
                 split_size = int(graph_percentage * graph_batch.shape[0])
                 graph_split_ids = np.random.choice(graph_batch_ids, size=split_size, replace=False)
-                graph_split = np.array(train_triplets)[graph_split_ids]
+                graph_split = train_triplets[graph_split_ids]
 
-                t = ns.transform_exclusive(graph_batch)
-                return (graph_split[:, :3], t[0], t[1])
+                samples = ns.transform_exclusive(graph_batch)
+                return graph_split[:, :3], samples[0], samples[1]
                 #return (graph_split[:, :3], graph_batch[:, :3], graph_batch[:, 3])
 
         opp.set_sample_transform_function(t_func)
