@@ -52,7 +52,6 @@ if __name__ == '__main__':
     entities = io.read_dictionary(entities_path)
     relations = io.read_dictionary(relations_path)
 
-
     '''
     2. Load general settings
     '''
@@ -158,8 +157,8 @@ if __name__ == '__main__':
 
         return edges
 
-    if general_settings['NegativeSampleRate']:
-        ns = auxilliaries.NegativeSampler(general_settings['NegativeSampleRate'], general_settings['EntityCount'],
+    if 'NegativeSampleRate' in general_settings:
+        ns = auxilliaries.NegativeSampler(float(general_settings['NegativeSampleRate']), general_settings['EntityCount'],
                                           entities.values())
         ns.set_positives(train_triplets)
 
