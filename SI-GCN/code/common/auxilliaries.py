@@ -70,9 +70,9 @@ class NegativeSampler:
                 new_indexes = triplets.copy()
                 for i in range(int(zs) - 1):
                     new_indexes = np.concatenate((new_indexes, triplets), axis=0)
-                new_indexes = np.concatenate((new_indexes, triplets[idx]), axis=0)
+                new_indexes = np.concatenate((new_indexes, triplets[idx]), axis=0).astype(np.uint16)
             else:
-                new_indexes = triplets[idx]
+                new_indexes = np.concatenate((triplets, triplets[idx]), axis=0).astype(np.uint16)
 
             choices = np.random.binomial(1, 0.5, number_to_generate)
             for i in range(number_to_generate):
