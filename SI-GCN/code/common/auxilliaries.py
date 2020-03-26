@@ -65,7 +65,7 @@ class NegativeSampler:
             #new_indexes = np.tile(triplets, (self.negative_sample_rate + 1, 1)).astype(np.uint16)
             xs, zs = math.modf(self.negative_sample_rate)
             rand_num = int(size_of_batch * xs)
-            idx = random.sample(range(0, size_of_batch), rand_num)
+            idx = random.sample(range(0, size_of_batch), rand_num) # random choice, can be sequential choice (to be test)
             if int(zs) >= 1:
                 new_indexes = triplets.copy()
                 for i in range(int(zs) - 1):
