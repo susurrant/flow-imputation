@@ -68,7 +68,7 @@ class NegativeSampler:
             idx = random.sample(range(0, size_of_batch), rand_num) # random choice, can be sequential choice (to be test)
             if int(zs) >= 1:
                 new_indexes = triplets.copy()
-                for i in range(int(zs) - 1):
+                for i in range(int(zs)):
                     new_indexes = np.concatenate((new_indexes, triplets), axis=0)
                 new_indexes = np.concatenate((new_indexes, triplets[idx]), axis=0).astype(np.uint16)
             else:
