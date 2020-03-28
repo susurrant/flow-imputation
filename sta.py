@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-：
+
 # 统计SI-GCN结果
 
 import numpy as np
