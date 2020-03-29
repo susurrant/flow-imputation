@@ -1,11 +1,11 @@
 
 import tensorflow as tf
 import numpy as np
+import time
 from func import *
-from scipy import stats
 
 
-def read_data(path, dis_mode, normalization=False, mode='positive'):
+def read_data(path, dis_mode, normalization=True, mode='positive'):
     train_X = []
     train_y = []
     test_X = []
@@ -47,7 +47,7 @@ def add_layer(inputs, in_size, out_size, activation_function=None):
     return outputs
 
 
-def gravity_neural_model(path, learning_rate, num_of_hidden_units, iterations, dis_mode, mode='positive', save_pred=False):
+def neural_gravity_model(path, learning_rate, num_of_hidden_units, iterations, dis_mode, mode='positive', save_pred=False):
     train_X, train_y, test_X, test_y = read_data(path, dis_mode, normalization=True, mode=mode)
     print(train_X[0], test_X[0], test_y[0])
 
@@ -63,6 +63,8 @@ def gravity_neural_model(path, learning_rate, num_of_hidden_units, iterations, d
     RMSE = []
     SMC = []
     real = np.array(test_y.flatten().tolist())
+
+    start_time = time.clock()
     with tf.Session() as sess:
         init = tf.global_variables_initializer()
         sess.run(init)
@@ -81,9 +83,11 @@ def gravity_neural_model(path, learning_rate, num_of_hidden_units, iterations, d
         evaluate(pred.flatten().tolist(), test_y.flatten().tolist(), mode)
         if save_pred:
             np.savetxt('../data/pred_GNN_'+str(num_of_hidden_units)+'.txt', pred, delimiter=',')
+    print('Total running time: %.2f' % ((time.clock() - start_time) / 60.0), 'mins')
 
 
 if __name__ == '__main__':
     path = '../SI-GCN/data/taxi/'
     dis_mode = 'M'
-    gravity_neural_model(path, 0.005, 30, 40000, dis_mode, mode='positive', save_pred=False)
+
+    neural_gravity_model(path, 0.005, 30, 40000, dis_mode, mode='positive', save_pred=False)

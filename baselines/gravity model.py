@@ -1,11 +1,15 @@
 
 import numpy as np
 from sklearn.linear_model import LinearRegression
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
+
 from func import *
 
+# feature_size == 4: including propulsiveness and attractiveness
+# feature_size == 3: propulsiveness and attractiveness are the same
 
-def gravity_model_linear(flows, features, dis_mode):
+
+def GM_O(flows, features, dis_mode):
     Y = []
     X = []
     feature_size = len(list(features.values())[0])
@@ -28,7 +32,7 @@ def gravity_model_linear(flows, features, dis_mode):
     return beta, K
 
 
-def predict_linear(flows, features, beta, K, dis_mode):
+def predict_GM_O(flows, features, beta, K, dis_mode):
     p = []
     r = []
     feature_size = len(list(features.values())[0])
@@ -44,7 +48,7 @@ def predict_linear(flows, features, beta, K, dis_mode):
     return p, r
 
 
-def gravity_model(flows, features, dis_mode):
+def GM_P(flows, features, dis_mode):
     Y = []
     X = []
     feature_size = len(list(features.values())[0])
@@ -69,7 +73,7 @@ def gravity_model(flows, features, dis_mode):
     return beta, K
 
 
-def predict(flows, features, beta, K, dis_mode):
+def predict_GM_P(flows, features, beta, K, dis_mode):
     p = []
     r = []
     feature_size = len(list(features.values())[0])
@@ -96,8 +100,9 @@ if __name__ == '__main__':
     #v_f = read_flows(path + 'valid.txt')
     features = read_features(path + 'entities.dict', path + 'features_raw.txt')
 
-    beta, K = gravity_model(tr_f, features, dis_mode)
-    pred, real = predict(te_f, features, beta, K, dis_mode)
+    beta, K = GM_P(tr_f, features, dis_mode)
+    pred, real = predict_GM_P(te_f, features, beta, K, dis_mode)
+
     print('beta =', beta, ', K =', K)
     #np.savetxt('../data/pred_GM_P.txt', pred, delimiter=',')
     evaluate(pred, real, 'positive')
