@@ -10,6 +10,8 @@ from scipy import stats
 r = np.loadtxt('SI-GCN/data/taxi/test.txt', dtype=np.uint32, delimiter='\t')[:, 3]
 path = 'data/output_SI-GCN/output/'
 files = os.listdir(path)
+rlist = []
+
 for filename in files:
     p = np.loadtxt(path + filename, delimiter=',')
     smc = stats.spearmanr(r, p)
@@ -26,6 +28,11 @@ for filename in files:
     stack = np.column_stack((p, r))
     cpc = round(2 * np.sum(np.min(stack, axis=1)) / np.sum(stack), 3)
 
+    rlist.append([filename, scc, cpc, rmse, round(mape / c, 3)])
+
+rlist.sort(key=lambda x: x[3])
+
+for r in rlist:
     print('------------------------------------')
-    print(filename)
-    print('scc=', scc, 'cpc=', cpc, 'rmse=', rmse, 'mape=', round(mape / c, 3))
+    print(r[0])
+    print('scc=', r[1], 'cpc=', r[2], 'rmse=', r[3], 'mape=', r[4])
