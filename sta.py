@@ -30,7 +30,7 @@ for filename in files:
 
     rlist.append([filename, scc, cpc, rmse, round(mape / c, 3)])
 
-rlist.sort(key=lambda x: x[3])
+rlist.sort(key=lambda x: x[3], reverse=True)
 
 for r in rlist:
     print('------------------------------------')

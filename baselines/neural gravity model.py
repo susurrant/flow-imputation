@@ -5,7 +5,7 @@ from func import *
 from scipy import stats
 
 
-def read_data(path, normalization=False, mode='positive'):
+def read_data(path, dis_mode, normalization=False, mode='positive'):
     train_X = []
     train_y = []
     test_X = []
@@ -25,12 +25,12 @@ def read_data(path, normalization=False, mode='positive'):
     for k in tr_f:
         train_y.append(k[2])
         train_X.append([features[k[0]][3], features[k[1]][2],
-                        dis(features[k[0]][0], features[k[0]][1], features[k[1]][0], features[k[1]][1])])
+                        dis(features[k[0]][0], features[k[0]][1], features[k[1]][0], features[k[1]][1], dis_mode)])
 
     for k in te_f:
         test_y.append(k[2])
         test_X.append([features[k[0]][3], features[k[1]][2],
-                       dis(features[k[0]][0], features[k[0]][1], features[k[1]][0], features[k[1]][1])])
+                       dis(features[k[0]][0], features[k[0]][1], features[k[1]][0], features[k[1]][1], dis_mode)])
 
     return np.array(train_X).reshape((-1, 3)), np.array(train_y).reshape((-1, 1)), \
            np.array(test_X).reshape((-1, 3)), np.array(test_y).reshape((-1, 1))
@@ -47,8 +47,8 @@ def add_layer(inputs, in_size, out_size, activation_function=None):
     return outputs
 
 
-def gravity_neural_model(path, learning_rate, num_of_hidden_units, iterations, mode='positive', save_pred=False):
-    train_X, train_y, test_X, test_y = read_data(path, normalization=True, mode=mode)
+def gravity_neural_model(path, learning_rate, num_of_hidden_units, iterations, dis_mode, mode='positive', save_pred=False):
+    train_X, train_y, test_X, test_y = read_data(path, dis_mode, normalization=True, mode=mode)
     print(train_X[0], test_X[0], test_y[0])
 
     xs = tf.placeholder(tf.float32, shape=(None, 3))
@@ -85,4 +85,5 @@ def gravity_neural_model(path, learning_rate, num_of_hidden_units, iterations, m
 
 if __name__ == '__main__':
     path = '../SI-GCN/data/taxi/'
-    gravity_neural_model(path, 0.005, 30, 40000, mode='positive', save_pred=False)
+    dis_mode = 'M'
+    gravity_neural_model(path, 0.005, 30, 40000, dis_mode, mode='positive', save_pred=False)

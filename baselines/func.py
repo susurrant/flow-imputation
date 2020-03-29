@@ -28,8 +28,11 @@ def grid_dis(i, j, colnum):
     return np.sqrt((x1 - x0) ** 2 + (y1 - y0) ** 2)
 
 
-def dis(x0, y0, x1, y1):
-    return np.sqrt((x1 - x0) ** 2 + (y1 - y0) ** 2)
+def dis(x0, y0, x1, y1, mode='E'):
+    if mode == 'E':       # Euclidean distance
+        return np.sqrt((x1 - x0) ** 2 + (y1 - y0) ** 2)
+    if mode == 'M':       # Manhattan distance
+        return abs(x1-x0)+abs(y1-y0)
 
 
 def evaluate(p, r, mode='positive'):
