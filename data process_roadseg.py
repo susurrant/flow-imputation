@@ -167,7 +167,7 @@ if __name__ == '__main__':
     #taxi_data('data/sj_taxi_roadseg_051317.txt', 'data/taxi_roadseg.txt')
 
     # ------------- step 2 -------------
-    threshold = 20
+    threshold = 30
     data_filter('data/taxi_roadseg.txt', threshold)
 
     # ------------- step 3 -------------
