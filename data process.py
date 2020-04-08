@@ -239,9 +239,9 @@ def gen_features_co(output_path, colnum):
 
 if __name__ == '__main__':
     #taxi_data('data/sj_taxi_1km_051317.txt', 'data/taxi_1km.txt')
-    threshold = 10
+    threshold = 20
     col_num = 30
-    path = 'SI-GCN/data/taxi_th10/'
+    path = 'SI-GCN/data/taxi_th20/'
 
     data_filter('data/taxi_1km.txt', threshold)
     flow_file = 'data/taxi_1km'+'_t'+str(threshold)+'.txt'
