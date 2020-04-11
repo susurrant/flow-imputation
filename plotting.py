@@ -69,7 +69,7 @@ def check():
         print(filename, scc, rmse)
 
 
-def var_threshold():
+def var_intensity():
     sns.set_style('whitegrid')
     real = np.loadtxt('SI-GCN/data/taxi/test.txt', dtype=np.uint32, delimiter='\t')[:, 3]
     gcn = np.loadtxt('SI-GCN/data/output/iter_39000.txt', delimiter=',')
@@ -105,12 +105,77 @@ def var_threshold():
     l3, = ax1.plot(ts, gnn_30_rmse, color=colors[2], linewidth=lw, alpha=0.7, label='GNN_30')
     l4, = ax1.plot(ts, gcn_rmse, color=colors[3], linewidth=lw, alpha=1, label='SI-GCN')
 
-    ax1.set_xlabel('Intensity threshold')
+    ax1.set_xlabel('Intensity')
     ax1.set_ylabel('RMSE')
     ax1.set_ylim(20, 110)
     ax1.set_xlim(30, 100)
     ax1.legend([l1, l2, l3, l4], labels=['RM', 'GM_P', 'GNN_30', 'SI-GCN'], loc='upper left', #bbox_to_anchor=(0.97, 0.61),
                borderaxespad=0.1, ncol=1)
+    plt.show()
+
+
+def var_distance():
+    # --------------------data process----------------------
+    real = np.loadtxt('SI-GCN/data/taxi/test.txt', dtype=np.uint32, delimiter='\t')
+    dis_list = []
+    for d in real:
+        dis_list.append(grid_dis(d[0], d[2], 30))
+
+    nk, nl = fisher_jenks(dis_list, 3)
+    print(nk, nl)
+    dis_idx = []
+    for i, dis in enumerate(dis_list):
+        x = np.where(dis <= nk)[0]
+        dis_idx.append(x.min() if x.size > 0 else len(nk) - 1)
+    dis_idx = np.array(dis_idx)
+
+    gcn = np.loadtxt('SI-GCN/data/output/iter_39000.txt')
+    gm_p = np.loadtxt('data/pred_GM_P.txt')
+    rm = np.loadtxt('data/pred_RM.txt')
+    gnn_30 = np.loadtxt('data/pred_gnn_30.txt')
+
+    # short, medium, long;
+    gcn_rmse = []
+    gnn_30_rmse = []
+    gm_p_rmse = []
+    rm_rmse = []
+    for i in range(3):
+        idx = np.where(dis_idx == i)
+        gcn_rmse.append(round(np.sqrt(np.mean(np.square(real[:, 3][idx] - gcn[idx]))), 3))
+        gnn_30_rmse.append(round(np.sqrt(np.mean(np.square(real[:, 3][idx] - gnn_30[idx]))), 3))
+        gm_p_rmse.append(round(np.sqrt(np.mean(np.square(real[:, 3][idx] - gm_p[idx]))), 3))
+        rm_rmse.append(round(np.sqrt(np.mean(np.square(real[:, 3][idx] - rm[idx]))), 3))
+    rmse = [gcn_rmse, gnn_30_rmse, gm_p_rmse, rm_rmse]
+    print(rmse)
+
+    # ------------------------draw----------------------------
+    colors = ['skyblue', 'limegreen', 'hotpink', 'orangered']
+    labels = ['SI-GCN', 'GNN_30', 'GM_P', 'RM']
+    sns.set(style="whitegrid")
+
+    x = np.array([0.5, 1.5, 2.5])
+
+    fig, ax = plt.subplots(figsize=(6, 3))
+    ax.set_xlabel('Distance')
+    ax.set_ylabel('RMSE')
+
+    bw = 0.11
+    ll = []
+    for n, i in enumerate([-3, -1, 1, 3]):
+        ll.append(ax.bar(x + i * bw / 2, rmse[n], facecolor=colors[n], width=bw, label=labels[n]))
+
+    ax.set_ylim(0, 65)
+
+    ax.set_xlim(0, 3)
+    xs = [0.5, 1.5, 2.5]
+    ax.set_xticks(xs)
+    xlabels = ['Short', 'Medium', 'Long']
+    ax.xaxis.set_ticklabels(xlabels)
+
+    leg = plt.legend(handles=ll)
+    for l in leg.get_texts():
+        l.set_fontsize(10)
+        l.set_fontname('Arial')
     plt.show()
 
 
@@ -291,76 +356,13 @@ def fisher_jenks(d, cNum):
     return fj.bins, meanV
 
 
-def var_dis():
-    # --------------------data process----------------------
-    real = np.loadtxt('SI-GCN/data/taxi/test.txt', dtype=np.uint32, delimiter='\t')
-    dis_list = []
-    for d in real:
-        dis_list.append(grid_dis(d[0], d[2], 30))
-    
-    nk, nl = fisher_jenks(dis_list, 3)
-    print(nk, nl)
-    dis_idx = []
-    for i, dis in enumerate(dis_list):
-        x = np.where(dis <= nk)[0]
-        dis_idx.append(x.min() if x.size > 0 else len(nk) - 1)
-    dis_idx = np.array(dis_idx)
-    
-    gcn = np.loadtxt('SI-GCN/data/output/iter_39000.txt')
-    gm_p = np.loadtxt('data/pred_GM_P.txt')
-    rm = np.loadtxt('data/pred_RM.txt')
-    gnn_30 = np.loadtxt('data/pred_gnn_30.txt')
-
-    # short, medium, long;
-    gcn_rmse = []
-    gnn_30_rmse = []
-    gm_p_rmse = []
-    rm_rmse = []
-    for i in range(3):
-        idx = np.where(dis_idx == i)
-        gcn_rmse.append(round(np.sqrt(np.mean(np.square(real[:, 3][idx] - gcn[idx]))), 3))
-        gnn_30_rmse.append(round(np.sqrt(np.mean(np.square(real[:, 3][idx] - gnn_30[idx]))), 3))
-        gm_p_rmse.append(round(np.sqrt(np.mean(np.square(real[:, 3][idx] - gm_p[idx]))), 3))
-        rm_rmse.append(round(np.sqrt(np.mean(np.square(real[:, 3][idx] - rm[idx]))), 3))
-    rmse = [gcn_rmse, gnn_30_rmse, gm_p_rmse, rm_rmse]
-    print(rmse)
-
-    # ------------------------draw----------------------------
-    colors = ['skyblue', 'limegreen', 'hotpink', 'orangered']
-    labels = ['SI-GCN', 'GNN_30', 'GM_P', 'RM']
-    sns.set(style="whitegrid")
-
-    x = np.array([0.5, 1.5, 2.5])
-
-    fig, ax = plt.subplots(figsize=(6, 3))
-    ax.set_xlabel('Distance')
-    ax.set_ylabel('RMSE')
-
-    bw = 0.11
-    ll = []
-    for n, i in enumerate([-3, -1, 1, 3]):
-        ll.append(ax.bar(x + i * bw / 2, rmse[n], facecolor=colors[n], width=bw, label=labels[n]))
-
-    ax.set_ylim(0, 65)
-
-    ax.set_xlim(0, 3)
-    xs = [0.5, 1.5, 2.5]
-    ax.set_xticks(xs)
-    xlabels = ['Short', 'Medium', 'Long']
-    ax.xaxis.set_ticklabels(xlabels)
-
-    leg = plt.legend(handles=ll)
-    for l in leg.get_texts():
-        l.set_fontsize(10)
-        l.set_fontname('Arial')
-    plt.show()
-
-
 if __name__ == '__main__':
-    iter_rmse_scc()
+    #iter_rmse_scc()
     #check()
-    #var_threshold()
+    #var_intensity()
+    #var_distance()
+    limited_attributes()
     #sampling_effect()
-    #limited_attributes()
-    #var_dis()
+
+
 
