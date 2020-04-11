@@ -36,9 +36,9 @@ def predict(flows, features, dis_mode):
     return pred, real
 
 if __name__ == '__main__':
-    path = '../SI-GCN/data/taxi/'
+    path = '../SI-GCN/data/taxi_th40/'
     mode = 'positive'
-    dis_mode = 'M'
+    dis_mode = 'E'
     flows, features = read_data(path, False, mode)
     pred, real = predict(flows, features, dis_mode)
     #np.savetxt('../data/pred_RM_negative.txt', pred, delimiter=',')

@@ -3,7 +3,7 @@ import tensorflow as tf
 import numpy as np
 import time
 from func import *
-
+import argparse
 
 def read_data(path, dis_mode, normalization=True, mode='positive'):
     train_X = []
@@ -58,7 +58,8 @@ def neural_gravity_model(path, learning_rate, num_of_hidden_units, iterations, d
     prediction = add_layer(hidden_layer, num_of_hidden_units, 1, activation_function=None)
 
     loss = tf.losses.mean_squared_error(ys, prediction)
-    train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
+    #train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
+    train_step = tf.train.AdamOptimizer(learning_rate).minimize(loss)
 
     RMSE = []
     SMC = []
@@ -87,7 +88,12 @@ def neural_gravity_model(path, learning_rate, num_of_hidden_units, iterations, d
 
 
 if __name__ == '__main__':
-    path = '../SI-GCN/data/taxi/'
-    dis_mode = 'M'
+    parser = argparse.ArgumentParser(description="Gravity neural networks")
+    parser.add_argument("--disMode", help="E for Euclidean distance, M for Manhattan distance.", required=True)
+    parser.add_argument("--dataset", help="Filepath for dataset.", required=True)
+    args = parser.parse_args()
+
+    path = args.dataset #'../SI-GCN/data/taxi/'
+    dis_mode = args.disMode #'M'
 
     neural_gravity_model(path, 0.005, 30, 40000, dis_mode, mode='positive', save_pred=False)

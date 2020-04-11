@@ -92,9 +92,9 @@ def predict_GM_P(flows, features, beta, K, dis_mode):
 
 
 if __name__ == '__main__':
-    col_num = 30
-    dis_mode = 'M'   #  E for Euclidean distance, M for Manhattan distance
-    path = '../SI-GCN/data/taxi_roadseg/'
+    #col_num = 30
+    dis_mode = 'E'   #  E for Euclidean distance, M for Manhattan distance
+    path = '../SI-GCN/data/taxi_th50/'
     tr_f = read_flows(path + 'train.txt')
     te_f = read_flows(path + 'test.txt')
     #v_f = read_flows(path + 'valid.txt')
