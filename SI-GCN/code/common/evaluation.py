@@ -99,7 +99,7 @@ class Scorer:
         score = AccuracyScore(pred, real)
 
         if output:
-            self.dump_all_scores(pred)
+            self.dump_all_scores(pred, real)
 
         return score
 
@@ -107,7 +107,7 @@ class Scorer:
         if self.settings['Metric'] == 'Accuracy':
             return self.compute_accuracy_scores(triples, output)
 
-    def dump_all_scores(self, pred):
+    def dump_all_scores(self, pred, real):
         #self.iter += 500
         #np.savetxt('../data/output/iter_'+str(self.iter)+'.txt', pred, delimiter=',')
 
