@@ -58,8 +58,8 @@ def neural_gravity_model(path, learning_rate, num_of_hidden_units, iterations, d
     prediction = add_layer(hidden_layer, num_of_hidden_units, 1, activation_function=None)
 
     loss = tf.losses.mean_squared_error(ys, prediction)
-    #train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
-    train_step = tf.train.AdamOptimizer(learning_rate).minimize(loss)
+    train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
+    #train_step = tf.train.AdamOptimizer(learning_rate).minimize(loss)
 
     RMSE = []
     SMC = []
