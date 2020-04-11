@@ -89,11 +89,13 @@ def neural_gravity_model(path, learning_rate, num_of_hidden_units, iterations, d
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Gravity neural networks")
-    parser.add_argument("--disMode", help="E for Euclidean distance, M for Manhattan distance.", required=True)
+    parser.add_argument("--distance", help="E for Euclidean distance, M for Manhattan distance.", required=True)
     parser.add_argument("--dataset", help="Filepath for dataset.", required=True)
+    parser.add_argument("--neurons", help="The number of neurons in the hidden layer.", required=True)
     args = parser.parse_args()
 
     path = args.dataset #'../SI-GCN/data/taxi/'
     dis_mode = args.disMode #'M'
+    neurons = int(args.neurons)
 
-    neural_gravity_model(path, 0.005, 30, 40000, dis_mode, mode='positive', save_pred=False)
+    neural_gravity_model(path, 0.005, neurons, 40000, dis_mode, mode='positive', save_pred=False)
