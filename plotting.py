@@ -10,15 +10,15 @@ import pysal as ps
 
 def iter_rmse_scc():
     iv = 2
-    gnn_10_rmse = np.loadtxt('data/GNN_10_RMSE.txt')[::iv]
-    gnn_20_rmse = np.loadtxt('data/GNN_20_RMSE.txt')[::iv]
-    gnn_30_rmse = np.loadtxt('data/GNN_30_RMSE.txt')[::iv]
-    gcn_rmse = np.loadtxt('data/GCN_RMSE.txt')[::iv]
+    gnn_10_rmse = np.loadtxt('data/output_baselines/GNN_10_RMSE.txt')[::iv]
+    gnn_20_rmse = np.loadtxt('data/output_baselines/GNN_20_RMSE.txt')[::iv]
+    gnn_30_rmse = np.loadtxt('data/output_baselines/GNN_30_RMSE.txt')[::iv]
+    gcn_rmse = np.loadtxt('data/output_SI-GCN/GCN_RMSE_th30.txt')[::iv]
 
-    gnn_10_scc = np.loadtxt('data/GNN_10_SMC.txt')[::iv]
-    gnn_20_scc = np.loadtxt('data/GNN_20_SMC.txt')[::iv]
-    gnn_30_scc = np.loadtxt('data/GNN_30_SMC.txt')[::iv]
-    gcn_scc = np.loadtxt('data/GCN_SMC.txt')[::iv]
+    gnn_10_scc = np.loadtxt('data/output_baselines/GNN_10_SMC.txt')[::iv]
+    gnn_20_scc = np.loadtxt('data/output_baselines/GNN_20_SMC.txt')[::iv]
+    gnn_30_scc = np.loadtxt('data/output_baselines/GNN_30_SMC.txt')[::iv]
+    gcn_scc = np.loadtxt('data/output_SI-GCN/GCN_SMC_th30.txt')[::iv]
 
     x = np.arange(50, 10001, 50*iv)
 
@@ -142,6 +142,7 @@ def var_distance():
     rm_rmse = []
     for i in range(3):
         idx = np.where(dis_idx == i)
+        print(i, len(idx[0]), dis_list[idx[0][0]], np.mean(real[:, 3][idx]))
         gcn_rmse.append(round(np.sqrt(np.mean(np.square(real[:, 3][idx] - gcn[idx]))), 3))
         gnn_30_rmse.append(round(np.sqrt(np.mean(np.square(real[:, 3][idx] - gnn_30[idx]))), 3))
         gm_p_rmse.append(round(np.sqrt(np.mean(np.square(real[:, 3][idx] - gm_p[idx]))), 3))
@@ -282,6 +283,67 @@ def limited_attributes():
     plt.show()
 
 
+def var_threshold():
+    GM_P_rmse = [18.491, 24.273, 27.592, 32.258, 35.698]
+    GM_P_scc = [0.743, 0.686, 0.643, 0.614, 0.557]
+    GM_P_mape = [34, 31, 27.7, 26.6, 24.4]
+    RM_rmse = [40.475, 52.843, 55.547, 69.737, 79.818]
+    RM_scc = [0.735, 0.675, 0.624, 0.59, 0.581]
+    RM_mape = [90.4, 86.1, 83.5, 81.4, 80.7]
+    GNN_30_rmse = [15.091, 20.973, 25.082, 28.751, 34.028]
+    GNN_30_scc = [0.755, 0.696, 0.651, 0.615, 0.559]
+    GNN_30_mape = [33.1, 30.2, 27.7, 26.7, 24.3]
+    SI_GCN_rmse = [12.442, 16.655, 19, 24.219, 26.706]  # replace 19
+    SI_GCN_scc = [0.77, 0.735,0.69, 0.657, 0.666]       # replace 0.69
+    SI_GCN_mape = [30.2, 26.6, 24.8, 23.3, 20.1]        # replace 24.8
+
+
+
+    x = np.array([0.5, 1.5, 2.5, 3.5, 4.5])
+
+    colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
+    fig, ax1 = plt.subplots()
+    bw = 0.11
+    bar_alpha = 0.6
+    l1 = ax1.bar(x - 3 * bw / 2, SI_GCN_rmse, facecolor=colors[3], width=bw, label='SI-GCN', alpha=bar_alpha)
+    l2 = ax1.bar(x - 1 * bw / 2, GNN_30_rmse, facecolor=colors[2], width=bw, label='GNN_30', alpha=bar_alpha)
+    l3 = ax1.bar(x + 1 * bw / 2, GM_P_rmse, facecolor=colors[1], width=bw, label='GM_P', alpha=bar_alpha)
+    l4 = ax1.bar(x + 3 * bw / 2, RM_rmse, facecolor=colors[0], width=bw, label='RM', alpha=bar_alpha)
+
+    ax1.set_xlabel('Taxi trip threshold', fontsize=12)
+    ax1.set_ylabel('RMSE', fontsize=12)
+    ax1.set_xticks([0.5, 1.5, 2.5, 3.5, 4.5])
+    ax1.xaxis.set_ticklabels(['10', '20', '30', '40', '50'], fontsize=12)
+    ax1.set_yticks([0, 10, 20, 30, 40, 50, 60, 70, 80])
+    ax1.yaxis.set_ticklabels(['0', '10', '20', '30', '40', '50', '60', '70', '80'], fontsize=12)
+
+    # ax1.set_xlim(0, 10000)
+    # ax1.set_ylim(22, 36)
+
+    lw = 1
+    line_alpha = 0.7
+    ax2 = ax1.twinx()
+    l5, = ax2.plot(x, SI_GCN_scc, color=colors[3], linestyle='--', marker='s', linewidth=lw, alpha=line_alpha, label='SI-GCN')
+    l6, = ax2.plot(x, GNN_30_scc, color=colors[2], linestyle='--', marker='^', linewidth=lw, alpha=line_alpha, label='GNN_30')
+    l7, = ax2.plot(x, GM_P_scc, color=colors[0], linestyle='--', marker='.', linewidth=lw, alpha=line_alpha, label='GM_P')
+    l8, = ax2.plot(x, RM_scc, color=colors[1], linestyle='--', marker='H', linewidth=lw, alpha=line_alpha, label='RM')
+
+
+    #ax2.set_xlabel('Taxi trip threshold')
+    ax2.set_ylabel('SCC', fontsize=12)
+    ax2.set_yticks([0.55, 0.6, 0.65, 0.7, 0.75, 0.8])
+    ax2.yaxis.set_ticklabels(['0.55', '0.60', '0.65', '0.70', '0.75', '0.8'], fontsize=12)
+    # ax2.set_xlim(0, 10000)
+    # ax2.set_ylim(0.2, 0.7)
+
+    ax1.legend([l1, l2, l3, l4], labels=['SI-GCN', 'GNN_30', 'GM_P', 'RM'], bbox_to_anchor=(1.35, 0.8),
+               borderaxespad=0.1, ncol=1)
+    ax2.legend([l5, l6, l7, l8], labels=['SI-GCN', 'GNN_30', 'GM_P', 'RM'], bbox_to_anchor=(1.35, 0.35),
+               borderaxespad=0.1, ncol=1)
+
+    plt.show()
+
+
 def sampling_effect_four_metrics():
     RMSE = np.array([[27.122, 27.293, 27.498, 28.772, 28.869, 28.107, 27.311, 28.663, 27.937, 27.914],
                      [24.512, 25.531, 25.367, 25.322, 25.531, 25.367, 25.394, 25.242, 25.288, 25.296],
@@ -405,11 +467,12 @@ def fisher_jenks(d, cNum):
 
 
 if __name__ == '__main__':
-    #iter_rmse_scc()
+    iter_rmse_scc()
     #check()
     #var_intensity()
     #var_distance()
-    limited_attributes()
+    #limited_attributes()
+    #var_threshold()
     #sampling_effect()
 
 
