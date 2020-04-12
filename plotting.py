@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-：
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -116,7 +117,7 @@ def var_intensity():
 
 def var_distance():
     # --------------------data process----------------------
-    real = np.loadtxt('SI-GCN/data/taxi/test.txt', dtype=np.uint32, delimiter='\t')
+    real = np.loadtxt('SI-GCN/data/taxi_th30/test.txt', dtype=np.uint32, delimiter='\t')
     dis_list = []
     for d in real:
         dis_list.append(grid_dis(d[0], d[2], 30))
@@ -129,10 +130,10 @@ def var_distance():
         dis_idx.append(x.min() if x.size > 0 else len(nk) - 1)
     dis_idx = np.array(dis_idx)
 
-    gcn = np.loadtxt('SI-GCN/data/output/iter_39000.txt')
+    gcn = np.loadtxt('data/iter_39000.txt')
     gm_p = np.loadtxt('data/pred_GM_P.txt')
     rm = np.loadtxt('data/pred_RM.txt')
-    gnn_30 = np.loadtxt('data/pred_gnn_30.txt')
+    gnn_30 = np.loadtxt('data/pred_GNN_30.txt')
 
     # short, medium, long;
     gcn_rmse = []
@@ -179,7 +180,7 @@ def var_distance():
     plt.show()
 
 
-def limited_attributes():
+def limited_attributes_old():
     # GCN_limited, GNN_30, GCN
 
     RMSE = [[25.326,25.361,25.523,25.644,25.632,25.488,25.543,25.43,25.953,25.332],
@@ -228,6 +229,52 @@ def limited_attributes():
     bp = ax4.boxplot(CPC, sym='', widths=0.5)
     set_box_color(bp, colors[3])
     ax4.set_ylabel('CPC', fontname='Arial')
+    plt.figtext(0.15, 0.05, '1:SI-GCNs with limited attributes, 2:GNN_30 with entire attributes',
+                fontdict={'family':'Arial', 'size':12})
+    plt.figtext(0.35, 0.005, '3:SI-GCNs with entire attributes', fontdict={'family':'Arial', 'size':12})
+    plt.show()
+
+
+def limited_attributes():
+    # GCN_limited, GNN_30, GCN
+
+    RMSE = [[25.326,25.361,25.523,25.644,25.632,25.488,25.543,25.43,25.953,25.332],
+            [25.154,25.107,25.116,25.105,25.071,25.055,24.992,24.936,25.137,25.147],
+            [20.516,20.62,20.854,20.191,21.055,20.826,20.546,21.049,20.893]]
+
+    MAPE = [np.array([0.306,0.294,0.305,0.319,0.329,0.321,0.313,0.311,0.303,0.301])*100,
+            np.array([0.279,0.277,0.277,0.276,0.276,0.277,0.276,0.276,0.277,0.277])*100,
+            np.array([0.234,0.231,0.225,0.226,0.226,0.229,0.236,0.225,0.237])*100]
+
+    SCC = [[0.621,0.614,0.612,0.613,0.616,0.621,0.613,0.616,0.612,0.612],
+           [0.647,0.654,0.649,0.649,0.648,0.653,0.653,0.659,0.646,0.648],
+           [0.709,0.708,0.716,0.715,0.713,0.701,0.703,0.702,0.712]]
+
+    CPC = [[0.855,0.856,0.854,0.853,0.852,0.855,0.854,0.855,0.853,0.855],
+           [0.86,0.861,0.86,0.861,0.861,0.861,0.861,0.861,0.86,0.86],
+           [0.884,0.883,0.884,0.886,0.884,0.882,0.883,0.882,0.882]]
+
+
+    def set_box_color(bp, color):
+        plt.setp(bp['boxes'], color=color)
+        plt.setp(bp['whiskers'], color=color)
+        plt.setp(bp['caps'], color=color)
+        plt.setp(bp['medians'], color=color)
+
+    #colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
+    colors = ['grey']*4
+
+    fig = plt.figure()
+    ax1 = fig.add_subplot(121)
+    bp = ax1.boxplot(RMSE, sym='', widths=0.5)
+    set_box_color(bp, colors[0])
+    ax1.set_ylabel('RMSE', fontname = 'Arial')
+
+    ax2 = fig.add_subplot(122)
+    bp = ax2.boxplot(MAPE, sym='', widths=0.5)
+    set_box_color(bp, colors[1])
+    ax2.set_ylabel('MAPE(%)', fontname='Arial')
+
     plt.figtext(0.15, 0.05, '1:SI-GCNs with limited attributes, 2:GNN_30 with entire attributes',
                 fontdict={'family':'Arial', 'size':12})
     plt.figtext(0.35, 0.005, '3:SI-GCNs with entire attributes', fontdict={'family':'Arial', 'size':12})
@@ -360,8 +407,8 @@ if __name__ == '__main__':
     #iter_rmse_scc()
     #check()
     #var_intensity()
-    #var_distance()
-    limited_attributes()
+    var_distance()
+    #limited_attributes()
     #sampling_effect()
 
 
