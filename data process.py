@@ -187,63 +187,50 @@ def gen_data(flow_file, output_path, r, mode = 'random'):
 
 
 # generate the features of geographical units
-def gen_features(flow_file, output_path, colnum):
-    features = [] # [row, col, attract, pull]
+def gen_features(flow_file, output_path, colnum, mode='entire'):
+    features = [] # [row, col, push, pull]
     node_list = []
     with open(output_path + 'entities.dict', 'r') as f:
         line = f.readline().strip()
         while line:
             s = line.split('\t')
-            features.append([int(s[1])//colnum, int(s[1])%colnum, 0, 0]) # 0, 0
+            if mode == 'entire':
+                features.append([int(s[1])//colnum, int(s[1])%colnum, 0, 0]) # co, push, pull
+            elif mode == 'limited':
+                features.append([int(s[1]) // colnum, int(s[1]) % colnum])   # include only coordinates
+            elif mode == 'none':
+                features.append([1])                                         # no attribute
             node_list.append(s[1])
             line = f.readline().strip()
 
-    with open(flow_file, 'r') as f:
-        f.readline()
-        line = f.readline().strip()
-        while line:
-            s = line.split('\t')
-            features[node_list.index(s[0])][3] += int(s[-1]) # 3    # pick-up:  pull
-            features[node_list.index(s[2])][2] += int(s[-1])        # drop-off: attract
+    if mode == 'entire':
+        with open(flow_file, 'r') as f:
+            f.readline()
             line = f.readline().strip()
+            while line:
+                s = line.split('\t')
+                features[node_list.index(s[0])][3] += int(s[-1])        # pick-up:  push
+                features[node_list.index(s[2])][2] += int(s[-1])        # drop-off: pull
+                line = f.readline().strip()
 
     features = np.array(features, dtype=np.float)
 
     np.savetxt(output_path + 'features_raw.txt', features, fmt='%d', delimiter='\t')
 
     # save normalized features
-    features = (features - np.min(features, axis=0)) / (np.max(features, axis=0) - np.min(features, axis=0))
-    np.savetxt(output_path + 'features.txt', features, fmt='%.3f', delimiter='\t')
-
-
-# generate features including only coordinates
-def gen_features_co(output_path, colnum):
-    features = [] # [row, col]
-    node_list = []
-    with open(output_path + 'entities.dict', 'r') as f:
-        line = f.readline().strip()
-        while line:
-            s = line.split('\t')
-            features.append([int(s[1])//colnum, int(s[1])%colnum])
-            node_list.append(s[1])
-            line = f.readline().strip()
-
-    features = np.array(features, dtype=np.float)
-
-    np.savetxt(output_path + 'features_raw.txt', features, fmt='%d', delimiter='\t')
-
-    # save normalized features
-    features = (features - np.min(features, axis=0)) / (np.max(features, axis=0) - np.min(features, axis=0))
+    if mode != 'none':
+        features = (features - np.min(features, axis=0)) / (np.max(features, axis=0) - np.min(features, axis=0))
     np.savetxt(output_path + 'features.txt', features, fmt='%.3f', delimiter='\t')
 
 
 if __name__ == '__main__':
     #taxi_data('data/sj_taxi_1km_051317.txt', 'data/taxi_1km.txt')
-    threshold = 40
+    threshold = 30
     col_num = 30
-    path = 'SI-GCN/data/taxi_th40/'
+    path = 'SI-GCN/data/taxi_th30_none_attr/'
 
-    data_filter('data/taxi_1km.txt', threshold)
+    #data_filter('data/taxi_1km.txt', threshold)
     flow_file = 'data/taxi_1km'+'_t'+str(threshold)+'.txt'
-    gen_data(flow_file, path, [0.6, 0.2, 0.2], mode='random') # random, low weight, hight weight
-    gen_features(flow_file, path, colnum=col_num)
+    #gen_data(flow_file, path, [0.6, 0.2, 0.2], mode='random') # random, low weight, hight weight
+    gen_features(flow_file, path, colnum=col_num, mode='none')
+
