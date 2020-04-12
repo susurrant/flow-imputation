@@ -130,10 +130,10 @@ def var_distance():
         dis_idx.append(x.min() if x.size > 0 else len(nk) - 1)
     dis_idx = np.array(dis_idx)
 
-    gcn = np.loadtxt('data/iter_39000.txt')
-    gm_p = np.loadtxt('data/pred_GM_P.txt')
-    rm = np.loadtxt('data/pred_RM.txt')
-    gnn_30 = np.loadtxt('data/pred_GNN_30.txt')
+    gcn = np.loadtxt('data/output_SI-GCN/output_190616/iter_39000.txt')
+    gm_p = np.loadtxt('data/output_baselines/pred_GM_P.txt')
+    rm = np.loadtxt('data/output_baselines/pred_RM.txt')
+    gnn_30 = np.loadtxt('data/output_baselines/pred_GNN_30.txt')
 
     # short, medium, long;
     gcn_rmse = []
@@ -151,6 +151,7 @@ def var_distance():
 
     # ------------------------draw----------------------------
     colors = ['skyblue', 'limegreen', 'hotpink', 'orangered']
+    #colors = ['#DDEAF6', '#8FACBD', '#F0DBD1', '#BDB6B4']
     labels = ['SI-GCN', 'GNN_30', 'GM_P', 'RM']
     sns.set(style="whitegrid")
 
@@ -163,7 +164,7 @@ def var_distance():
     bw = 0.11
     ll = []
     for n, i in enumerate([-3, -1, 1, 3]):
-        ll.append(ax.bar(x + i * bw / 2, rmse[n], facecolor=colors[n], width=bw, label=labels[n]))
+        ll.append(ax.bar(x + i * bw / 2, rmse[n], facecolor=colors[n], width=bw, label=labels[n], alpha=0.7))
 
     ax.set_ylim(0, 65)
 
@@ -275,9 +276,9 @@ def limited_attributes():
     set_box_color(bp, colors[1])
     ax2.set_ylabel('MAPE(%)', fontname='Arial')
 
-    plt.figtext(0.15, 0.05, '1:SI-GCNs with limited attributes, 2:GNN_30 with entire attributes',
+    plt.figtext(0.15, 0.05, '1:SI-GCNs using limited attributes, 2:GNN_30 using entire attributes',
                 fontdict={'family':'Arial', 'size':12})
-    plt.figtext(0.35, 0.005, '3:SI-GCNs with entire attributes', fontdict={'family':'Arial', 'size':12})
+    plt.figtext(0.35, 0.005, '3:SI-GCNs using entire attributes', fontdict={'family':'Arial', 'size':12})
     plt.show()
 
 
@@ -407,8 +408,8 @@ if __name__ == '__main__':
     #iter_rmse_scc()
     #check()
     #var_intensity()
-    var_distance()
-    #limited_attributes()
+    #var_distance()
+    limited_attributes()
     #sampling_effect()
 
 
