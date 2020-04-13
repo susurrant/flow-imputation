@@ -7,7 +7,7 @@ import os
 from scipy import stats
 
 
-r = np.loadtxt('SI-GCN/data/taxi_th40/test.txt', dtype=np.uint32, delimiter='\t')[:, 3]
+r = np.loadtxt('SI-GCN/data/taxi_high_weight/test.txt', dtype=np.uint32, delimiter='\t')[:, 3]
 path = 'data/output_SI-GCN/output/'
 files = os.listdir(path)
 rlist = []

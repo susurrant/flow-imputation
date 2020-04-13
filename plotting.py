@@ -400,7 +400,7 @@ def sampling_effect_four_metrics():
     plt.show()
 
 
-def sampling_effect():
+def training_set_size():
     RMSE = np.array([[27.122, 27.293, 27.498, 28.772, 28.869, 28.107, 27.311, 28.663, 27.937, 27.914],
                      [24.512, 25.531, 25.367, 25.322, 25.531, 25.367, 25.394, 25.242, 25.288, 25.296],
                      [20.516, 20.620, 20.854, 20.191, 21.055, 20.826, 20.546, 21.049, 20.893, 20.728],
@@ -466,14 +466,80 @@ def fisher_jenks(d, cNum):
     return fj.bins, meanV
 
 
+def negative_sampling_rate_RMSE():
+    #RMSE = np.array([21.213, 20.159, 19.681, 19.744, 19.867, 19.892, 20.007, 20.059, 20.403, 20.595, 20.729])
+    RMSE = np.array([21.155, 20.083, 19.736, 19.744, 19.792, 19.892, 20.007, 20.059, 20.366, 20.532, 20.62])
+    print(np.min(RMSE), np.max(RMSE))
+    SCC = np.array([0.659, 0.678, 0.693, 0.698, 0])
+
+    xs = range(0, 11)
+    lw = 0.6
+    colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
+    fig, ax1 = plt.subplots()
+    ax1.plot(xs, RMSE, linewidth=lw, linestyle='-', marker='^', color=colors[3])
+    ax1.set_ylabel('RMSE', fontname='Arial')
+    ax1.set_ylim(19.7, 21.2)
+    ax1.set_xticks(xs)
+    ax1.xaxis.set_ticklabels(xs)
+    ax1.set_xlabel('Negative sampling rate', fontname='Arial')
+
+    #ax1.legend([l1], labels=['RMSE', 'SCC'], bbox_to_anchor=(0.22, 0.61), borderaxespad=0.1, ncol=1)
+
+    plt.show()
+
+
+def negative_sampling_rate():
+    #RMSE = np.array([21.213, 20.159, 19.681, 19.744, 19.867, 19.892, 20.007, 20.059, 20.403, 20.595, 20.729])
+    RMSE = np.array([21.155, 20.083, 19.736, 19.744, 19.792, 19.892, 20.007, 20.059, 20.366, 20.532, 20.62])
+    print(np.min(RMSE), np.max(RMSE))
+    SCC = np.array([0.661, 0.687, 0.702, 0.698, 0.702, 0.702, 0.701, 0.706, 0.703, 0.700, 0.706])
+    print(np.min(SCC), np.max(SCC))
+
+    xs = range(0, 11)
+    lw = 0.6
+    colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
+    fig, ax1 = plt.subplots()
+    l1, = ax1.plot(xs, RMSE, linewidth=lw, linestyle='-', marker='^', color=colors[3], label='RMSE')
+    ax1.set_ylabel('RMSE', fontname='Arial')
+    ax1.set_ylim(19.7, 21.2)
+    ax1.set_xticks(xs)
+    ax1.xaxis.set_ticklabels(xs)
+    ax1.set_xlabel('Negative sampling rate', fontname='Arial')
+    ax2 = ax1.twinx()
+    l2, = ax2.plot(xs, SCC, linewidth=lw, linestyle='-', marker='.', color=colors[2], label='SCC')
+    #ax1.legend([l1], labels=['RMSE', 'SCC'], bbox_to_anchor=(0.22, 0.61), borderaxespad=0.1, ncol=1)
+    plt.legend([l1, l2], ['RMSE', 'SCC'], loc='lower right')
+    plt.show()
+
+
+def scatter_check():
+    y = np.loadtxt('data/output_SI-GCN/output neg_20%/iter_32000.txt', dtype=np.float16)
+    y = np.loadtxt('data/output_SI-GCN/output neg_80%/iter_37500.txt', dtype=np.float16)
+
+    x = np.loadtxt('SI-GCN/data/taxi_th30/test.txt', dtype=np.uint32, delimiter='\t')[:, 3]
+
+    p1 = plt.scatter(x, y, marker='.', color='green', s=10)
+
+    #plt.xlim(0, 10)
+    #plt.ylim(0, 10)
+    #plt.xticks([0, 2, 4, 6, 8, 10])
+
+    plt.xlabel('Time')
+    plt.ylabel('Number')
+
+    plt.show()
+
+
+
 if __name__ == '__main__':
-    iter_rmse_scc()
+    #iter_rmse_scc()
     #check()
     #var_intensity()
     #var_distance()
     #limited_attributes()
     #var_threshold()
-    #sampling_effect()
-
+    #training_set_size()
+    negative_sampling_rate()
+    #scatter_check()
 
 
