@@ -120,7 +120,6 @@ class Scorer:
         if self.iter == 10050:
             np.savetxt('../data/output/GCN_RMSE_th30.txt', np.array(self.RMSE), fmt='%.3f', delimiter=',')
             np.savetxt('../data/output/GCN_SCC_th30.txt', np.array(self.SCC), fmt='%.3f', delimiter=',')
-
-
+        
 
 

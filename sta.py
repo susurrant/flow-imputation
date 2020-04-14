@@ -7,8 +7,8 @@ import os
 from scipy import stats
 
 
-r = np.loadtxt('SI-GCN/data/taxi_th30_ltd_attr/test.txt', dtype=np.uint32, delimiter='\t')[:, 3]
-path = 'data/output_SI-GCN/output th=30 ltd_attr/'
+r = np.loadtxt('SI-GCN/data/taxi_0.4/test.txt', dtype=np.uint32, delimiter='\t')[:, 3]
+path = 'data/output_SI-GCN/output/'
 files = os.listdir(path)
 rlist = []
 

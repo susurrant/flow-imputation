@@ -285,7 +285,7 @@ def limited_attributes():
     plt.figtext(0.35, 0.005, '3:SI-GCNs using entire attributes', fontdict={'family':'Arial', 'size':12})
     plt.show()
     '''
-    # GCN_limited, GNN_30, GCN
+    # GCN_limited, GNN_30, GCN(updated)
 
     RMSE = [[25.326, 25.361, 25.523, 25.644, 25.632, 25.488, 25.543, 25.43, 25.953, 25.332],
             [25.154, 25.107, 25.116, 25.105, 25.071, 25.055, 24.992, 24.936, 25.137, 25.147],
@@ -455,7 +455,7 @@ def sampling_effect_four_metrics():
     plt.show()
 
 
-def training_set_size():
+def training_set_size_old():
     RMSE = np.array([[27.122, 27.293, 27.498, 28.772, 28.869, 28.107, 27.311, 28.663, 27.937, 27.914],
                      [24.512, 25.531, 25.367, 25.322, 25.531, 25.367, 25.394, 25.242, 25.288, 25.296],
                      [20.516, 20.620, 20.854, 20.191, 21.055, 20.826, 20.546, 21.049, 20.893, 20.728],
@@ -480,6 +480,52 @@ def training_set_size():
     MAPE_mean = np.mean(MAPE, axis=1)
     SCC_mean = np.mean(SCC, axis=1)
     CPC_mean = np.mean(CPC, axis=1)
+
+    RMSE_err = np.std(RMSE, axis=1)
+    SCC_err = np.std(SCC, axis=1)
+
+    xs = [1, 2, 3, 4]
+
+    lw = 0.6
+    colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
+    fig, ax1 = plt.subplots()
+    l1 = ax1.errorbar(xs, RMSE_mean, yerr=RMSE_err, ecolor=colors[0], elinewidth=1, linewidth=lw, linestyle='--',
+                 color=colors[0], capsize=2)
+    l3 = ax1.errorbar(xs, SCC_mean, yerr=SCC_err, ecolor=colors[2], elinewidth=1, linewidth=lw, linestyle='--',
+                      color=colors[2], capsize=2)
+    ax1.set_ylabel('RMSE', fontname = 'Arial')
+    ax1.set_ylim(18, 29)
+    ax1.set_xlabel('Training set size', fontname='Arial')
+    ax2 = ax1.twinx()
+    l3 = ax2.errorbar(xs, SCC_mean, yerr=SCC_err, ecolor=colors[2], elinewidth=1, linewidth=lw, linestyle='--',
+                 color=colors[2], capsize=2)
+    ax2.set_ylabel('SCC', fontname = 'Arial')
+    ax2.set_xticks(xs)
+    ax2.xaxis.set_ticklabels(['20%', '40%', '60%', '80%'])
+    ax2.set_yticks([0.5, 0.55, 0.6, 0.65, 0.7, 0.75])
+    ax2.set_ylim(0.5, 0.75)
+    ax2.set_xlim(0.9, 4.1)
+
+    ax1.legend([l1, l3], labels=['RMSE', 'SCC'], bbox_to_anchor=(0.22, 0.61), borderaxespad=0.1, ncol=1)
+
+    plt.show()
+
+
+def training_set_size():
+    RMSE = np.array([[27.465, 27.484, 27.520, 27.564, 27.596, 28.589, 28.154, 28.156, 28.287],
+                     [24.240, 24.377, 24.389, 24.423, 24.434, 24.448, 24.464, 24.465, 24.468],
+                     [19.748, 19.756, 19.792, 19.636, 19.495, 19.573, 19.653, 19.719, 19.754],
+                     [18.398, 18.505, 18.660, 18.560, 18.405, 18.419, 18.315, 18.556, 18.503]])
+
+
+    SCC = np.array([[0.530, 0.539, 0.531, 0.527, 0.538, 0.513, 0.530, 0.530, 0.525],
+                    [0.639, 0.639, 0.634, 0.628, 0.631, 0.628, 0.629, 0.636, 0.629],
+                    [0.687, 0.707, 0.703, 0.708, 0.705, 0.703, 0.706, 0.707, 0.706],
+                    [0.718, 0.722, 0.723, 0.725, 0.728, 0.719, 0.718, 0.719, 0.720]])
+
+
+    RMSE_mean = np.mean(RMSE, axis=1)
+    SCC_mean = np.mean(SCC, axis=1)
 
     RMSE_err = np.std(RMSE, axis=1)
     SCC_err = np.std(SCC, axis=1)
@@ -555,13 +601,14 @@ def negative_sampling_rate():
     colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
     fig, ax1 = plt.subplots()
     l1, = ax1.plot(xs, RMSE, linewidth=lw, linestyle='-', marker='^', color=colors[3], label='RMSE')
-    ax1.set_ylabel('RMSE', fontname='Arial')
+    ax1.set_ylabel('RMSE')
     ax1.set_ylim(19.7, 21.2)
     ax1.set_xticks(xs)
     ax1.xaxis.set_ticklabels(xs)
-    ax1.set_xlabel('Negative sampling rate', fontname='Arial')
+    ax1.set_xlabel('Negative sampling rate')
     ax2 = ax1.twinx()
     l2, = ax2.plot(xs, SCC, linewidth=lw, linestyle='-', marker='.', color=colors[2], label='SCC')
+    ax2.set_ylabel('SCC')
     #ax1.legend([l1], labels=['RMSE', 'SCC'], bbox_to_anchor=(0.22, 0.61), borderaxespad=0.1, ncol=1)
     plt.legend([l1, l2], ['RMSE', 'SCC'], loc='lower right')
     plt.show()
@@ -589,9 +636,9 @@ if __name__ == '__main__':
     #iter_rmse_scc()
     #var_intensity()
     #var_distance()
-    limited_attributes()
+    #limited_attributes()
     #var_threshold()
-    #training_set_size()
+    training_set_size()
     #negative_sampling_rate()
 
 

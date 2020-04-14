@@ -24,10 +24,10 @@
 
 [Optimizer]
 	MaxGradientNorm=1
-	ReportTrainLossEvery=500
+	ReportTrainLossEvery=50
 
 	[EarlyStopping]
-		CheckEvery=500
+		CheckEvery=50
 		BurninPhaseDuration=40000
 
 	[Algorithm]
