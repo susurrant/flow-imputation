@@ -11,7 +11,7 @@ class AccuracySummary:
                         'RMSE': None,# Root Mean Square Error
                         'CPC': None, # Common Part of Commuters
                         'SSI': None, # Sørensen similarity index
-                        'SMC': None, # Spearman's rank correlation coefficient
+                        'SCC': None, # Spearman's rank correlation coefficient
                         'LLR': None} # Linear least-squares regression correlation coefficient
         self.p = p
         self.r = r
@@ -40,7 +40,7 @@ class AccuracySummary:
         stack = np.column_stack((p, r))
         self.results['CPC'] = 2 * np.sum(np.min(stack, axis=1)) / np.sum(stack)
 
-        self.results['SMC'] = stats.spearmanr(r, p)
+        self.results['SCC'] = stats.spearmanr(r, p)
         #self.results['LLR'] = stats.linregress(r, p)
 
     def accuracy_string(self):
@@ -57,14 +57,15 @@ class AccuracySummary:
             if not item[1]:
                 continue
 
-            if item[0] == 'SMC':
-                print('SMC: correlation =', round(item[1][0], 3), ', p-value =', round(item[1][1], 3))
+            if item[0] == 'SCC':
+                print('SCC: correlation =', round(item[1][0], 3), ', p-value =', round(item[1][1], 3))
             elif item[0] == 'LLR':
                 print('LLR: R =', round(item[1][2], 3), ', p-value =', round(item[1][3], 3))
             else:
                 print(item[0], end=': ')
                 print(round(item[1], 3), end='\n')
         print("---------------------------------------------------------")
+
 
 class AccuracyScore:
 
@@ -108,18 +109,18 @@ class Scorer:
             return self.compute_accuracy_scores(triples, output)
 
     def dump_all_scores(self, pred, real):
-        self.iter += 500
-        np.savetxt('../data/output/iter_'+str(self.iter)+'.txt', pred, delimiter=',')
+        #self.iter += 500
+        #np.savetxt('../data/output/iter_'+str(self.iter)+'.txt', pred, delimiter=',')
 
-        '''
+
         self.iter += 50   # change the corresponding self.iter
         if self.iter < 10001:
             self.RMSE.append(np.sqrt(np.mean(np.square(np.array(real)-np.array(pred)))))
             self.SMC.append(stats.spearmanr(np.array(real), np.array(pred))[0])
         if self.iter == 10050:
             np.savetxt('../data/output/GCN_RMSE_th30.txt', np.array(self.RMSE), fmt='%.3f', delimiter=',')
-            np.savetxt('../data/output/GCN_SMC_th30.txt', np.array(self.SMC), fmt='%.3f', delimiter=',')
-        '''
+            np.savetxt('../data/output/GCN_SCC_th30.txt', np.array(self.SCC), fmt='%.3f', delimiter=',')
+
 
 
 

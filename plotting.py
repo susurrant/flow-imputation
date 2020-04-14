@@ -13,13 +13,13 @@ def iter_rmse_scc():
     gnn_10_rmse = np.loadtxt('data/output_baselines/GNN_10_RMSE.txt')[::iv]
     gnn_20_rmse = np.loadtxt('data/output_baselines/GNN_20_RMSE.txt')[::iv]
     gnn_30_rmse = np.loadtxt('data/output_baselines/GNN_30_RMSE.txt')[::iv]
-    gcn_rmse = np.loadtxt('data/output_SI-GCN/GCN_RMSE_th30.txt')[::iv]
+    gcn_rmse = np.loadtxt('data/output_SI-GCN/GCN_RMSE_th30-1.txt')[::iv]
 
     gnn_10_scc = np.loadtxt('data/output_baselines/GNN_10_SMC.txt')[::iv]
     gnn_20_scc = np.loadtxt('data/output_baselines/GNN_20_SMC.txt')[::iv]
     gnn_30_scc = np.loadtxt('data/output_baselines/GNN_30_SMC.txt')[::iv]
-    gcn_scc = np.loadtxt('data/output_SI-GCN/GCN_SMC_th30.txt')[::iv]
-
+    gcn_scc = np.loadtxt('data/output_SI-GCN/GCN_SCC_th30-1.txt')[::iv]
+    print(gnn_10_rmse[22], gnn_20_rmse[22], gnn_30_rmse[22])
     x = np.arange(50, 10001, 50*iv)
 
     lw = 1
@@ -36,8 +36,8 @@ def iter_rmse_scc():
     #ax1.set_ylim(22, 36)
 
     ax2 = ax1.twinx()
-    l5, = ax2.plot([30], [0.5], color='gray', linewidth=lw, linestyle='-', label='RMSE')
-    l6, = ax2.plot([30], [0.5], color='gray', linewidth=lw, linestyle='--', label='SCC')
+    l6, = ax2.plot([30], [0.5], color='gray', linewidth=lw, linestyle='--', label='RMSE')
+    l5, = ax2.plot([30], [0.5], color='gray', linewidth=lw, linestyle='-', label='SCC')
     ax2.plot(x, gnn_10_scc, color=colors[0], linestyle='--', linewidth=lw, alpha=0.7)
     ax2.plot(x, gnn_20_scc, color=colors[1], linestyle='--', linewidth=lw, alpha=0.7)
     ax2.plot(x, gnn_30_scc, color=colors[2], linestyle='--', linewidth=lw, alpha=0.7)
@@ -50,7 +50,7 @@ def iter_rmse_scc():
 
     ax1.legend([l1, l2, l3, l4], labels=['GNN_10', 'GNN_20', 'GNN_30', 'SI-GCN'], bbox_to_anchor=(0.97, 0.61),
                borderaxespad=0.1, ncol=1)
-    ax2.legend([l5, l6], labels=['RMSE', 'SCC'], bbox_to_anchor=(0.75, 0.55), borderaxespad=0.1, ncol=1)
+    ax2.legend([l5, l6], labels=['SCC', 'RMSE'], bbox_to_anchor=(0.75, 0.55), borderaxespad=0.1, ncol=1)
 
     #plt.subplots_adjust(top=0.88)
 
@@ -72,13 +72,13 @@ def check():
 
 def var_intensity():
     sns.set_style('whitegrid')
-    real = np.loadtxt('SI-GCN/data/taxi/test.txt', dtype=np.uint32, delimiter='\t')[:, 3]
-    gcn = np.loadtxt('SI-GCN/data/output/iter_39000.txt', delimiter=',')
+    real = np.loadtxt('SI-GCN/data/taxi_th30/test.txt', delimiter='\t')[:, 3]
+    gcn = np.loadtxt('data/output_SI-GCN/output th=30/iter_40500.txt')
     #gnn_10 = np.loadtxt('data/pred_gnn_10.txt')
     #gnn_20 = np.loadtxt('data/pred_gnn_20.txt')
-    gm_p = np.loadtxt('data/pred_GM_P.txt')
-    rm = np.loadtxt('data/pred_RM.txt')
-    gnn_30 = np.loadtxt('data/pred_gnn_30.txt')
+    gm_p = np.loadtxt('data/output_baselines/pred_GM_P.txt')
+    rm = np.loadtxt('data/output_baselines/pred_RM.txt')
+    gnn_30 = np.loadtxt('data/output_baselines/pred_gnn_30.txt')
 
     ts = [30, 40, 50, 60, 70, 80, 90, 100]
     gcn_rmse = []
@@ -108,8 +108,10 @@ def var_intensity():
 
     ax1.set_xlabel('Intensity')
     ax1.set_ylabel('RMSE')
-    ax1.set_ylim(20, 110)
+    ax1.set_ylim(15, 105)
     ax1.set_xlim(30, 100)
+    ax1.set_yticks(range(15, 106, 10))
+    ax1.yaxis.set_ticklabels(range(15, 106, 10))
     ax1.legend([l1, l2, l3, l4], labels=['RM', 'GM_P', 'GNN_30', 'SI-GCN'], loc='upper left', #bbox_to_anchor=(0.97, 0.61),
                borderaxespad=0.1, ncol=1)
     plt.show()
@@ -117,7 +119,7 @@ def var_intensity():
 
 def var_distance():
     # --------------------data process----------------------
-    real = np.loadtxt('SI-GCN/data/taxi_th30/test.txt', dtype=np.uint32, delimiter='\t')
+    real = np.loadtxt('SI-GCN/data/taxi_th30/test.txt', delimiter='\t')
     dis_list = []
     for d in real:
         dis_list.append(grid_dis(d[0], d[2], 30))
@@ -130,7 +132,7 @@ def var_distance():
         dis_idx.append(x.min() if x.size > 0 else len(nk) - 1)
     dis_idx = np.array(dis_idx)
 
-    gcn = np.loadtxt('data/output_SI-GCN/output_190616/iter_39000.txt')
+    gcn = np.loadtxt('data/output_SI-GCN/output th=30/iter_40500.txt')
     gm_p = np.loadtxt('data/output_baselines/pred_GM_P.txt')
     rm = np.loadtxt('data/output_baselines/pred_RM.txt')
     gnn_30 = np.loadtxt('data/output_baselines/pred_GNN_30.txt')
@@ -238,6 +240,7 @@ def limited_attributes_old():
 
 
 def limited_attributes():
+    '''
     # GCN_limited, GNN_30, GCN
 
     RMSE = [[25.326,25.361,25.523,25.644,25.632,25.488,25.543,25.43,25.953,25.332],
@@ -280,6 +283,58 @@ def limited_attributes():
     plt.figtext(0.15, 0.05, '1:SI-GCNs using limited attributes, 2:GNN_30 using entire attributes',
                 fontdict={'family':'Arial', 'size':12})
     plt.figtext(0.35, 0.005, '3:SI-GCNs using entire attributes', fontdict={'family':'Arial', 'size':12})
+    plt.show()
+    '''
+    # GCN_limited, GNN_30, GCN
+
+    RMSE = [[25.326, 25.361, 25.523, 25.644, 25.632, 25.488, 25.543, 25.43, 25.953, 25.332],
+            [25.154, 25.107, 25.116, 25.105, 25.071, 25.055, 24.992, 24.936, 25.137, 25.147],
+            [19.748,19.756,19.792,19.636,19.495,19.573,19.653,19.719,19.754]]
+
+    MAPE = [np.array([0.306, 0.294, 0.305, 0.319, 0.329, 0.321, 0.313, 0.311, 0.303, 0.301]) * 100,
+            np.array([0.279, 0.277, 0.277, 0.276, 0.276, 0.277, 0.276, 0.276, 0.277, 0.277]) * 100,
+            np.array([0.246,0.238,0.243,0.24,0.248,0.244,0.247,0.247,0.245]) * 100]
+
+    SCC = [[0.621, 0.614, 0.612, 0.613, 0.616, 0.621, 0.613, 0.616, 0.612, 0.612],
+           [0.647, 0.654, 0.649, 0.649, 0.648, 0.653, 0.653, 0.659, 0.646, 0.648],
+           [0.687,0.707,0.703,0.708,0.705,0.703,0.706,0.707,0.706]]
+
+    CPC = [[0.855, 0.856, 0.854, 0.853, 0.852, 0.855, 0.854, 0.855, 0.853, 0.855],
+           [0.86, 0.861, 0.86, 0.861, 0.861, 0.861, 0.861, 0.861, 0.86, 0.86],
+           [0.885,0.887,0.885,0.886,0.886,0.886,0.886,0.886,0.886]]
+
+    def set_box_color(bp, color):
+        plt.setp(bp['boxes'], color=color)
+        plt.setp(bp['whiskers'], color=color)
+        plt.setp(bp['caps'], color=color)
+        plt.setp(bp['medians'], color=color)
+
+    colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
+    colors = ['grey'] * 4
+
+    fig = plt.figure()
+    ax1 = fig.add_subplot(141)
+    bp = ax1.boxplot(RMSE, sym='', widths=0.5)
+    set_box_color(bp, colors[0])
+    ax1.set_ylabel('RMSE', fontname='Arial')
+
+    ax2 = fig.add_subplot(142)
+    bp = ax2.boxplot(MAPE, sym='', widths=0.5)
+    set_box_color(bp, colors[1])
+    ax2.set_ylabel('MAPE(%)', fontname='Arial')
+
+    ax3 = fig.add_subplot(143)
+    bp = ax3.boxplot(SCC, sym='', widths=0.5)
+    set_box_color(bp, colors[2])
+    ax3.set_ylabel('SCC', fontname='Arial')
+
+    ax4 = fig.add_subplot(144)
+    bp = ax4.boxplot(CPC, sym='', widths=0.5)
+    set_box_color(bp, colors[3])
+    ax4.set_ylabel('CPC', fontname='Arial')
+    plt.figtext(0.15, 0.05, '1:SI-GCNs with limited attributes, 2:GNN_30 with entire attributes',
+                fontdict={'family': 'Arial', 'size': 12})
+    plt.figtext(0.35, 0.005, '3:SI-GCNs with entire attributes', fontdict={'family': 'Arial', 'size': 12})
     plt.show()
 
 
@@ -530,16 +585,17 @@ def scatter_check():
     plt.show()
 
 
-
 if __name__ == '__main__':
     #iter_rmse_scc()
-    #check()
     #var_intensity()
     #var_distance()
-    #limited_attributes()
+    limited_attributes()
     #var_threshold()
     #training_set_size()
-    negative_sampling_rate()
+    #negative_sampling_rate()
+
+
+    #check()
     #scatter_check()
 
 
