@@ -109,10 +109,10 @@ class Scorer:
             return self.compute_accuracy_scores(triples, output)
 
     def dump_all_scores(self, pred, real):
-        #self.iter += 500
-        #np.savetxt('../data/output/iter_'+str(self.iter)+'.txt', pred, delimiter=',')
+        self.iter += 500
+        np.savetxt('../data/output/iter_'+str(self.iter)+'.txt', pred, delimiter=',')
 
-
+        '''
         self.iter += 50   # change the corresponding self.iter
         if self.iter < 10001:
             self.RMSE.append(np.sqrt(np.mean(np.square(np.array(real)-np.array(pred)))))
@@ -120,6 +120,6 @@ class Scorer:
         if self.iter == 10050:
             np.savetxt('../data/output/GCN_RMSE_th30.txt', np.array(self.RMSE), fmt='%.3f', delimiter=',')
             np.savetxt('../data/output/GCN_SCC_th30.txt', np.array(self.SCC), fmt='%.3f', delimiter=',')
-
+        '''
 
 

@@ -13,12 +13,12 @@ def iter_rmse_scc():
     gnn_10_rmse = np.loadtxt('data/output_baselines/GNN_10_RMSE.txt')[::iv]
     gnn_20_rmse = np.loadtxt('data/output_baselines/GNN_20_RMSE.txt')[::iv]
     gnn_30_rmse = np.loadtxt('data/output_baselines/GNN_30_RMSE.txt')[::iv]
-    gcn_rmse = np.loadtxt('data/output_SI-GCN/GCN_RMSE_th30-1.txt')[::iv]
+    gcn_rmse = np.loadtxt('data/output_SI-GCN/GCN_RMSE_th30.txt')[::iv]
 
     gnn_10_scc = np.loadtxt('data/output_baselines/GNN_10_SMC.txt')[::iv]
     gnn_20_scc = np.loadtxt('data/output_baselines/GNN_20_SMC.txt')[::iv]
     gnn_30_scc = np.loadtxt('data/output_baselines/GNN_30_SMC.txt')[::iv]
-    gcn_scc = np.loadtxt('data/output_SI-GCN/GCN_SCC_th30-1.txt')[::iv]
+    gcn_scc = np.loadtxt('data/output_SI-GCN/GCN_SCC_th30.txt')[::iv]
     print(gnn_10_rmse[22], gnn_20_rmse[22], gnn_30_rmse[22])
     x = np.arange(50, 10001, 50*iv)
 
@@ -633,12 +633,12 @@ def scatter_check():
 
 
 if __name__ == '__main__':
-    #iter_rmse_scc()
+    iter_rmse_scc()
     #var_intensity()
     #var_distance()
     #limited_attributes()
     #var_threshold()
-    training_set_size()
+    #training_set_size()
     #negative_sampling_rate()
 
 
