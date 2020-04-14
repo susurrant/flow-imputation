@@ -88,7 +88,7 @@ class Scorer:
         self.model = model
         self.iter = 0
         self.RMSE = []
-        self.SMC = []
+        self.SCC = []
         self.threshold = threshold
 
     def register_model(self, model):  #model_builder.build_decoder: BilinearDiag object inheriting from Model
@@ -116,10 +116,10 @@ class Scorer:
         self.iter += 50   # change the corresponding self.iter
         if self.iter < 10001:
             self.RMSE.append(np.sqrt(np.mean(np.square(np.array(real)-np.array(pred)))))
-            self.SMC.append(stats.spearmanr(np.array(real), np.array(pred))[0])
+            self.SCC.append(stats.spearmanr(np.array(real), np.array(pred))[0])
         if self.iter == 10050:
             np.savetxt('../data/output/GCN_RMSE_th30.txt', np.array(self.RMSE), fmt='%.3f', delimiter=',')
             np.savetxt('../data/output/GCN_SCC_th30.txt', np.array(self.SCC), fmt='%.3f', delimiter=',')
-        
+
 
 
