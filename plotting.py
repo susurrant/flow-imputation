@@ -348,9 +348,9 @@ def var_threshold():
     GNN_30_rmse = [15.091, 20.973, 25.082, 28.751, 34.028]
     GNN_30_scc = [0.755, 0.696, 0.651, 0.615, 0.559]
     GNN_30_mape = [33.1, 30.2, 27.7, 26.7, 24.3]
-    SI_GCN_rmse = [12.442, 16.655, 19, 24.219, 26.706]  # replace 19
-    SI_GCN_scc = [0.77, 0.735,0.69, 0.657, 0.666]       # replace 0.69
-    SI_GCN_mape = [30.2, 26.6, 24.8, 23.3, 20.1]        # replace 24.8
+    SI_GCN_rmse = [12.442, 16.655, 19.756, 24.219, 27.074]
+    SI_GCN_scc = [0.77, 0.735,0.707, 0.657, 0.656]
+    SI_GCN_mape = [30.2, 26.6, 23.8, 23.3, 21.1]
 
 
 
@@ -633,11 +633,11 @@ def scatter_check():
 
 
 if __name__ == '__main__':
-    iter_rmse_scc()
+    #iter_rmse_scc()
     #var_intensity()
     #var_distance()
     #limited_attributes()
-    #var_threshold()
+    var_threshold()
     #training_set_size()
     #negative_sampling_rate()
 
