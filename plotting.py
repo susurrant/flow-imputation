@@ -8,22 +8,24 @@ from scipy import stats
 from baselines.func import grid_dis
 import pysal as ps
 
+
 def iter_rmse_scc():
     iv = 2
     gnn_10_rmse = np.loadtxt('data/output_baselines/GNN_10_RMSE.txt')[::iv]
     gnn_20_rmse = np.loadtxt('data/output_baselines/GNN_20_RMSE.txt')[::iv]
     gnn_30_rmse = np.loadtxt('data/output_baselines/GNN_30_RMSE.txt')[::iv]
-    gcn_rmse = np.loadtxt('data/output_SI-GCN/GCN_RMSE_th30.txt')[::iv]
+    gcn_rmse = np.loadtxt('data/output_SI-GCN/GCN_RMSE_th30-1.txt')[::iv]
 
     gnn_10_scc = np.loadtxt('data/output_baselines/GNN_10_SMC.txt')[::iv]
     gnn_20_scc = np.loadtxt('data/output_baselines/GNN_20_SMC.txt')[::iv]
     gnn_30_scc = np.loadtxt('data/output_baselines/GNN_30_SMC.txt')[::iv]
-    gcn_scc = np.loadtxt('data/output_SI-GCN/GCN_SCC_th30.txt')[::iv]
+    gcn_scc = np.loadtxt('data/output_SI-GCN/GCN_SCC_th30-1.txt')[::iv]
     print(gnn_10_rmse[22], gnn_20_rmse[22], gnn_30_rmse[22])
     x = np.arange(50, 10001, 50*iv)
 
     lw = 1
-    colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
+    #colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
+    colors = ['#fda161', '#d7191c', '#abdda4', '#2b83ba']
     fig, ax1 = plt.subplots()
 
     l1, = ax1.plot(x, gnn_10_rmse, color=colors[0], linewidth=lw, alpha=0.7, label='GNN_10')
@@ -57,19 +59,6 @@ def iter_rmse_scc():
     plt.show()
 
 
-# determine which output produces the best prediction accuracy
-def check():
-    r = np.loadtxt('SI-GCN/data/taxi/test.txt', dtype=np.uint32, delimiter='\t')[:, 3]
-    path = 'SI-GCN/data/output/'
-    files = os.listdir(path)
-    for filename in files:
-        p = np.loadtxt(path + filename, delimiter=',')
-        smc = stats.spearmanr(r, p)
-        scc = round(smc[0], 3)
-        rmse = round(np.sqrt(np.mean(np.square(r - p))), 3)
-        print(filename, scc, rmse)
-
-
 def var_intensity():
     sns.set_style('whitegrid')
     real = np.loadtxt('SI-GCN/data/taxi_th30/test.txt', delimiter='\t')[:, 3]
@@ -98,7 +87,8 @@ def var_intensity():
 
     fig, ax1 = plt.subplots()
     lw = 1
-    colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
+    #colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
+    colors = ['#abdda4', '#d7191c', '#fda161', '#2b83ba']
     #l1, = ax1.plot(ts, gnn_10_rmse, color=colors[0], linewidth=lw, alpha=0.7, label='GNN_10')
     #l2, = ax1.plot(ts, gnn_20_rmse, color=colors[1], linewidth=lw, alpha=0.7, label='GNN_20')
     l1, = ax1.plot(ts, rm_rmse, color=colors[0], linewidth=lw, alpha=1, label='RM')
@@ -117,7 +107,7 @@ def var_intensity():
     plt.show()
 
 
-def var_distance():
+def var_distance_three_classes():
     # --------------------data process----------------------
     real = np.loadtxt('SI-GCN/data/taxi_th30/test.txt', delimiter='\t')
     dis_list = []
@@ -175,6 +165,75 @@ def var_distance():
     xs = [0.5, 1.5, 2.5]
     ax.set_xticks(xs)
     xlabels = ['Short', 'Medium', 'Long']
+    ax.xaxis.set_ticklabels(xlabels)
+
+    leg = plt.legend(handles=ll)
+    for l in leg.get_texts():
+        l.set_fontsize(10)
+        l.set_fontname('Arial')
+    plt.show()
+
+
+def var_distance_five_classes():
+    sns.set(style="whitegrid")
+
+    # --------------------data process----------------------
+    real = np.loadtxt('SI-GCN/data/taxi_th30/test.txt', delimiter='\t')
+    dis_list = []
+    for d in real:
+        dis_list.append(grid_dis(d[0], d[2], 30))
+
+    nk, nl = fisher_jenks(dis_list, 5)
+    print(nk)
+    dis_idx = []
+    for i, dis in enumerate(dis_list):
+        x = np.where(dis <= nk)[0]
+        dis_idx.append(x.min() if x.size > 0 else len(nk) - 1)
+    dis_idx = np.array(dis_idx)
+
+    gcn = np.loadtxt('data/output_SI-GCN/output th=30/iter_40500.txt')
+    gm_p = np.loadtxt('data/output_baselines/pred_GM_P.txt')
+    rm = np.loadtxt('data/output_baselines/pred_RM.txt')
+    gnn_30 = np.loadtxt('data/output_baselines/pred_GNN_30.txt')
+
+    # short, medium, long;
+    gcn_rmse = []
+    gnn_30_rmse = []
+    gm_p_rmse = []
+    rm_rmse = []
+    for i in range(5):
+        idx = np.where(dis_idx == i)
+        print(i, len(idx[0]), dis_list[idx[0][0]], np.mean(real[:, 3][idx]))
+        gcn_rmse.append(round(np.sqrt(np.mean(np.square(real[:, 3][idx] - gcn[idx]))), 3))
+        gnn_30_rmse.append(round(np.sqrt(np.mean(np.square(real[:, 3][idx] - gnn_30[idx]))), 3))
+        gm_p_rmse.append(round(np.sqrt(np.mean(np.square(real[:, 3][idx] - gm_p[idx]))), 3))
+        rm_rmse.append(round(np.sqrt(np.mean(np.square(real[:, 3][idx] - rm[idx]))), 3))
+    rmse = [gcn_rmse, gnn_30_rmse, gm_p_rmse, rm_rmse]
+    print(gcn_rmse)
+    print(gnn_30_rmse)
+    print(gm_p_rmse)
+    # ------------------------draw----------------------------
+    colors = ['skyblue', 'limegreen', 'hotpink', 'orangered']
+    colors = ['#2b83ba', '#fda161', '#d7191c', '#abdda4']
+    labels = ['SI-GCN', 'GNN_30', 'GM_P', 'RM']
+
+    x = np.array([0.5, 1.5, 2.5, 3.5, 4.5])
+
+    fig, ax = plt.subplots()
+    ax.set_xlabel('Distance/km', fontsize=10)
+    ax.set_ylabel('RMSE', fontsize=10)
+
+    bw = 0.11
+    ll = []
+    for n, i in enumerate([-3, -1, 1, 3]):
+        ll.append(ax.bar(x + i * bw / 2, rmse[n], facecolor=colors[n], width=bw, label=labels[n], alpha=0.7))
+
+    ax.set_ylim(0, 70)
+
+    ax.set_xlim(0, 5)
+    xs = [0.5, 1.5, 2.5, 3.5, 4.5]
+    ax.set_xticks(xs)
+    xlabels = ['short\n(<1.4)', 'short-medium\n(1.4-2.8)', 'medium\n(2.8-4.7)', 'medium-long\n(4.7-7.3)', 'long\n(≥7.3)']
     ax.xaxis.set_ticklabels(xlabels)
 
     leg = plt.legend(handles=ll)
@@ -287,19 +346,19 @@ def limited_attributes():
     '''
     # GCN_limited, GNN_30, GCN(updated)
 
-    RMSE = [[25.326, 25.361, 25.523, 25.644, 25.632, 25.488, 25.543, 25.43, 25.953, 25.332],
+    RMSE = [[25.668, 25.575, 25.613, 24.187, 24.454, 24.601, 24.604, 24.792, 24.842],
             [25.154, 25.107, 25.116, 25.105, 25.071, 25.055, 24.992, 24.936, 25.137, 25.147],
             [19.748,19.756,19.792,19.636,19.495,19.573,19.653,19.719,19.754]]
 
-    MAPE = [np.array([0.306, 0.294, 0.305, 0.319, 0.329, 0.321, 0.313, 0.311, 0.303, 0.301]) * 100,
+    MAPE = [np.array([0.325, 0.322, 0.318, 0.298, 0.292, 0.312, 0.311, 0.317, 0.316]) * 100,
             np.array([0.279, 0.277, 0.277, 0.276, 0.276, 0.277, 0.276, 0.276, 0.277, 0.277]) * 100,
             np.array([0.246,0.238,0.243,0.24,0.248,0.244,0.247,0.247,0.245]) * 100]
 
-    SCC = [[0.621, 0.614, 0.612, 0.613, 0.616, 0.621, 0.613, 0.616, 0.612, 0.612],
+    SCC = [[0.607, 0.609, 0.605, 0.635, 0.625, 0.623, 0.627, 0.624, 0.611],
            [0.647, 0.654, 0.649, 0.649, 0.648, 0.653, 0.653, 0.659, 0.646, 0.648],
            [0.687,0.707,0.703,0.708,0.705,0.703,0.706,0.707,0.706]]
 
-    CPC = [[0.855, 0.856, 0.854, 0.853, 0.852, 0.855, 0.854, 0.855, 0.853, 0.855],
+    CPC = [[0.852, 0.854, 0.853, 0.861, 0.860, 0.857, 0.858, 0.856, 0.855],
            [0.86, 0.861, 0.86, 0.861, 0.861, 0.861, 0.861, 0.861, 0.86, 0.86],
            [0.885,0.887,0.885,0.886,0.886,0.886,0.886,0.886,0.886]]
 
@@ -310,6 +369,7 @@ def limited_attributes():
         plt.setp(bp['medians'], color=color)
 
     colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
+    colors = ['#fda161', '#d7191c', '#abdda4', '#2b83ba']
     colors = ['grey'] * 4
 
     fig = plt.figure()
@@ -352,25 +412,24 @@ def var_threshold():
     SI_GCN_scc = [0.77, 0.735,0.707, 0.657, 0.656]
     SI_GCN_mape = [30.2, 26.6, 23.8, 23.3, 21.1]
 
-
-
     x = np.array([0.5, 1.5, 2.5, 3.5, 4.5])
 
-    colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
+    colors = ['#fda161', '#d7191c','#abdda4', '#2b83ba']
+    #colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
     fig, ax1 = plt.subplots()
     bw = 0.11
-    bar_alpha = 0.6
+    bar_alpha = 0.7
     l1 = ax1.bar(x - 3 * bw / 2, SI_GCN_rmse, facecolor=colors[3], width=bw, label='SI-GCN', alpha=bar_alpha)
     l2 = ax1.bar(x - 1 * bw / 2, GNN_30_rmse, facecolor=colors[2], width=bw, label='GNN_30', alpha=bar_alpha)
     l3 = ax1.bar(x + 1 * bw / 2, GM_P_rmse, facecolor=colors[1], width=bw, label='GM_P', alpha=bar_alpha)
     l4 = ax1.bar(x + 3 * bw / 2, RM_rmse, facecolor=colors[0], width=bw, label='RM', alpha=bar_alpha)
 
-    ax1.set_xlabel('Taxi trip threshold', fontsize=12)
-    ax1.set_ylabel('RMSE', fontsize=12)
+    ax1.set_xlabel('Taxi trip threshold')
+    ax1.set_ylabel('RMSE')
     ax1.set_xticks([0.5, 1.5, 2.5, 3.5, 4.5])
-    ax1.xaxis.set_ticklabels(['10', '20', '30', '40', '50'], fontsize=12)
+    ax1.xaxis.set_ticklabels(['10', '20', '30', '40', '50'])
     ax1.set_yticks([0, 10, 20, 30, 40, 50, 60, 70, 80])
-    ax1.yaxis.set_ticklabels(['0', '10', '20', '30', '40', '50', '60', '70', '80'], fontsize=12)
+    ax1.yaxis.set_ticklabels(['0', '10', '20', '30', '40', '50', '60', '70', '80'])
 
     # ax1.set_xlim(0, 10000)
     # ax1.set_ylim(22, 36)
@@ -380,14 +439,14 @@ def var_threshold():
     ax2 = ax1.twinx()
     l5, = ax2.plot(x, SI_GCN_scc, color=colors[3], linestyle='--', marker='s', linewidth=lw, alpha=line_alpha, label='SI-GCN')
     l6, = ax2.plot(x, GNN_30_scc, color=colors[2], linestyle='--', marker='^', linewidth=lw, alpha=line_alpha, label='GNN_30')
-    l7, = ax2.plot(x, GM_P_scc, color=colors[0], linestyle='--', marker='.', linewidth=lw, alpha=line_alpha, label='GM_P')
-    l8, = ax2.plot(x, RM_scc, color=colors[1], linestyle='--', marker='H', linewidth=lw, alpha=line_alpha, label='RM')
+    l7, = ax2.plot(x, GM_P_scc, color=colors[1], linestyle='--', marker='.', linewidth=lw, alpha=line_alpha, label='GM_P')
+    l8, = ax2.plot(x, RM_scc, color=colors[0], linestyle='--', marker='H', linewidth=lw, alpha=line_alpha, label='RM')
 
 
     #ax2.set_xlabel('Taxi trip threshold')
-    ax2.set_ylabel('SCC', fontsize=12)
+    ax2.set_ylabel('SCC')
     ax2.set_yticks([0.55, 0.6, 0.65, 0.7, 0.75, 0.8])
-    ax2.yaxis.set_ticklabels(['0.55', '0.60', '0.65', '0.70', '0.75', '0.8'], fontsize=12)
+    ax2.yaxis.set_ticklabels(['0.55', '0.60', '0.65', '0.70', '0.75', '0.8'])
     # ax2.set_xlim(0, 10000)
     # ax2.set_ylim(0.2, 0.7)
 
@@ -399,7 +458,7 @@ def var_threshold():
     plt.show()
 
 
-def sampling_effect_four_metrics():
+def sampling_effect_five_metrics():
     RMSE = np.array([[27.122, 27.293, 27.498, 28.772, 28.869, 28.107, 27.311, 28.663, 27.937, 27.914],
                      [24.512, 25.531, 25.367, 25.322, 25.531, 25.367, 25.394, 25.242, 25.288, 25.296],
                      [20.516, 20.620, 20.854, 20.191, 21.055, 20.826, 20.546, 21.049, 20.893, 20.728],
@@ -524,19 +583,30 @@ def training_set_size():
                     [0.718, 0.722, 0.723, 0.725, 0.728, 0.719, 0.718, 0.719, 0.720]])
 
 
+    RMSE = np.array([[27.465, 27.484, 27.520, 26.878, 26.921, 27.068, 26.746, 26.767, 26.768],
+                     [24.389, 24.464, 24.377, 24.138, 24.272, 24.314, 24.061, 24.115, 24.137],
+                     [19.748, 19.756, 19.792, 19.636, 19.495, 19.573, 19.653, 19.719, 19.754],
+                     [18.398, 18.505, 18.660, 18.560, 18.405, 18.419, 18.315, 18.556, 18.503]])
+
+    SCC = np.array([[0.530, 0.539, 0.531, 0.563, 0.553, 0.541, 0.545, 0.544, 0.545],
+                    [0.639, 0.629, 0.634, 0.638, 0.637, 0.634, 0.633, 0.630, 0.631],
+                    [0.687, 0.707, 0.703, 0.708, 0.705, 0.703, 0.706, 0.707, 0.706],
+                    [0.718, 0.722, 0.723, 0.725, 0.728, 0.719, 0.718, 0.719, 0.720]])
+
+
     RMSE_mean = np.mean(RMSE, axis=1)
     SCC_mean = np.mean(SCC, axis=1)
 
     RMSE_err = np.std(RMSE, axis=1)
     SCC_err = np.std(SCC, axis=1)
 
-    xs = [1, 2, 3, 4]
+    xs = [0.5, 1, 1.5, 2]
 
     lw = 0.6
     colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
     fig, ax1 = plt.subplots()
-    l1 = ax1.errorbar(xs, RMSE_mean, yerr=RMSE_err, ecolor=colors[0], elinewidth=1, linewidth=lw, linestyle='--',
-                 color=colors[0], capsize=2)
+    l1 = ax1.errorbar(xs, RMSE_mean, yerr=RMSE_err, ecolor=colors[0], elinewidth=1, linewidth=lw, linestyle='--', color=colors[0], capsize=2)
+    #l1 = ax1.bar(xs, RMSE_mean, yerr=RMSE_err, width=0.2)
     l3 = ax1.errorbar(xs, SCC_mean, yerr=SCC_err, ecolor=colors[2], elinewidth=1, linewidth=lw, linestyle='--',
                       color=colors[2], capsize=2)
     ax1.set_ylabel('RMSE', fontname = 'Arial')
@@ -550,14 +620,12 @@ def training_set_size():
     ax2.xaxis.set_ticklabels(['20%', '40%', '60%', '80%'])
     ax2.set_yticks([0.5, 0.55, 0.6, 0.65, 0.7, 0.75])
     ax2.set_ylim(0.5, 0.75)
-    ax2.set_xlim(0.9, 4.1)
+    #ax2.set_xlim(0.9, 4.1)
 
     ax1.legend([l1, l3], labels=['RMSE', 'SCC'], bbox_to_anchor=(0.22, 0.61), borderaxespad=0.1, ncol=1)
-
     plt.show()
 
 
-# compute natural breaks of data
 def fisher_jenks(d, cNum):
     X = np.array(d).reshape((-1, 1))
     fj = ps.esda.mapclassify.Fisher_Jenks(X, cNum)
@@ -591,14 +659,17 @@ def negative_sampling_rate_RMSE():
 
 def negative_sampling_rate():
     #RMSE = np.array([21.213, 20.159, 19.681, 19.744, 19.867, 19.892, 20.007, 20.059, 20.403, 20.595, 20.729])
-    RMSE = np.array([21.155, 20.083, 19.736, 19.744, 19.792, 19.892, 20.007, 20.059, 20.366, 20.532, 20.62])
+    RMSE = np.array([21.155, 20.149, 19.736, 19.744, 19.792, 19.892, 20.007, 20.059, 20.366, 20.532, 20.62])
     print(np.min(RMSE), np.max(RMSE))
-    SCC = np.array([0.661, 0.687, 0.702, 0.698, 0.702, 0.702, 0.701, 0.706, 0.703, 0.700, 0.706])
+    SCC = np.array([0.661, 0.687, 0.697, 0.698, 0.702, 0.702, 0.701, 0.706, 0.703, 0.700, 0.706])
+    #SCC = np.array([0.661, 0.679, 0.695, 0.698, 0.694, 0.703, 0.707, 0.706, 0.703, 0.700, 0.707])
     print(np.min(SCC), np.max(SCC))
+    MAPE = np.array([0.27, 0.258, 0.241, 0.243, 0.241, 0.236, 0.234, 0.234, 0.233, 0.26, 0.229])
 
     xs = range(0, 11)
     lw = 0.6
     colors = ['orangered', 'hotpink', 'limegreen', 'skyblue']
+    colors = ['#fda161', '#abdda4', '#d7191c', '#2b83ba']
     fig, ax1 = plt.subplots()
     l1, = ax1.plot(xs, RMSE, linewidth=lw, linestyle='-', marker='^', color=colors[3], label='RMSE')
     ax1.set_ylabel('RMSE')
@@ -612,6 +683,20 @@ def negative_sampling_rate():
     #ax1.legend([l1], labels=['RMSE', 'SCC'], bbox_to_anchor=(0.22, 0.61), borderaxespad=0.1, ncol=1)
     plt.legend([l1, l2], ['RMSE', 'SCC'], loc='lower right')
     plt.show()
+
+
+# -------------other functions-----------------
+
+def best_prediction_search():
+    r = np.loadtxt('SI-GCN/data/taxi/test.txt', dtype=np.uint32, delimiter='\t')[:, 3]
+    path = 'SI-GCN/data/output/'
+    files = os.listdir(path)
+    for filename in files:
+        p = np.loadtxt(path + filename, delimiter=',')
+        smc = stats.spearmanr(r, p)
+        scc = round(smc[0], 3)
+        rmse = round(np.sqrt(np.mean(np.square(r - p))), 3)
+        print(filename, scc, rmse)
 
 
 def scatter_check():
@@ -632,17 +717,46 @@ def scatter_check():
     plt.show()
 
 
+def distance_distribution():
+    sta = {}
+    for i in range(15):
+        sta[i] = 0
+    t = [1*i for i in range(16)]
+    print(t)
+    real = np.loadtxt('SI-GCN/data/taxi_th30/test.txt', delimiter='\t')
+    dis_list = []
+    for d in real:
+        dis_list.append(grid_dis(d[0], d[2], 30))
+
+    for dis in dis_list:
+        i = 0
+        while t[i] < dis:
+            i += 1
+        sta[i-1] += 1
+
+
+    x = []
+    y = []
+    for item in sta.items():
+        x.append(item[0])
+        y.append(item[1])
+
+    plt.bar(x, y, alpha=0.9, width=0.35, facecolor='lightgreen', edgecolor='white', label='one', lw=1)
+    plt.xlabel("dis")
+    plt.ylabel("frequency")
+    plt.show()
+
+
 if __name__ == '__main__':
     #iter_rmse_scc()
     #var_intensity()
-    #var_distance()
-    #limited_attributes()
-    var_threshold()
-    #training_set_size()
+    #var_distance_five_classes()
+    limited_attributes()  # to do
+    #var_threshold()
+    #training_set_size() # to do
     #negative_sampling_rate()
 
 
-    #check()
-    #scatter_check()
+
 
 

@@ -198,8 +198,8 @@ def gen_features(flow_file, output_path, colnum, mode='entire'):
                 features.append([int(s[1])//colnum, int(s[1])%colnum, 0, 0]) # co, push, pull
             elif mode == 'limited':
                 features.append([int(s[1]) // colnum, int(s[1]) % colnum])   # include only coordinates
-            elif mode == 'none':
-                features.append([1])                                         # no attribute
+            else:
+                features.append([mode])                                         # specific value
             node_list.append(s[1])
             line = f.readline().strip()
 
@@ -223,14 +223,15 @@ def gen_features(flow_file, output_path, colnum, mode='entire'):
     np.savetxt(output_path + 'features.txt', features, fmt='%.3f', delimiter='\t')
 
 
+
 if __name__ == '__main__':
-    #taxi_data('data/sj_taxi_1km_051317.txt', 'data/taxi_1km.txt')
+    scale = '1km' # 1500m
+    #taxi_data('data/sj_taxi_'+scale+'_051317.txt', 'data/taxi_1km.txt')
     threshold = 30
     col_num = 30
-    path = 'SI-GCN/data/taxi_th30_none_attr/'
+    path = 'SI-GCN/data/taxi_'+scale+'_th30/'
 
-    #data_filter('data/taxi_1km.txt', threshold)
-    flow_file = 'data/taxi_1km'+'_t'+str(threshold)+'.txt'
+    #data_filter('data/taxi_'+scale+'.txt', threshold)
+    flow_file = 'data/taxi_'+scale+'_t'+str(threshold)+'.txt'
     #gen_data(flow_file, path, [0.6, 0.2, 0.2], mode='random') # random, low weight, hight weight
-    gen_features(flow_file, path, colnum=col_num, mode='none')
-
+    gen_features(flow_file, path, colnum=col_num, mode='entire') # entire, limited, specific value (e.g., 1)
