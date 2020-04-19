@@ -1,7 +1,7 @@
 [Encoder]
 	Name=gcn_basis
 	DropoutKeepProbability=0.8
-	InternalEncoderDimension=500
+	InternalEncoderDimension=50
 	NumberOfBasisFunctions=1
 	NumberOfLayers=1
 	UseInputTransform=Yes
@@ -20,7 +20,7 @@
 	Output=True
 
 [Shared]
-	CodeDimension=500
+	CodeDimension=50
 
 [Optimizer]
 	MaxGradientNorm=1

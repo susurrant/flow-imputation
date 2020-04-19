@@ -192,10 +192,10 @@ if __name__ == '__main__':
     scale = '500m'
     col_num = 59
 
-    threshold = 20
+    threshold = 30
     tvt = [0.6, 0.2, 0.2]
 
-    taxi_data('data/sj_taxi_'+scale+'_051317.txt', 'data/taxi_'+scale+'.txt')
+    #taxi_data('data/sj_taxi_'+scale+'_051317.txt', 'data/taxi_'+scale+'.txt')
     path = 'SI-GCN/data/taxi_'+scale+'_th'+str(threshold)+'/'
 
     data_filter('data/taxi_'+scale+'.txt', threshold)
