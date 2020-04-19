@@ -1,7 +1,7 @@
 [Encoder]
 	Name=gcn_basis
 	DropoutKeepProbability=0.8
-	InternalEncoderDimension=50
+	InternalEncoderDimension=500
 	NumberOfBasisFunctions=1
 	NumberOfLayers=1
 	UseInputTransform=Yes
@@ -20,7 +20,7 @@
 	Output=True
 
 [Shared]
-	CodeDimension=50
+	CodeDimension=500
 
 [Optimizer]
 	MaxGradientNorm=1
@@ -32,7 +32,7 @@
 
 	[Algorithm]
 		Name=Adam
-		learning_rate=0.005
+		learning_rate=0.01
 
 [General]
 	NegativeSampleRate=0.25
