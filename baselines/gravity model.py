@@ -104,4 +104,4 @@ if __name__ == '__main__':
 
     print('beta =', beta, ', K =', K)
     #np.savetxt('../data/pred_GM_P.txt', pred, delimiter=',')
-    evaluate(pred, real, 'positive')
+    evaluate(pred, real)

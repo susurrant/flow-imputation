@@ -59,6 +59,7 @@ def read_features(entity_dict, feature_file):
     return features
 
 
+'''
 # generate negative samples to test_n.txt
 def sample_negatives_weighted(flow_file, output_path):
     p_data = np.loadtxt(flow_file, dtype=np.uint16, delimiter='\t', skiprows=1)
@@ -105,45 +106,6 @@ def sample_negatives(flow_file, output_path):
     np.random.shuffle(negatives)
     n_idx = np.random.choice(negatives.shape[0], size=sample_size, replace=False)
     np.savetxt(output_path + 'test_n.txt', negatives[n_idx], fmt='%d', delimiter='\t')
-
-'''
-def gen_data_old(flow_file, output_path, r, mode = 'random'):
-    p_data = np.loadtxt(flow_file, dtype=np.uint16, delimiter='\t', skiprows=1)
-    grids = list(set(p_data[:, 0]) | set(p_data[:, 2]))
-    t = set(range(p_data.shape[0]))
-
-    # generate training, validation and test data set (positive flows)
-    train_size = int(r[0] * p_data.shape[0])
-    if mode == 'random':
-        train_set = set(random.sample(range(p_data.shape[0]), train_size))
-    elif mode == 'large weight':
-        p_data = np.array(sorted(p_data, key=lambda x: x[3], reverse=True))
-        train_set = set(range(train_size))
-    elif mode == 'small weight':
-        p_data = np.array(sorted(p_data, key=lambda x: x[3]))
-        train_set = set(range(train_size))
-
-    s = t - train_set
-    test_set = set(random.sample(s, int(r[1] * p_data.shape[0])))
-
-    train_data = p_data[list(train_set)]
-    test_data = p_data[list(test_set)]
-    valid_data = p_data[list(s - test_set)]
-
-    np.random.shuffle(train_data)
-    np.savetxt(output_path + 'train.txt', train_data, fmt='%d', delimiter='\t')
-    np.savetxt(output_path + 'test.txt', test_data, fmt='%d', delimiter='\t')
-    np.savetxt(output_path + 'valid.txt', valid_data, fmt='%d', delimiter='\t')
-
-    # generate geographical unit and spatial relation dicts
-    with open(output_path + 'entities.dict', 'w', newline='') as f:
-        for i, gid in enumerate(grids):
-            f.write(str(i)+'\t'+ str(gid) + '\r\n')
-
-    with open(output_path + 'relations.dict', 'w', newline='') as f:
-        relations = set(p_data[:, 1])
-        for i, r in enumerate(relations):
-            f.write(str(i) + '\t' + str(r) + '\r\n')
 '''
 
 def gen_data(flow_file, output_path, r, mode = 'random'):
@@ -226,12 +188,14 @@ def gen_features(flow_file, output_path, colnum, mode='entire'):
 
 if __name__ == '__main__':
     scale = '1500m' # 1500m
-    #taxi_data('data/sj_taxi_'+scale+'_051317.txt', 'data/taxi_1km.txt')
     threshold = 40
     col_num = 20
+    tvt = [0.6, 0.2, 0.2]
+
+    #taxi_data('data/sj_taxi_'+scale+'_051317.txt', 'data/taxi_1km.txt')
     path = 'SI-GCN/data/taxi_'+scale+'_th'+str(threshold)+'/'
 
     data_filter('data/taxi_'+scale+'.txt', threshold)
     flow_file = 'data/taxi_'+scale+'_t'+str(threshold)+'.txt'
-    gen_data(flow_file, path, [0.6, 0.2, 0.2], mode='random') # random, low weight, hight weight
+    gen_data(flow_file, path, tvt, mode='random') # random, low weight, hight weight
     gen_features(flow_file, path, colnum=col_num, mode='entire') # entire, limited, specific value (e.g., 1)

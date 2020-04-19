@@ -5,17 +5,15 @@ import time
 from func import *
 import argparse
 
-def read_data(path, dis_mode, normalization=True, mode='positive'):
+def read_data(path, dis_mode, normalization=True):
     train_X = []
     train_y = []
     test_X = []
     test_y = []
 
     tr_f = read_flows(path + 'train.txt')
-    if mode == 'positive':
-        te_f = read_flows(path + 'test.txt')
-    else:
-        te_f = read_flows(path + 'test_n.txt')
+    te_f = read_flows(path + 'test.txt')
+
 
     if normalization:
         features = read_features(path + 'entities.dict', path + 'features.txt')
@@ -47,8 +45,8 @@ def add_layer(inputs, in_size, out_size, activation_function=None):
     return outputs
 
 
-def neural_gravity_model(path, learning_rate, num_of_hidden_units, iterations, dis_mode, mode='positive', save_pred=False):
-    train_X, train_y, test_X, test_y = read_data(path, dis_mode, normalization=True, mode=mode)
+def neural_gravity_model(path, learning_rate, num_of_hidden_units, iterations, dis_mode, save_pred=False):
+    train_X, train_y, test_X, test_y = read_data(path, dis_mode, normalization=True)
     print(train_X[0], test_X[0], test_y[0])
 
     xs = tf.placeholder(tf.float32, shape=(None, 3))
@@ -59,7 +57,6 @@ def neural_gravity_model(path, learning_rate, num_of_hidden_units, iterations, d
 
     loss = tf.losses.mean_squared_error(ys, prediction)
     train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
-    #train_step = tf.train.AdamOptimizer(learning_rate).minimize(loss)
 
     RMSE = []
     SMC = []
@@ -81,7 +78,7 @@ def neural_gravity_model(path, learning_rate, num_of_hidden_units, iterations, d
         # np.savetxt('../data/GNN_'+str(num_of_hidden_units)+'_SMC.txt', np.array(SMC), fmt='%.3f', delimiter=',')
 
         pred = sess.run(prediction, feed_dict={xs: test_X})
-        evaluate(pred.flatten().tolist(), test_y.flatten().tolist(), mode)
+        evaluate(pred.flatten().tolist(), test_y.flatten().tolist())
         if save_pred:
             np.savetxt('../data/pred_GNN_'+str(num_of_hidden_units)+'.txt', pred, delimiter=',')
     print('Total running time: %.2f' % ((time.clock() - start_time) / 60.0), 'mins')
@@ -98,4 +95,4 @@ if __name__ == '__main__':
     dis_mode = args.distance
     neurons = int(args.neurons)
 
-    neural_gravity_model(path, 0.005, neurons, 40000, dis_mode, mode='positive', save_pred=False)
+    neural_gravity_model(path, 0.005, neurons, 40000, dis_mode, save_pred=False)

@@ -139,27 +139,6 @@ def gen_features(flow_file, street_file, output_path):
     np.savetxt(output_path + 'features.txt', features, fmt='%.3f', delimiter='\t')
 
 
-# generate features including only coordinates
-def gen_features_co(output_path, colnum):
-    features = [] # [row, col]
-    node_list = []
-    with open(output_path + 'entities.dict', 'r') as f:
-        line = f.readline().strip()
-        while line:
-            s = line.split('\t')
-            features.append([int(s[1])//colnum, int(s[1])%colnum])
-            node_list.append(s[1])
-            line = f.readline().strip()
-
-    features = np.array(features, dtype=np.float)
-
-    np.savetxt(output_path + 'features_raw.txt', features, fmt='%d', delimiter='\t')
-
-    # save normalized features
-    features = (features - np.min(features, axis=0)) / (np.max(features, axis=0) - np.min(features, axis=0))
-    np.savetxt(output_path + 'features.txt', features, fmt='%.3f', delimiter='\t')
-
-
 if __name__ == '__main__':
     path = 'SI-GCN/data/taxi_roadseg/'
 

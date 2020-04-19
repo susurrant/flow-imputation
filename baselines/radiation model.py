@@ -2,11 +2,9 @@
 from func import *
 
 
-def read_data(path, normalization=False, mode='positive'):
-    if mode == 'positive':
-        te_f = read_flows(path + 'test.txt')
-    elif mode == 'negative':
-        te_f = read_flows(path + 'test_n.txt')
+def read_data(path, normalization=False):
+    te_f = read_flows(path + 'test.txt')
+
     if normalization:
         features = read_features(path + 'entities.dict', path + 'features.txt')
     else:
@@ -35,11 +33,11 @@ def predict(flows, features, dis_mode):
 
     return pred, real
 
+
 if __name__ == '__main__':
     path = '../SI-GCN/data/taxi_1500m_th50/'
-    mode = 'positive'
     dis_mode = 'E'
-    flows, features = read_data(path, False, mode)
+    flows, features = read_data(path, False)
     pred, real = predict(flows, features, dis_mode)
     #np.savetxt('../data/pred_RM_negative.txt', pred, delimiter=',')
-    evaluate(pred, real, mode)
+    evaluate(pred, real)
