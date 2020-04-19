@@ -92,16 +92,15 @@ def predict_GM_P(flows, features, beta, K, dis_mode):
 
 
 if __name__ == '__main__':
-    #col_num = 30
     dis_mode = 'E'   #  E for Euclidean distance, M for Manhattan distance
-    path = '../SI-GCN/data/taxi_1500m_th30/'
+    path = '../SI-GCN/data/taxi_1500m_th50/'
     tr_f = read_flows(path + 'train.txt')
     te_f = read_flows(path + 'test.txt')
     #v_f = read_flows(path + 'valid.txt')
     features = read_features(path + 'entities.dict', path + 'features_raw.txt')
 
-    beta, K = GM_O(tr_f, features, dis_mode)
-    pred, real = predict_GM_O(te_f, features, beta, K, dis_mode)
+    beta, K = GM_P(tr_f, features, dis_mode)
+    pred, real = predict_GM_P(te_f, features, beta, K, dis_mode)
 
     print('beta =', beta, ', K =', K)
     #np.savetxt('../data/pred_GM_P.txt', pred, delimiter=',')

@@ -95,7 +95,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     path = args.dataset #'../SI-GCN/data/taxi/'
-    dis_mode = args.distance #'M'
+    dis_mode = args.distance
     neurons = int(args.neurons)
 
     neural_gravity_model(path, 0.005, neurons, 40000, dis_mode, mode='positive', save_pred=False)

@@ -36,7 +36,7 @@ def predict(flows, features, dis_mode):
     return pred, real
 
 if __name__ == '__main__':
-    path = '../SI-GCN/data/taxi_1500m_th30/'
+    path = '../SI-GCN/data/taxi_1500m_th50/'
     mode = 'positive'
     dis_mode = 'E'
     flows, features = read_data(path, False, mode)
