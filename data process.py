@@ -187,12 +187,15 @@ def gen_features(flow_file, output_path, colnum, mode='entire'):
 
 
 if __name__ == '__main__':
-    scale = '1500m' # 1500m
-    threshold = 40
-    col_num = 20
+    # 1500m, 20; 1km 30; 500m, 59
+
+    scale = '500m'
+    col_num = 59
+
+    threshold = 20
     tvt = [0.6, 0.2, 0.2]
 
-    #taxi_data('data/sj_taxi_'+scale+'_051317.txt', 'data/taxi_1km.txt')
+    taxi_data('data/sj_taxi_'+scale+'_051317.txt', 'data/taxi_'+scale+'.txt')
     path = 'SI-GCN/data/taxi_'+scale+'_th'+str(threshold)+'/'
 
     data_filter('data/taxi_'+scale+'.txt', threshold)
