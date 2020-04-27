@@ -4,7 +4,7 @@ gravity model with simulated data and noise: illustration
 
 
 import numpy as np
-from baselines.func import dis
+from func import dis
 import matplotlib.pyplot as plt
 import seaborn as sns
 
