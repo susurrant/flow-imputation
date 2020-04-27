@@ -161,7 +161,7 @@ def gen_features(flow_file, output_path, colnum, mode='entire'):
             elif mode == 'limited':
                 features.append([int(s[1]) // colnum, int(s[1]) % colnum])   # include only coordinates
             else:
-                features.append([mode])                                         # specific value
+                features.append([mode[0] for _ in mode[1]])                  # (specific value, length)
             node_list.append(s[1])
             line = f.readline().strip()
 
@@ -201,4 +201,4 @@ if __name__ == '__main__':
     data_filter('data/taxi_'+scale+'.txt', threshold)
     flow_file = 'data/taxi_'+scale+'_t'+str(threshold)+'.txt'
     gen_data(flow_file, path, tvt, mode='random') # random, low weight, hight weight
-    gen_features(flow_file, path, colnum=col_num, mode='entire') # entire, limited, specific value (e.g., 1)
+    gen_features(flow_file, path, colnum=col_num, mode='entire') # entire, limited, or (specific value, length)
