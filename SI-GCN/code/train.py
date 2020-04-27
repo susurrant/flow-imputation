@@ -1,6 +1,3 @@
-'''
-by Xin Yao (https://github.com/susurrant)
-'''
 
 import argparse
 import sys, shutil, os, time

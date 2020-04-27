@@ -2,6 +2,7 @@
 import numpy as np
 from scipy import stats
 
+
 class AccuracySummary:
 
     def __init__(self, p, r):
