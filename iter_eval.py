@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-：
 
-# 统计SI-GCN结果
+# performance measurement
 
 import numpy as np
 import os
