@@ -1,3 +1,8 @@
+'''
+create flow file:
+ox, oy, dx, dy, intensity
+'''
+
 
 import csv
 
@@ -29,6 +34,7 @@ with open('data/pt_fn_1km_cen.txt', 'r') as f:
         d = line.split(',')
         grid[d[1]] = (d[2][:10], d[3][:9])
         line = f.readline().strip()
+
 
 with open('data/flow_30_fn_1km.csv', 'w', newline='') as rf:
     sheet = csv.writer(rf, delimiter=',')

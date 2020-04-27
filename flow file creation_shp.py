@@ -48,12 +48,7 @@ def xy2line(input_table, out_lines):
 
 
 if __name__ == '__main__':
-    #input_table = 'flow_051317.csv'
-    #out_lines = 'flow_051317'
-    #gen_flow('data/taxi_sj_1km_051317.txt', 'data/flow_051317.csv')
-    #xy2line(input_table, out_lines)
-
-    pt_file = 'data/pt_fn_1km.txt'
+    pt_file = 'data/pt_fn_1km_cen.txt'
     flow_file = 'data/taxi_1km_t30.txt'
     out_file = 'data/flow_1km_t30.txt'
     out_shp_file = 'flow_1km_051317_t30'

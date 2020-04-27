@@ -1,8 +1,13 @@
+'''
+gravity model with simulated data and noise: illustration
+'''
+
 
 import numpy as np
 from baselines.func import dis
 import matplotlib.pyplot as plt
 import seaborn as sns
+
 
 class Region:
     def __init__(self, name, x, y, a, p):
