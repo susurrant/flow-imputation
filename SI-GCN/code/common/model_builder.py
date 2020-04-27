@@ -35,7 +35,7 @@ def build_encoder(encoder_settings, triples, features):
                       int(encoder_settings['InternalEncoderDimension'])]
     projection_shape = [int(encoder_settings['InternalEncoderDimension']),
                         int(encoder_settings['CodeDimension'])]
-    relation_shape = [int(encoder_settings['EntityCount']),
+    relation_shape = [int(encoder_settings['RelationCount']),
                       int(encoder_settings['CodeDimension'])]
     layers = int(encoder_settings['NumberOfLayers'])
     print('---------------------------------------------------------------')
