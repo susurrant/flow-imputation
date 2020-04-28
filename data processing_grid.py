@@ -181,7 +181,10 @@ def gen_features(flow_file, output_path, colnum, mode='entire'):
 
     # save normalized features
     if mode != 'none':
-        features = (features - np.min(features, axis=0)) / (np.max(features, axis=0) - np.min(features, axis=0))
+        # min-max
+        #features = (features - np.min(features, axis=0)) / (np.max(features, axis=0) - np.min(features, axis=0))
+        # z-score
+        features = (features - np.mean(features, axis=0)) / np.std(features, axis=0)
     np.savetxt(output_path + 'features.txt', features, fmt='%.3f', delimiter='\t')
 
 

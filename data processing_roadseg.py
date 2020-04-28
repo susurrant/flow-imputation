@@ -135,7 +135,7 @@ def gen_features(flow_file, street_file, output_path):
     np.savetxt(output_path + 'features_raw.txt', features, fmt='%.3f', delimiter='\t')
 
     # save normalized features
-    features = (features - np.min(features, axis=0)) / (np.max(features, axis=0) - np.min(features, axis=0))
+    features = (features - np.mean(features, axis=0)) / np.std(features, axis=0)
     np.savetxt(output_path + 'features.txt', features, fmt='%.3f', delimiter='\t')
 
 
