@@ -3,7 +3,7 @@
 ## Reference
 
 > [Spatial Origin-Destination Flow Imputation Using Graph Convolutional Networks](https://ieeexplore.ieee.org/document/9130943)</br>
-> Xin Yao, Yong Gao, Di Zhu, Ed Manley, Jiaoe Wang, Yu Liu, 2020, IEEE Transactions on Intelligent Transportation Systems</br>
+> Xin Yao, Yong Gao, Di Zhu, Ed Manley, Jiaoe Wang, Yu Liu, 2020, IEEE Transactions on Intelligent Transportation Systems. DOI: 10.1109/TITS.2020.3003310</br>
 
 ### About R-GCN
 
