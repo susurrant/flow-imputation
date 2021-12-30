@@ -25,7 +25,8 @@ class BilinearDiag(Model):
 
     def get_loss(self, mode='train'):
         e1s, rs, e2s = self.compute_codes(mode=mode)
-        energies = tf.reduce_sum(e1s * rs * e2s, 1)
+        # It would be best to add a bias parameter because there is a gap between flow intensity 0 and the minimum intensity.
+        energies = tf.reduce_sum(e1s * rs * e2s, 1) 
         weight = 1
         #return tf.reduce_mean(tf.losses.absolute_difference(self.Y, energies, weight))  # change loss function
         return tf.losses.mean_squared_error(self.Y, energies, weight)
