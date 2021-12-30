@@ -40,6 +40,7 @@ if __name__ == '__main__':
 
     train_triplets = np.array(train_triplets)
     threshold = np.min(train_triplets[:, 3])
+    # It would be best to add a bias parameter when calculating energy scores (in class BilinearDiag) rather than subtract the min intensity here.
     train_triplets[:, 3] -= threshold
     valid_triplets = np.array(valid_triplets)
     valid_triplets[:, 3] -= threshold
