@@ -91,7 +91,7 @@ if __name__ == '__main__':
     parser.add_argument("--neurons", help="The number of neurons in the hidden layer.", required=True)
     args = parser.parse_args()
 
-    path = args.dataset #'../SI-GCN/data/taxi/'
+    path = args.dataset #'../SI-GCN/data/taxi_th30/'
     dis_mode = args.distance
     neurons = int(args.neurons)
 
