@@ -8,7 +8,7 @@ numpy==1.14.5
 python-dateutil==2.7.3
 scipy==1.1.0
 six==1.11.0
-tensorflow-gpu==1.15.4
+tensorflow-gpu==2.9.3
 tensorflow-tensorboard==0.4.0
 Theano==1.0.2
 tornado==5.1
